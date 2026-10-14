@@ -13,6 +13,8 @@
   --accent: #f28ccf; --key: #2c2131; --key-edge: #4a3651; --off: #2a2030; --gold-soft: #3a3016;
   --water-top: #4a2c5e; --water-bot: #24153a; --sand: #7a3a64; --pearl: #ff8cc6; }
 
+/* the castle is a display room (THEME.display = "shelves"): taller, to fit two gold shelves above the floor */
+.tank { height: 132px; }
 /* the tank floor becomes a carpet, bubbles become drifting sparkles */
 .tank::after { height: 12px; border-radius: 0; }
 .bubble { border: 0; background: #fff; box-shadow: 0 0 6px 2px rgba(255, 255, 255, .8);

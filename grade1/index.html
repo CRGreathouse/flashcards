@@ -99,6 +99,23 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 .bob.hop { animation: hop .6s ease-out; }
 @keyframes bob { from { transform: translateY(-3px); } to { transform: translateY(3px); } }
 @keyframes hop { 0% { transform: translateY(0) scale(1); } 40% { transform: translateY(-18px) scale(1.25); } 100% { transform: translateY(0) scale(1); } }
+/* display room (THEME.display = "shelves"): shelves on the back wall, walkers on the floor, fliers above */
+.tank { container-type: inline-size; }
+.shelf { position: absolute; z-index: 1; height: 5px; border-radius: 2px; background: var(--shelf, #e8b84a);
+  box-shadow: 0 2px 0 var(--shelf-edge, #b9862a), 0 5px 6px rgba(0,0,0,.15); }
+.shelf::before, .shelf::after { content: ""; position: absolute; top: 5px; width: 4px; height: 8px; background: var(--shelf-edge, #b9862a); border-radius: 0 0 3px 3px; }
+.shelf::before { left: 8%; } .shelf::after { right: 8%; }
+.spot { position: absolute; z-index: 2; line-height: 1; transform: translateX(-50%); }
+.spot-fly { z-index: 3; }
+.spot .bob { animation: none; transform-origin: 50% 100%; }
+.spot .bob.hop { animation: hop .6s ease-out; }
+.pace { display: inline-block; animation: pace ease-in-out infinite; }
+@keyframes pace {
+  0%, 8% { transform: translateX(-9px) scaleX(-1); } 42% { transform: translateX(9px) scaleX(-1); }
+  50%, 58% { transform: translateX(9px) scaleX(1); } 92% { transform: translateX(-9px) scaleX(1); } 100% { transform: translateX(-9px) scaleX(-1); }
+}
+.hover { display: inline-block; animation: hover ease-in-out infinite; }
+@keyframes hover { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(5px, -3px); } 50% { transform: translate(0, -5px); } 75% { transform: translate(-5px, -2px); } }
 .bubble { position: absolute; bottom: 10px; width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.7); z-index: 1; animation: rise linear infinite; }
 @keyframes rise { from { transform: translateY(0); opacity: .9; } to { transform: translateY(-110px); opacity: 0; } }
 
@@ -237,7 +254,7 @@ h2 { font-family: var(--display); font-weight: 600; font-size: 1.15rem; margin: 
   transition: transform .9s cubic-bezier(.5,-0.3,.4,1); }
 
 @media (prefers-reduced-motion: reduce) {
-  .card.shake, .card.glow, .cheer.pop, .big-card, .big-icon, .chip.new, .flash-btn.new, .combo.bump, .swim, .bob, .weed, .bubble, .card.golden::before { animation: none !important; }
+  .card.shake, .card.glow, .cheer.pop, .big-card, .big-icon, .chip.new, .flash-btn.new, .combo.bump, .swim, .bob, .pace, .hover, .weed, .bubble, .card.golden::before { animation: none !important; }
   .cheer.pop { opacity: 1; }
   .flyer, .pearl-fly, .bubble { display: none; }
 }
@@ -329,6 +346,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   --accent: #f28ccf; --key: #2c2131; --key-edge: #4a3651; --off: #2a2030; --gold-soft: #3a3016;
   --water-top: #4a2c5e; --water-bot: #24153a; --sand: #7a3a64; --pearl: #ff8cc6; }
 
+/* the castle is a display room (THEME.display = "shelves"): taller, to fit two gold shelves above the floor */
+.tank { height: 132px; }
 /* the tank floor becomes a carpet, bubbles become drifting sparkles */
 .tank::after { height: 12px; border-radius: 0; }
 .bubble { border: 0; background: #fff; box-shadow: 0 0 6px 2px rgba(255, 255, 255, .8);
@@ -474,13 +493,15 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const DOLL = `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 30Q12 6 32 6 52 6 50 30 52 46 46 52H18Q12 46 14 30Z" fill="#7a4a2a"/><rect x="28" y="40" width="8" height="16" fill="#f1c39c"/><ellipse cx="32" cy="30" rx="13" ry="15" fill="#f8d4b4"/><path d="M19 27Q21 12 32 12 43 12 45 27 40 18 32 18 24 18 19 27Z" fill="#7a4a2a"/><circle cx="27" cy="30" r="2" fill="#3a2a2a"/><circle cx="37" cy="30" r="2" fill="#3a2a2a"/><circle cx="23.5" cy="35" r="2.6" fill="#ff8fb1" opacity=".5"/><circle cx="40.5" cy="35" r="2.6" fill="#ff8fb1" opacity=".5"/><path d="M28 37Q32 40.5 36 37" fill="none" stroke="#c0505a" stroke-width="1.6" stroke-linecap="round"/></svg>`;
   const THEME = {
     home: "Your castle",
+    display: "shelves",  // treasures sit on shelves rather than swimming about
     currency: "Gems",
     collection: "Royal treasures",
     gift: { icon: "🎁", title: "A royal gift!", fresh: "Something new for your castle!", again: "Another one for your castle!" },
     fastWords: ["Royally done!", "Sparkle power!", "Magical!", "Crown-worthy!", "Dazzling!", "Fit for a queen!"],
     starter: "gown",
     // Each room is its own collection; filling one opens the next. The first room's items keep their original keys.
-    // r is the rarity tier (0 common to 3 legendary); floor items walk along the bottom. Keys must be unique across rooms.
+    // r is the rarity tier (0 common to 3 legendary). Keys must be unique across rooms.
+    // Where things go in the room: on a shelf by default, `floor` stands on the floor, `walk` strolls about on it, `fly` hovers.
     // `colors` paints the room (top, bottom, floor); the first room uses the page palette.
     rooms: [
       { name: "Castle", decor: `<span class="weed" style="left:5%">🌷</span><span class="weed" style="left:80%;animation-delay:-2s">🌸</span>`,
@@ -491,37 +512,37 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
           tutu: { e: TUTU, name: "Tutu dress", r: 0 },
           slipper: { e: "👠", name: "Glass slipper", r: 0, floor: 1 },
           tiara: { e: TIARA, name: "Tiara", r: 1 }, ring: { e: "💍", name: "Ring", r: 1 },
-          swan: { e: "🦢", name: "Swan", r: 1 }, butterfly: { e: "🦋", name: "Butterfly", r: 1 },
-          frog: { e: "🐸", name: "Frog prince", r: 1, floor: 1 },
+          swan: { e: "🦢", name: "Swan", r: 1, walk: 1 }, butterfly: { e: "🦋", name: "Butterfly", r: 1, fly: 1 },
+          frog: { e: "🐸", name: "Frog prince", r: 1, walk: 1 },
           cape: { e: CAPE, name: "Royal cape", r: 1 }, hennin: { e: HENNIN, name: "Princess hat", r: 1 },
           wings: { e: WINGS, name: "Fairy wings", r: 1 },
           crown: { e: "👑", name: "Crown", r: 2 }, jewel: { e: "💎", name: "Royal jewel", r: 2 },
-          fairy: { e: "🧚", name: "Fairy godmother", r: 2 }, dragon: { e: "🐉", name: "Friendly dragon", r: 2 },
-          unicorn: { e: "🦄", name: "Unicorn", r: 2, floor: 1 },
+          fairy: { e: "🧚", name: "Fairy godmother", r: 2, fly: 1 }, dragon: { e: "🐉", name: "Friendly dragon", r: 2, fly: 1 },
+          unicorn: { e: "🦄", name: "Unicorn", r: 2, walk: 1 },
           ballgown: { e: BALL_GOWN, name: "Ball gown", r: 2 },
-          princess: { e: "👸", name: "Princess", r: 3 },
+          princess: { e: "👸", name: "Princess", r: 3, walk: 1 },
           starlight: { e: STARLIGHT_GOWN, name: "Starlight gown", r: 3 },
         } },
       { name: "Garden", colors: ["#d9f5c8", "#8fd18a", "#7cb85a"],
         decor: `<span class="weed" style="left:4%">🌷</span><span class="weed" style="left:86%;animation-delay:-1s">🌼</span>`,
         creatures: {
-          bunny: { e: "🐇", name: "Bunny", r: 0, floor: 1 }, hedgehog: { e: "🦔", name: "Hedgehog", r: 0, floor: 1 },
-          bee: { e: "🐝", name: "Bumblebee", r: 0 }, sunflower: { e: "🌻", name: "Sunflower", r: 0, floor: 1 },
-          ladybug: { e: "🐞", name: "Ladybug", r: 0 }, strawberry: { e: "🍓", name: "Strawberry", r: 0 },
-          peacock: { e: "🦚", name: "Peacock", r: 1, floor: 1 }, dove: { e: "🕊️", name: "Dove", r: 1 },
+          bunny: { e: "🐇", name: "Bunny", r: 0, walk: 1 }, hedgehog: { e: "🦔", name: "Hedgehog", r: 0, walk: 1 },
+          bee: { e: "🐝", name: "Bumblebee", r: 0, fly: 1 }, sunflower: { e: "🌻", name: "Sunflower", r: 0, floor: 1 },
+          ladybug: { e: "🐞", name: "Ladybug", r: 0, fly: 1 }, strawberry: { e: "🍓", name: "Strawberry", r: 0 },
+          peacock: { e: "🦚", name: "Peacock", r: 1, walk: 1 }, dove: { e: "🕊️", name: "Dove", r: 1, fly: 1 },
           teapot: { e: "🫖", name: "Garden tea set", r: 1, floor: 1 },
-          flamingo: { e: "🦩", name: "Flamingo", r: 2, floor: 1 }, rainbow: { e: "🌈", name: "Rainbow", r: 2 },
+          flamingo: { e: "🦩", name: "Flamingo", r: 2, walk: 1 }, rainbow: { e: "🌈", name: "Rainbow", r: 2, fly: 1 },
           wand: { e: "🪄", name: "Magic wand", r: 3 },
         } },
       { name: "Stables", colors: ["#ffe9c2", "#e8b878", "#b8864a"],
         decor: `<span class="weed" style="left:6%">🌾</span><span class="weed" style="left:82%;animation-delay:-2s">🌾</span>`,
         creatures: {
-          kitten: { e: "🐈", name: "Kitten", r: 0, floor: 1 }, puppy: { e: "🐕", name: "Puppy", r: 0, floor: 1 },
-          lamb: { e: "🐑", name: "Lamb", r: 0, floor: 1 }, rooster: { e: "🐓", name: "Rooster", r: 0, floor: 1 },
+          kitten: { e: "🐈", name: "Kitten", r: 0, walk: 1 }, puppy: { e: "🐕", name: "Puppy", r: 0, walk: 1 },
+          lamb: { e: "🐑", name: "Lamb", r: 0, walk: 1 }, rooster: { e: "🐓", name: "Rooster", r: 0, walk: 1 },
           carrot: { e: "🥕", name: "Carrot", r: 0 },
-          pony: { e: "🐴", name: "Pony", r: 1 }, deer: { e: "🦌", name: "Deer", r: 1, floor: 1 }, duck: { e: "🦆", name: "Duck", r: 1, floor: 1 },
-          horse: { e: "🐎", name: "Royal horse", r: 2, floor: 1 }, carriage: { e: CARRIAGE, name: "Pumpkin carriage", r: 2, floor: 1 },
-          pegasus: { e: PEGASUS, name: "Pegasus", r: 3 },
+          pony: { e: "🐴", name: "Pony", r: 1, walk: 1 }, deer: { e: "🦌", name: "Deer", r: 1, walk: 1 }, duck: { e: "🦆", name: "Duck", r: 1, walk: 1 },
+          horse: { e: "🐎", name: "Royal horse", r: 2, walk: 1 }, carriage: { e: CARRIAGE, name: "Pumpkin carriage", r: 2, floor: 1 },
+          pegasus: { e: PEGASUS, name: "Pegasus", r: 3, fly: 1 },
         } },
       { name: "Dragon tower", colors: ["#5a4a8a", "#241a40", "#4a3a5a"],
         decor: `<span class="weed" style="left:8%">🕯️</span><span class="weed" style="left:84%;animation-delay:-1s">🕯️</span>`,
@@ -529,19 +550,19 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
           egg: { e: "🥚", name: "Dragon egg", r: 0, floor: 1 }, scroll: { e: "📜", name: "Magic scroll", r: 0 },
           key: { e: "🗝️", name: "Golden key", r: 0 }, crystal: { e: "🔮", name: "Crystal ball", r: 1, floor: 1 },
           owl: { e: "🦉", name: "Owl", r: 1 }, mirror: { e: "🪞", name: "Magic mirror", r: 1, floor: 1 },
-          throne: { e: THRONE, name: "Throne", r: 2, floor: 1 }, babydragon: { e: "🐲", name: "Baby dragon", r: 2 },
-          elf: { e: "🧝‍♀️", name: "Elf", r: 2 },
-          queen: { e: "🫅", name: "The queen", r: 3 },
+          throne: { e: THRONE, name: "Throne", r: 2, floor: 1 }, babydragon: { e: "🐲", name: "Baby dragon", r: 2, fly: 1 },
+          elf: { e: "🧝‍♀️", name: "Elf", r: 2, walk: 1 },
+          queen: { e: "🫅", name: "The queen", r: 3, walk: 1 },
         } },
     ],
     // Visitors only come in their months (1 = January). They live in the first room.
     seasonal: {
-      s_pumpkin: { e: "🎃", name: "Jack-o'-lantern", r: 0, floor: 1, months: [10] }, s_ghost: { e: "👻", name: "Friendly ghost", r: 1, months: [10] },
+      s_pumpkin: { e: "🎃", name: "Jack-o'-lantern", r: 0, floor: 1, months: [10] }, s_ghost: { e: "👻", name: "Friendly ghost", r: 1, fly: 1, months: [10] },
       s_pumpkingown: { e: PUMPKIN_GOWN, name: "Pumpkin gown", r: 2, months: [10] },
-      s_snowflake: { e: "❄️", name: "Snowflake", r: 0, months: [12, 1] }, s_snowman: { e: "⛄", name: "Snowman", r: 1, floor: 1, months: [12, 1] },
+      s_snowflake: { e: "❄️", name: "Snowflake", r: 0, fly: 1, months: [12, 1] }, s_snowman: { e: "⛄", name: "Snowman", r: 1, floor: 1, months: [12, 1] },
       s_snowgown: { e: SNOW_GOWN, name: "Snow gown", r: 2, months: [12, 1] },
-      s_letter: { e: "💌", name: "Love letter", r: 0, months: [2] }, s_heart: { e: "💖", name: "Sparkly heart", r: 1, months: [2] },
-      s_chick: { e: "🐣", name: "Spring chick", r: 0, floor: 1, months: [4] },
+      s_letter: { e: "💌", name: "Love letter", r: 0, months: [2] }, s_heart: { e: "💖", name: "Sparkly heart", r: 1, fly: 1, months: [2] },
+      s_chick: { e: "🐣", name: "Spring chick", r: 0, walk: 1, months: [4] },
     },
     // Decorations from the shop, placed on the floor of any room.
     shop: {
@@ -671,6 +692,15 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   // so one slow answer later doesn't take them away.
   for (const id in state.cards) if (isKnown(id) || state.learned.includes(id)) state.cards[id].got = true;
   const got = id => !!state.cards[id]?.got;
+  // Cards a family's `known(a, b)` picks start out known, as if answered fast twice. Only cards with no history are touched.
+  function seedKnown() {
+    for (const c of deck) {
+      const f = FACTS[c.op];
+      if (!f.known || !f.known(c.a, c.b) || state.cards[c.id]) continue;
+      state.cards[c.id] = { w: FAST_MULT ** KNOWN_RUN, fast: 0, slow: 0, wrong: 0, run: KNOWN_RUN, got: true };
+      if (!state.active.includes(c.id)) state.active.push(c.id);
+    }
+  }
   const refCards = ref => ref.includes(".") ? (STAGES[ref]?.cards || []) : (ORDER[ref] || []);
   const refDone = ref => refCards(ref).every(got);
   const stageOpen = sid => !STAGES[sid].after.length || state.unlocked.includes(sid);
@@ -678,6 +708,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const familyOpen = op => stageOpen(`${op}.0`);
   const shownOps = () => OPS.filter(familyOpen);
   // Cards already in play keep their stage open, so a save from before stages existed loses nothing.
+  seedKnown();
   for (const id of state.active) if (byId[id] && !stageOpen(byId[id].stage)) state.unlocked.push(byId[id].stage);
   if (!shownOps().some(op => state.ops[op])) shownOps().forEach(op => state.ops[op] = true);
   const inPlay = () => state.active.filter(id => byId[id] && state.ops[byId[id].op] && familyOpen(byId[id].op));
@@ -945,7 +976,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     for (let i = 0; i < 6; i++) html += `<span class="bubble" style="left:${10 + seeded(i, 9) * 80}%;animation-duration:${4 + seeded(i, 3) * 4}s;animation-delay:-${seeded(i, 5) * 6}s"></span>`;
     for (const [k, p] of Object.entries(state.placed))
       if (p.room === rm.i && SHOP_ITEMS[k]) html += `<span class="deco" data-deco="${k}" style="left:${p.x}%" title="${SHOP_ITEMS[k].name}">${SHOP_ITEMS[k].e}</span>`;
-    for (const key of keys) {
+    if (THEME.display === "shelves") html += shelfRoom(rm, keys);
+    else for (const key of keys) {
       // Seeded by the friend's place in the table, so each one keeps its spot and speed.
       const c = CREATURES[key], i = all.indexOf(key), grow = 1 + Math.min(state.pets[key]?.fed || 0, 10) * 0.05;
       const dur = 10 + seeded(i, 1) * 12, delay = -seeded(i, 2) * dur, top = 6 + seeded(i, 4) * 50;
@@ -956,6 +988,42 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     $("rooms").hidden = open.length < 2;
     $("rooms").innerHTML = open.map(r => `<button class="pill" data-room="${r.i}" aria-pressed="${r.i === rm.i}">${r.name}</button>`).join("");
     renderDrawers();
+  }
+  // A display room instead of an aquarium: things sit on shelves, `floor` items stand on the floor,
+  // `walk` items pace around their spot and `fly` items hover in the air. Spots come from the room's whole
+  // table (owned or not), so nothing moves when something new arrives and the gaps show what's still missing.
+  function shelfRoom(rm, keys) {
+    const all = Object.keys(CREATURES), table = all.filter(k => CREATURES[k].room === rm.i);
+    const kind = k => { const c = CREATURES[k]; return c.fly ? "fly" : c.walk ? "walk" : c.floor ? "floor" : "shelf"; };
+    const shelf = table.filter(k => kind(k) === "shelf"), ground = table.filter(k => /floor|walk/.test(kind(k))), air = table.filter(k => kind(k) === "fly");
+    const rows = shelf.length > 8 ? 2 : shelf.length ? 1 : 0, per = Math.ceil(shelf.length / (rows || 1));
+    const boards = rows === 2 ? [80, 42] : [50];  // board heights above the bottom, in px
+    $("tank").style.height = rows === 2 ? "152px" : "";  // two shelves need headroom for the fliers
+    const span = Math.min(92, per * 13);           // short shelves stay short and centered
+    const shelfX = j => 50 - span / 2 + (j + 0.5) * span / per;
+    const size = n => `font-size:1.4rem;font-size:min(1.6rem,${(64 / Math.max(n, 3)).toFixed(1)}cqw)`;
+    let html = "";
+    for (let r = 0; r < rows; r++)
+      html += `<span class="shelf" style="left:${50 - span / 2}%;width:${span}%;bottom:${boards[r]}px"></span>`;
+    for (const key of keys) {
+      const c = CREATURES[key], i = all.indexOf(key), k = kind(key), grow = 1 + Math.min(state.pets[key]?.fed || 0, 10) * 0.05;
+      const item = `<span class="bob${isShiny(key) ? " shiny" : ""}" data-key="${key}" title="${esc(petName(key))}">${c.e}</span>`;
+      let pos, inner, n;
+      if (k === "shelf") {
+        const j = shelf.indexOf(key), r = Math.floor(j / per);
+        pos = `left:${shelfX(j % per)}%;bottom:${boards[r] + 5}px`; inner = item; n = per;
+      } else if (k === "fly") {
+        const j = air.indexOf(key);
+        pos = `left:${8 + (j + 0.5) * 84 / air.length}%;top:${2 + seeded(i, 4) * (rows === 2 ? 8 : 20)}px`; n = air.length * 1.5;
+        inner = `<span class="hover" style="animation-duration:${(3 + seeded(i, 1) * 3).toFixed(1)}s;animation-delay:-${(seeded(i, 2) * 6).toFixed(1)}s">${item}</span>`;
+      } else {
+        const j = ground.indexOf(key);
+        pos = `left:${8 + (j + 0.5) * 84 / ground.length}%;bottom:6px`; n = ground.length;
+        inner = k === "walk" ? `<span class="pace" style="animation-duration:${(9 + seeded(i, 1) * 8).toFixed(1)}s;animation-delay:-${(seeded(i, 2) * 17).toFixed(1)}s">${item}</span>` : item;
+      }
+      html += `<span class="spot spot-${k}" style="${pos};${size(n)}"><span style="display:inline-block;font-size:${grow.toFixed(2)}em">${inner}</span></span>`;
+    }
+    return html;
   }
   $("rooms").addEventListener("click", e => {
     const b = e.target.closest("[data-room]"); if (!b) return;
@@ -1828,6 +1896,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     Object.assign(state, { cards: {}, learned: [], active: [], rr: 0, tank: [THEME.starter], pearls: 0, opened: 0, flashEarned: false, flash: false, days: { last: null, count: 0 },
       day: { date: today(), fast: 0, slow: 0, wrong: 0, times: [], goalDone: false }, ...blank() });
     OPS.forEach(op => state.ops[op] = FACTS[op].on !== false);
+    seedKnown();
     if (mode.kind) stopMode();
     session.streak = 0; queue.length = 0; overlay = null; $("big").hidden = true; drawer = null; save();
     $("confirm").hidden = true; $("reset").hidden = false;

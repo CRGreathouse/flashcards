@@ -99,6 +99,23 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 .bob.hop { animation: hop .6s ease-out; }
 @keyframes bob { from { transform: translateY(-3px); } to { transform: translateY(3px); } }
 @keyframes hop { 0% { transform: translateY(0) scale(1); } 40% { transform: translateY(-18px) scale(1.25); } 100% { transform: translateY(0) scale(1); } }
+/* display room (THEME.display = "shelves"): shelves on the back wall, walkers on the floor, fliers above */
+.tank { container-type: inline-size; }
+.shelf { position: absolute; z-index: 1; height: 5px; border-radius: 2px; background: var(--shelf, #e8b84a);
+  box-shadow: 0 2px 0 var(--shelf-edge, #b9862a), 0 5px 6px rgba(0,0,0,.15); }
+.shelf::before, .shelf::after { content: ""; position: absolute; top: 5px; width: 4px; height: 8px; background: var(--shelf-edge, #b9862a); border-radius: 0 0 3px 3px; }
+.shelf::before { left: 8%; } .shelf::after { right: 8%; }
+.spot { position: absolute; z-index: 2; line-height: 1; transform: translateX(-50%); }
+.spot-fly { z-index: 3; }
+.spot .bob { animation: none; transform-origin: 50% 100%; }
+.spot .bob.hop { animation: hop .6s ease-out; }
+.pace { display: inline-block; animation: pace ease-in-out infinite; }
+@keyframes pace {
+  0%, 8% { transform: translateX(-9px) scaleX(-1); } 42% { transform: translateX(9px) scaleX(-1); }
+  50%, 58% { transform: translateX(9px) scaleX(1); } 92% { transform: translateX(-9px) scaleX(1); } 100% { transform: translateX(-9px) scaleX(-1); }
+}
+.hover { display: inline-block; animation: hover ease-in-out infinite; }
+@keyframes hover { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(5px, -3px); } 50% { transform: translate(0, -5px); } 75% { transform: translate(-5px, -2px); } }
 .bubble { position: absolute; bottom: 10px; width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.7); z-index: 1; animation: rise linear infinite; }
 @keyframes rise { from { transform: translateY(0); opacity: .9; } to { transform: translateY(-110px); opacity: 0; } }
 
@@ -237,7 +254,7 @@ h2 { font-family: var(--display); font-weight: 600; font-size: 1.15rem; margin: 
   transition: transform .9s cubic-bezier(.5,-0.3,.4,1); }
 
 @media (prefers-reduced-motion: reduce) {
-  .card.shake, .card.glow, .cheer.pop, .big-card, .big-icon, .chip.new, .flash-btn.new, .combo.bump, .swim, .bob, .weed, .bubble, .card.golden::before { animation: none !important; }
+  .card.shake, .card.glow, .cheer.pop, .big-card, .big-icon, .chip.new, .flash-btn.new, .combo.bump, .swim, .bob, .pace, .hover, .weed, .bubble, .card.golden::before { animation: none !important; }
   .cheer.pop { opacity: 1; }
   .flyer, .pearl-fly, .bubble { display: none; }
 }
@@ -517,6 +534,15 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   // so one slow answer later doesn't take them away.
   for (const id in state.cards) if (isKnown(id) || state.learned.includes(id)) state.cards[id].got = true;
   const got = id => !!state.cards[id]?.got;
+  // Cards a family's `known(a, b)` picks start out known, as if answered fast twice. Only cards with no history are touched.
+  function seedKnown() {
+    for (const c of deck) {
+      const f = FACTS[c.op];
+      if (!f.known || !f.known(c.a, c.b) || state.cards[c.id]) continue;
+      state.cards[c.id] = { w: FAST_MULT ** KNOWN_RUN, fast: 0, slow: 0, wrong: 0, run: KNOWN_RUN, got: true };
+      if (!state.active.includes(c.id)) state.active.push(c.id);
+    }
+  }
   const refCards = ref => ref.includes(".") ? (STAGES[ref]?.cards || []) : (ORDER[ref] || []);
   const refDone = ref => refCards(ref).every(got);
   const stageOpen = sid => !STAGES[sid].after.length || state.unlocked.includes(sid);
@@ -524,6 +550,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const familyOpen = op => stageOpen(`${op}.0`);
   const shownOps = () => OPS.filter(familyOpen);
   // Cards already in play keep their stage open, so a save from before stages existed loses nothing.
+  seedKnown();
   for (const id of state.active) if (byId[id] && !stageOpen(byId[id].stage)) state.unlocked.push(byId[id].stage);
   if (!shownOps().some(op => state.ops[op])) shownOps().forEach(op => state.ops[op] = true);
   const inPlay = () => state.active.filter(id => byId[id] && state.ops[byId[id].op] && familyOpen(byId[id].op));
@@ -791,7 +818,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     for (let i = 0; i < 6; i++) html += `<span class="bubble" style="left:${10 + seeded(i, 9) * 80}%;animation-duration:${4 + seeded(i, 3) * 4}s;animation-delay:-${seeded(i, 5) * 6}s"></span>`;
     for (const [k, p] of Object.entries(state.placed))
       if (p.room === rm.i && SHOP_ITEMS[k]) html += `<span class="deco" data-deco="${k}" style="left:${p.x}%" title="${SHOP_ITEMS[k].name}">${SHOP_ITEMS[k].e}</span>`;
-    for (const key of keys) {
+    if (THEME.display === "shelves") html += shelfRoom(rm, keys);
+    else for (const key of keys) {
       // Seeded by the friend's place in the table, so each one keeps its spot and speed.
       const c = CREATURES[key], i = all.indexOf(key), grow = 1 + Math.min(state.pets[key]?.fed || 0, 10) * 0.05;
       const dur = 10 + seeded(i, 1) * 12, delay = -seeded(i, 2) * dur, top = 6 + seeded(i, 4) * 50;
@@ -802,6 +830,42 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     $("rooms").hidden = open.length < 2;
     $("rooms").innerHTML = open.map(r => `<button class="pill" data-room="${r.i}" aria-pressed="${r.i === rm.i}">${r.name}</button>`).join("");
     renderDrawers();
+  }
+  // A display room instead of an aquarium: things sit on shelves, `floor` items stand on the floor,
+  // `walk` items pace around their spot and `fly` items hover in the air. Spots come from the room's whole
+  // table (owned or not), so nothing moves when something new arrives and the gaps show what's still missing.
+  function shelfRoom(rm, keys) {
+    const all = Object.keys(CREATURES), table = all.filter(k => CREATURES[k].room === rm.i);
+    const kind = k => { const c = CREATURES[k]; return c.fly ? "fly" : c.walk ? "walk" : c.floor ? "floor" : "shelf"; };
+    const shelf = table.filter(k => kind(k) === "shelf"), ground = table.filter(k => /floor|walk/.test(kind(k))), air = table.filter(k => kind(k) === "fly");
+    const rows = shelf.length > 8 ? 2 : shelf.length ? 1 : 0, per = Math.ceil(shelf.length / (rows || 1));
+    const boards = rows === 2 ? [80, 42] : [50];  // board heights above the bottom, in px
+    $("tank").style.height = rows === 2 ? "152px" : "";  // two shelves need headroom for the fliers
+    const span = Math.min(92, per * 13);           // short shelves stay short and centered
+    const shelfX = j => 50 - span / 2 + (j + 0.5) * span / per;
+    const size = n => `font-size:1.4rem;font-size:min(1.6rem,${(64 / Math.max(n, 3)).toFixed(1)}cqw)`;
+    let html = "";
+    for (let r = 0; r < rows; r++)
+      html += `<span class="shelf" style="left:${50 - span / 2}%;width:${span}%;bottom:${boards[r]}px"></span>`;
+    for (const key of keys) {
+      const c = CREATURES[key], i = all.indexOf(key), k = kind(key), grow = 1 + Math.min(state.pets[key]?.fed || 0, 10) * 0.05;
+      const item = `<span class="bob${isShiny(key) ? " shiny" : ""}" data-key="${key}" title="${esc(petName(key))}">${c.e}</span>`;
+      let pos, inner, n;
+      if (k === "shelf") {
+        const j = shelf.indexOf(key), r = Math.floor(j / per);
+        pos = `left:${shelfX(j % per)}%;bottom:${boards[r] + 5}px`; inner = item; n = per;
+      } else if (k === "fly") {
+        const j = air.indexOf(key);
+        pos = `left:${8 + (j + 0.5) * 84 / air.length}%;top:${2 + seeded(i, 4) * (rows === 2 ? 8 : 20)}px`; n = air.length * 1.5;
+        inner = `<span class="hover" style="animation-duration:${(3 + seeded(i, 1) * 3).toFixed(1)}s;animation-delay:-${(seeded(i, 2) * 6).toFixed(1)}s">${item}</span>`;
+      } else {
+        const j = ground.indexOf(key);
+        pos = `left:${8 + (j + 0.5) * 84 / ground.length}%;bottom:6px`; n = ground.length;
+        inner = k === "walk" ? `<span class="pace" style="animation-duration:${(9 + seeded(i, 1) * 8).toFixed(1)}s;animation-delay:-${(seeded(i, 2) * 17).toFixed(1)}s">${item}</span>` : item;
+      }
+      html += `<span class="spot spot-${k}" style="${pos};${size(n)}"><span style="display:inline-block;font-size:${grow.toFixed(2)}em">${inner}</span></span>`;
+    }
+    return html;
   }
   $("rooms").addEventListener("click", e => {
     const b = e.target.closest("[data-room]"); if (!b) return;
@@ -1674,6 +1738,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     Object.assign(state, { cards: {}, learned: [], active: [], rr: 0, tank: [THEME.starter], pearls: 0, opened: 0, flashEarned: false, flash: false, days: { last: null, count: 0 },
       day: { date: today(), fast: 0, slow: 0, wrong: 0, times: [], goalDone: false }, ...blank() });
     OPS.forEach(op => state.ops[op] = FACTS[op].on !== false);
+    seedKnown();
     if (mode.kind) stopMode();
     session.streak = 0; queue.length = 0; overlay = null; $("big").hidden = true; drawer = null; save();
     $("confirm").hidden = true; $("reset").hidden = false;

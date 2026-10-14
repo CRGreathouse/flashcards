@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Builds each game variant into its own folder (./flash1, ./flash3), ready to upload to GitHub Pages.
+# Builds each game variant into its own folder (./grade1, ./grade3), ready to upload to GitHub Pages.
 #
 #   ./build.sh            build every variant in variants/
-#   ./build.sh flash1     build just the ones named
+#   ./build.sh grade1     build just the ones named
 #
 # A variant is variants/<name>/variant.sh (TITLE, DESCRIPTION, THEME) plus variants/<name>/config.js
 # (the facts and save slot). src/index.html is shared. Its /*@include VARIANT/...*/ and
