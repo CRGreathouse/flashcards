@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flash Facts</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Flash-card practice for arithmetic facts. Pick a grade to play.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Landing page for the built variants. Hand-written; build.sh doesn't touch it. */
+:root {
+  --bg: #eef1f6; --ink: #1d2433; --muted: #5b6478; --card: #fffdf8; --edge: #cfd6e4;
+  --g1: #b5338a; --g1-soft: #fbf0f6; --g3: #2f5bd3; --g3-soft: #e4ecfb;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141821; --ink: #e8ecf4; --muted: #a3acbf; --card: #1e2430; --edge: #333c4d;
+  --g1: #f28ccf; --g1-soft: #2a1f2e; --g3: #8fb0ff; --g3-soft: #1c2740; } }
+:root[data-theme="dark"] {
+  --bg: #141821; --ink: #e8ecf4; --muted: #a3acbf; --card: #1e2430; --edge: #333c4d;
+  --g1: #f28ccf; --g1-soft: #2a1f2e; --g3: #8fb0ff; --g3-soft: #1c2740; }
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh; min-height: 100dvh; display: grid; place-items: center;
+  padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  background: var(--bg); color: var(--ink); font: 18px/1.4 "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+main { width: 100%; max-width: 640px; text-align: center; }
+h1 { font: 800 clamp(2.2rem, 8vw, 3.2rem)/1.1 "Bricolage Grotesque", system-ui, sans-serif; margin: 0 0 .25em; }
+p.lede { color: var(--muted); margin: 0 0 1.75em; }
+.grades { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.grade {
+  display: block; padding: 28px 20px 24px; border-radius: 20px; text-decoration: none; color: var(--ink);
+  background: var(--card); border: 2px solid var(--edge); box-shadow: 0 4px 0 var(--edge);
+  transition: transform .12s, box-shadow .12s, border-color .12s;
+}
+.grade:hover, .grade:focus-visible { transform: translateY(-3px); box-shadow: 0 7px 0 var(--c); border-color: var(--c); outline: none; }
+.grade:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--c); }
+.grade.g1 { --c: var(--g1); --soft: var(--g1-soft); }
+.grade.g3 { --c: var(--g3); --soft: var(--g3-soft); }
+.icon { display: grid; place-items: center; width: 88px; height: 88px; margin: 0 auto 12px; border-radius: 50%; background: var(--soft); font-size: 52px; line-height: 1; }
+.name { display: block; font: 800 1.9rem/1.1 "Bricolage Grotesque", system-ui, sans-serif; color: var(--c); }
+.what { display: block; margin-top: 6px; color: var(--muted); font-size: .95rem; }
+@media (prefers-reduced-motion: reduce) { .grade { transition: none; } .grade:hover, .grade:focus-visible, .grade:active { transform: none; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Flash Facts</h1>
+  <p class="lede">Pick your grade to start practicing.</p>
+  <nav class="grades">
+    <a class="grade g1" href="flash1/">
+      <span class="icon" aria-hidden="true">👑</span>
+      <span class="name">Grade 1</span>
+      <span class="what">Adding and subtracting, with a royal collection to fill</span>
+    </a>
+    <a class="grade g3" href="flash3/">
+      <span class="icon" aria-hidden="true">🐠</span>
+      <span class="name">Grade 3</span>
+      <span class="what">Adding, subtracting and times tables, with an aquarium to fill</span>
+    </a>
+  </nav>
+</main>
+</body>
+</html>

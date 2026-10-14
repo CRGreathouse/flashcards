@@ -18,6 +18,8 @@ A family or stage that is still locked has no header button, and its cells on th
 
 Each output folder is a complete static site (`index.html`, `favicon.svg`, `.nojekyll`) ready to upload to GitHub Pages. The build only needs bash and awk.
 
+The root `index.html` is a hand-written landing page that links to both builds as Grade 1 (flash1) and Grade 3 (flash3). With the whole repo served by GitHub Pages, it's the page at the site's root.
+
 ## How to Play
 
 Open a built `flash1/index.html` or `flash3/index.html` directly in a browser, or visit the GitHub Pages site.
