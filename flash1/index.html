@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Princess Facts</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Flash-card practice for addition and multiplication facts, with a royal collection of dresses, tiaras and more to fill.">
+<link rel="icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<style>
+/* Layout: one column; collection tank and currency meter, star shelf, index card, keypad, today's numbers, practice map. */
+:root {
+  --bg: #eef1f6;
+  --ink: #1d2433;
+  --muted: #5b6478;
+  --card: #fffdf8;
+  --rule: #d9534f;
+  --line: #c9d7ec;
+  --accent: #2f5bd3;
+  --key: #ffffff;
+  --key-edge: #cfd6e4;
+  --good: #1f9d55;
+  --slow: #c27f00;
+  --bad: #d2363a;
+  --gold: #e3a400;
+  --gold-soft: #fff3cc;
+  --heat0: #e3f3e8;
+  --heat1: #fde8b5;
+  --heat2: #f7a98a;
+  --heat3: #d2363a;
+  --off: #e2e6ee;
+  --water-top: #8fd3f0;
+  --water-bot: #2f86c4;
+  --sand: #f1d9a4;
+  --pearl: #c9b8ff;
+  --r0: #2f5bd3;
+  --r1: #8a3ffc;
+  --r2: #d48a00;
+  --r3: #e0457b;
+  --scrim: rgba(20, 26, 40, .45);
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141821; --ink: #e8ecf4; --muted: #9aa3b6; --card: #1f2533; --rule: #e0645f;
+  --line: #2d3850; --accent: #7d9ef5; --key: #262d3d; --key-edge: #39425a;
+  --good: #3ec27a; --slow: #f0b232; --bad: #f2615f; --gold: #ffc93c; --gold-soft: #3a3016;
+  --heat0: #1f3a2c; --heat1: #4a3d17; --heat2: #6b3424; --heat3: #b3282c; --off: #222837;
+  --water-top: #1d5f86; --water-bot: #0b2a46; --sand: #6b5a3a; --pearl: #a996ff;
+  --r0: #7d9ef5; --r1: #b98bff; --r2: #ffc93c; --r3: #ff7aa8;
+  --scrim: rgba(0, 0, 0, .55);
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #141821; --ink: #e8ecf4; --muted: #9aa3b6; --card: #1f2533; --rule: #e0645f;
+  --line: #2d3850; --accent: #7d9ef5; --key: #262d3d; --key-edge: #39425a;
+  --good: #3ec27a; --slow: #f0b232; --bad: #f2615f; --gold: #ffc93c; --gold-soft: #3a3016;
+  --heat0: #1f3a2c; --heat1: #4a3d17; --heat2: #6b3424; --heat3: #b3282c; --off: #222837;
+  --water-top: #1d5f86; --water-bot: #0b2a46; --sand: #6b5a3a; --pearl: #a996ff;
+  --r0: #7d9ef5; --r1: #b98bff; --r2: #ffc93c; --r3: #ff7aa8;
+  --scrim: rgba(0, 0, 0, .55);
+  color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; }
+.wrap { max-width: 34rem; margin: 0 auto; padding-inline: 16px; padding-block: 14px 40px; display: grid; gap: 16px; }
+
+header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+h1 { font-family: var(--display); font-weight: 800; font-size: 1.6rem; margin: 0; letter-spacing: -0.01em; }
+.hdr-right { display: flex; gap: 6px; align-items: center; }
+.op-toggle, .mute { font: 700 1.05rem var(--body); width: 2.6rem; height: 2.4rem; border-radius: 10px;
+  border: 2px solid var(--key-edge); background: var(--key); color: var(--muted); cursor: pointer; }
+.op-toggle[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.mute { margin-left: 6px; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+.flash-btn { width: 2rem; border-color: transparent; background: none; opacity: .55; padding: 0; display: grid; place-items: center; }
+.flash-btn svg { width: 1.1rem; height: 1.1rem; fill: currentColor; }
+.flash-btn[aria-pressed="true"] { opacity: 1; color: var(--gold); }
+.flash-btn.new { animation: chipin .6s cubic-bezier(.3,1.6,.5,1); }
+button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* aquarium */
+.tank { position: relative; height: 108px; border-radius: 14px; overflow: hidden;
+  background: linear-gradient(var(--water-top), var(--water-bot)); }
+.tank::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: var(--sand); border-radius: 50% 50% 0 0 / 8px 8px 0 0; }
+.weed { position: absolute; bottom: 4px; font-size: 1.6rem; z-index: 1; transform-origin: bottom center; animation: sway 4s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+.swim { position: absolute; z-index: 2; line-height: 1; animation: swim linear infinite; }
+.swim.floor { top: auto !important; bottom: 5px; animation-name: crawl; }
+@keyframes swim {
+  0% { left: 2%; transform: scaleX(-1); } 48% { left: calc(96% - 2rem); transform: scaleX(-1); }
+  50% { left: calc(96% - 2rem); transform: scaleX(1); } 98% { left: 2%; transform: scaleX(1); } 100% { left: 2%; transform: scaleX(-1); }
+}
+@keyframes crawl {
+  0% { left: 8%; transform: scaleX(1); } 48% { left: calc(90% - 2rem); transform: scaleX(1); }
+  50% { left: calc(90% - 2rem); transform: scaleX(-1); } 98% { left: 8%; transform: scaleX(-1); } 100% { left: 8%; transform: scaleX(1); }
+}
+.bob { display: inline-block; cursor: pointer; animation: bob 2.4s ease-in-out infinite alternate; }
+.bob.hop { animation: hop .6s ease-out; }
+@keyframes bob { from { transform: translateY(-3px); } to { transform: translateY(3px); } }
+@keyframes hop { 0% { transform: translateY(0) scale(1); } 40% { transform: translateY(-18px) scale(1.25); } 100% { transform: translateY(0) scale(1); } }
+.bubble { position: absolute; bottom: 10px; width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.7); z-index: 1; animation: rise linear infinite; }
+@keyframes rise { from { transform: translateY(0); opacity: .9; } to { transform: translateY(-110px); opacity: 0; } }
+
+.meter-row { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; font-size: .9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.meter-row b { color: var(--ink); }
+.meter { height: 12px; border-radius: 6px; background: var(--off); overflow: hidden; }
+.meter > i { display: block; height: 100%; width: 0; border-radius: 6px; background: linear-gradient(90deg, var(--pearl), var(--accent)); transition: width .5s cubic-bezier(.3,1.4,.5,1); }
+.meter.pulse > i { animation: meterpulse .5s; }
+@keyframes meterpulse { 50% { filter: brightness(1.4); } }
+.pearl-icon { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -1px; margin-right: 5px;
+  background: radial-gradient(circle at 35% 35%, #fff, var(--pearl) 60%, #8a7ad6); }
+.pearl-fly { position: fixed; z-index: 21; width: 16px; height: 16px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle at 35% 35%, #fff, var(--pearl) 60%, #8a7ad6); box-shadow: 0 0 10px var(--pearl);
+  transition: transform .7s cubic-bezier(.5,-0.4,.5,1), opacity .7s; }
+
+.dex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.6rem, 1fr)); gap: 6px; margin-top: 8px; }
+.dex-item { border: 2px solid var(--key-edge); border-radius: 10px; padding: 6px 4px; text-align: center; font-size: .7rem; color: var(--muted); background: var(--card); }
+.dex-item .e { font-size: 1.6rem; display: block; line-height: 1.2; }
+.dex-item.unknown .e { color: var(--muted); font-family: var(--display); font-weight: 800; }
+
+/* star shelf */
+.shelf { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.shelf-label { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-right: 4px; }
+.chip { display: inline-flex; align-items: center; gap: 4px; background: var(--gold-soft); color: var(--ink);
+  border-radius: 999px; padding: 3px 10px 3px 6px; font-size: .85rem; font-variant-numeric: tabular-nums; }
+.chip svg { width: 16px; height: 16px; fill: var(--gold); }
+.chip.new { animation: chipin .6s cubic-bezier(.3,1.6,.5,1); }
+@keyframes chipin { from { transform: scale(0); } to { transform: scale(1); } }
+
+/* index card */
+.card { position: relative; background: var(--card); border-radius: 6px; padding: 54px 20px 30px;
+  box-shadow: 0 1px 0 var(--key-edge), 0 10px 24px -14px rgba(20,30,60,.35);
+  background-image:
+    linear-gradient(var(--rule), var(--rule)),
+    repeating-linear-gradient(to bottom, transparent 0 33px, var(--line) 33px 34px);
+  background-size: 100% 2px, 100% 100%;
+  background-position: 0 40px, 0 40px;
+  background-repeat: no-repeat, no-repeat;
+  text-align: center; overflow: hidden; }
+.card.golden { box-shadow: 0 0 0 3px var(--gold), 0 10px 30px -10px var(--gold); }
+.card.golden::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 215, 90, .35) 50%, transparent 65%);
+  background-size: 250% 100%; animation: shimmer 2.2s linear infinite; }
+@keyframes shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+.card.shake { animation: shake .3s; }
+.card.glow { animation: glow .9s; }
+@keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@keyframes glow { 0% { box-shadow: 0 0 0 0 var(--gold); } 40% { box-shadow: 0 0 0 6px var(--gold); } 100% { box-shadow: 0 0 0 0 transparent; } }
+.tag { position: absolute; top: 12px; left: 16px; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.badge { position: absolute; top: 9px; right: 14px; font-size: .75rem; font-weight: 700; border-radius: 999px; padding: 1px 8px; }
+.badge.tricky { color: var(--bad); border: 1.5px dashed var(--bad); }
+.badge.fresh { color: var(--accent); border: 1.5px solid var(--accent); }
+.badge.gold { color: var(--ink); background: var(--gold); }
+.combo { position: absolute; right: 14px; bottom: 8px; font-family: var(--display); font-weight: 800; font-size: 1.1rem; color: var(--r3); font-variant-numeric: tabular-nums; }
+.combo.bump { animation: bump .35s cubic-bezier(.3,1.8,.5,1); }
+@keyframes bump { from { transform: scale(1.7); } to { transform: scale(1); } }
+.problem { font-family: var(--display); font-weight: 800; font-size: clamp(2.8rem, 13vw, 4.4rem);
+  line-height: 1.1; font-variant-numeric: tabular-nums; display: flex; justify-content: center; align-items: baseline; gap: .25em; flex-wrap: wrap;
+  transition: opacity .2s; position: relative; }
+.card.cheering .problem { opacity: .18; }
+/* integral mode (hidden testing shortcut) */
+.card.integral .problem { font-size: clamp(1.7rem, 8vw, 2.6rem); }
+.int { display: inline-flex; align-items: center; gap: .05em; }
+.int-sign { font-size: 1.7em; font-weight: 400; line-height: 1; }
+.int-lim { display: inline-flex; flex-direction: column; justify-content: space-between; align-self: stretch; font-size: .5em; line-height: 1; padding-block: .1em; }
+.answer { min-width: 1.6em; border-bottom: 4px solid var(--accent); color: var(--accent); }
+.answer.empty { color: transparent; }
+.answer.ghost { color: var(--muted); opacity: .45; }
+.feedback { min-height: 1.6rem; margin-top: 10px; font-weight: 700; font-size: 1.05rem; position: relative; }
+.feedback.good { color: var(--good); } .feedback.slow { color: var(--slow); } .feedback.bad { color: var(--bad); }
+.feedback.hint { color: var(--muted); font-weight: 400; }
+.cheer { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+  font-family: var(--display); font-weight: 800; font-size: clamp(2rem, 10vw, 3.2rem); letter-spacing: -0.01em;
+  text-wrap: balance; padding-inline: 12px; }
+.cheer.pop { animation: pop 1.2s cubic-bezier(.2,1.5,.4,1) forwards; }
+.cheer.soft { font-size: clamp(1.6rem, 8vw, 2.4rem); }
+@keyframes pop {
+  0% { transform: scale(.2) rotate(-8deg); opacity: 0; } 25% { transform: scale(1.15) rotate(3deg); opacity: 1; }
+  40% { transform: scale(1) rotate(0); } 80% { opacity: 1; } 100% { transform: translateY(-14px); opacity: 0; }
+}
+
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.key { font: 700 1.6rem var(--body); padding-block: 12px; border-radius: 12px; border: 2px solid var(--key-edge);
+  border-bottom-width: 4px; background: var(--key); color: var(--ink); cursor: pointer; touch-action: manipulation; }
+.key:active { transform: translateY(2px); border-bottom-width: 2px; }
+.key.go { background: var(--accent); border-color: var(--accent); color: var(--card); }
+.key.small { font-size: 1.1rem; }
+
+.stats { display: grid; gap: 8px; font-variant-numeric: tabular-nums; color: var(--muted); font-size: .95rem; }
+.stats .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.stats b { color: var(--ink); }
+.goal { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; }
+.goal .meter > i { background: linear-gradient(90deg, var(--good), var(--gold)); }
+.dot { display: inline-block; width: .7em; height: .7em; border-radius: 50%; margin-right: 5px; vertical-align: -.05em; }
+
+h2 { font-family: var(--display); font-weight: 600; font-size: 1.15rem; margin: 6px 0 0; }
+.maps { display: grid; gap: 18px; }
+.map h3 { margin: 0 0 6px; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.map h3 small { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.grid { display: grid; gap: 2px; font-size: .7rem; font-variant-numeric: tabular-nums; }
+.grid span { aspect-ratio: 1; display: grid; place-items: center; border-radius: 3px; max-width: 100%; }
+.grid .hd { color: var(--muted); }
+.grid .cell { border: 1px solid var(--line); color: var(--gold); font-size: .8rem; line-height: 1; }
+.grid .cell.hard { border: 1.5px dashed var(--bad); }
+.grid .cell.later { background: transparent; border: 1px dotted var(--key-edge); }
+.legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: .8rem; color: var(--muted); align-items: center; }
+.legend span { display: inline-flex; align-items: center; gap: 5px; }
+.legend i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; font-style: normal; font-size: .7rem; line-height: 14px; text-align: center; }
+.note { color: var(--muted); font-size: .85rem; margin: 0; max-width: 65ch; }
+
+.foot { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.text-btn { font: 700 .9rem var(--body); background: none; border: 2px solid var(--key-edge); color: var(--muted);
+  border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.text-btn.danger { border-color: var(--bad); color: var(--bad); }
+
+/* effects and big moments */
+#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
+.big { position: fixed; inset: 0; z-index: 15; display: grid; place-items: center; background: var(--scrim); padding-inline: 16px; cursor: pointer; }
+.big-card { background: var(--card); border-radius: 18px; padding: 28px 24px; text-align: center; max-width: 22rem; width: 100%;
+  box-shadow: 0 20px 50px -20px rgba(0,0,0,.5); animation: bigin .7s cubic-bezier(.2,1.6,.4,1); }
+.big-icon { font-size: 5rem; line-height: 1.1; display: inline-block; }
+.big-icon svg { width: 76px; height: 76px; fill: var(--gold); }
+.big-icon.spin { animation: spin 1.4s ease-out; }
+.big-icon.idle { animation: idle 1.2s ease-in-out infinite; }
+.big-icon.wobble { animation: wobble .8s ease-in-out; }
+.big-icon.reveal { animation: reveal .8s cubic-bezier(.2,1.8,.4,1); }
+@keyframes idle { 50% { transform: scale(1.08) rotate(-4deg); } }
+@keyframes wobble { 0%,100% { transform: rotate(0); } 15% { transform: rotate(-16deg) scale(1.1); } 30% { transform: rotate(14deg) scale(1.15); } 45% { transform: rotate(-12deg) scale(1.2); } 60% { transform: rotate(10deg) scale(1.25); } 80% { transform: scale(1.4); } }
+@keyframes reveal { from { transform: scale(0) rotate(-30deg); } to { transform: scale(1) rotate(0); } }
+.big-title { font-family: var(--display); font-weight: 800; font-size: 2rem; margin: 8px 0 4px; text-wrap: balance; line-height: 1.1; }
+.big-fact { font-family: var(--display); font-weight: 600; font-size: 1.4rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+.big-sub { color: var(--muted); margin-top: 8px; font-size: .95rem; }
+@keyframes bigin { from { transform: scale(.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes spin { from { transform: rotate(-200deg) scale(.2); } to { transform: rotate(0) scale(1); } }
+.flyer { position: fixed; z-index: 21; width: 40px; height: 40px; fill: var(--gold); pointer-events: none;
+  transition: transform .9s cubic-bezier(.5,-0.3,.4,1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card.shake, .card.glow, .cheer.pop, .big-card, .big-icon, .chip.new, .flash-btn.new, .combo.bump, .swim, .bob, .weed, .bubble, .card.golden::before { animation: none !important; }
+  .cheer.pop { opacity: 1; }
+  .flyer, .pearl-fly, .bubble { display: none; }
+}
+
+/* rooms, decorations and shiny friends */
+.rooms { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: -8px; }
+.pill { font: 700 .85rem var(--body); border: 2px solid var(--key-edge); background: var(--key); color: var(--muted);
+  border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.pill[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.pill:disabled { opacity: .45; cursor: default; }
+.drawn { width: 1.3em; height: 1.3em; vertical-align: -0.25em; }
+.big-icon svg.drawn, .big-icon svg.outfit { width: 104px; height: 104px; }
+.tank.decorating { cursor: crosshair; outline: 3px dashed var(--accent); outline-offset: 2px; }
+.deco { position: absolute; bottom: 3px; z-index: 1; font-size: 1.8rem; line-height: 1; transform: translateX(-50%); }
+.decorating .deco { cursor: pointer; }
+.shiny { filter: hue-rotate(160deg) saturate(1.4) drop-shadow(0 0 3px #ffd95e) drop-shadow(0 0 5px #fff3b0); }
+button.dex-item:disabled { opacity: .55; cursor: default; }
+
+/* drawers under the tank: collection, shop, decorate, dress up, badges, pictures, and a tapped friend */
+.drawers { display: flex; gap: 6px; flex-wrap: wrap; }
+.drawer { background: var(--card); border: 2px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 10px; }
+.drawer h4 { margin: 0; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.drawer .note b { color: var(--ink); }
+.dex-item { position: relative; }
+.dex-item.shiny-item { border-color: var(--gold) !important; background: var(--gold-soft); }
+.dex-item .n { position: absolute; top: 2px; right: 5px; font-weight: 700; color: var(--ink); }
+.dex-item.locked { opacity: .5; }
+button.dex-item { font: inherit; font-size: .7rem; cursor: pointer; }
+button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; box-shadow: 0 0 0 2px var(--accent); }
+.dex-item .price { display: block; font-weight: 700; color: var(--ink); margin-top: 2px; }
+.pet { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; align-items: center; }
+.pet-e { font-size: 3rem; line-height: 1; grid-row: span 2; }
+.pet-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.pet input { font: 1rem var(--body); padding: 5px 8px; border-radius: 8px; border: 2px solid var(--key-edge); background: var(--key); color: var(--ink); width: 9rem; }
+.doll-wrap { display: grid; grid-template-columns: 10rem 1fr; gap: 12px; align-items: start; }
+@media (max-width: 30rem) { .doll-wrap { grid-template-columns: 1fr; justify-items: center; } }
+.doll { position: relative; width: 10rem; height: 13rem; border-radius: 12px; background: linear-gradient(var(--water-top), var(--water-bot)); overflow: hidden; }
+.doll > span { position: absolute; left: 50%; transform: translateX(-50%); line-height: 1; }
+.doll .d-back { top: 3.2rem; font-size: 5.6rem; z-index: 0; }
+.doll .d-dress { top: 4.2rem; font-size: 5.2rem; z-index: 1; }
+.doll .d-head { top: .9rem; width: 4.4rem; z-index: 2; }
+.doll .d-head svg { width: 100%; height: auto; display: block; }
+.doll .d-hat { top: .2rem; font-size: 2.1rem; z-index: 3; }
+.doll .d-hand { top: 6.6rem; left: 80%; font-size: 2rem; z-index: 3; }
+.doll .d-feet { bottom: .3rem; font-size: 1.7rem; z-index: 2; }
+.slots { display: grid; gap: 8px; }
+.slot-row { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.slot-row > span { font-size: .75rem; color: var(--muted); width: 2.8rem; }
+.slot-btn { font-size: 1.4rem; line-height: 1; width: 2.6rem; height: 2.6rem; border-radius: 10px; border: 2px solid var(--key-edge); background: var(--key); color: var(--muted); cursor: pointer; padding: 0; }
+.slot-btn[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr)); gap: 6px; }
+.bdg { border: 2px solid var(--gold); background: var(--gold-soft); border-radius: 10px; padding: 6px; text-align: center; font-size: .72rem; color: var(--muted); }
+.bdg .e { display: block; font-size: 1.5rem; line-height: 1.3; color: var(--ink); font-family: var(--display); font-weight: 800; }
+.bdg b { display: block; color: var(--ink); font-size: .8rem; }
+.bdg.locked { border: 2px dashed var(--key-edge); background: none; }
+.bdg.locked .e { filter: grayscale(1); opacity: .35; }
+.mosaics { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 12px; }
+.mosaic { display: grid; gap: 1px; }
+.mosaic i { aspect-ratio: 1; border-radius: 2px; background: var(--off); }
+.mosaic i.none { background: none; }
+.mosaic-cap { font-size: .75rem; color: var(--muted); margin-top: 4px; }
+
+/* play modes */
+.modes { display: flex; gap: 6px; flex-wrap: wrap; }
+.modebar { position: relative; height: 2.6rem; border-radius: 12px; overflow: hidden; background: linear-gradient(90deg, var(--water-top), var(--water-bot)); }
+.modebar .mover, .modebar .goal { position: absolute; top: 50%; font-size: 1.7rem; line-height: 1; transform: translate(0, -50%); transition: left .6s cubic-bezier(.3,1.4,.5,1); }
+.modebar .goal { right: 6px; }
+.modebar .clock { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding-inline: 12px;
+  font: 800 1.2rem var(--display); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); font-variant-numeric: tabular-nums; }
+.modebar .left { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(255, 255, 255, .28); }
+.card.rainbow { box-shadow: 0 0 0 3px #ff5d8f, 0 0 0 6px #ffc93c, 0 0 0 9px #29c27f, 0 0 0 12px #4d7cfe, 0 12px 30px -10px #a66cff; }
+.badge.rainbow { color: #fff; background: linear-gradient(90deg, #ff5d8f, #ffb02e, #29c27f, #4d7cfe, #a66cff); }
+.grid .cell.locked { background: var(--off); border: 1px solid transparent; }
+@media (prefers-reduced-motion: reduce) { .modebar .mover { transition: none; } }
+
+/* ---------- theme ---------- */
+/* Princess theme: pink and lavender palette, a castle room for the tank, gems instead of pearls. */
+:root {
+  --bg: #fbf0f6; --muted: #6e5a72; --card: #fffafc; --rule: #c45ab3; --line: #f0d3e6;
+  --accent: #b5338a; --key-edge: #ecd0e2; --off: #f1e3ec; --gold-soft: #fff0d6;
+  --water-top: #fde2f1; --water-bot: #d8b8f0; --sand: #e58fbf; --pearl: #ff6fb5;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1b1420; --muted: #b9a5bd; --card: #271d2c; --rule: #e07acb; --line: #43304a;
+  --accent: #f28ccf; --key: #2c2131; --key-edge: #4a3651; --off: #2a2030; --gold-soft: #3a3016;
+  --water-top: #4a2c5e; --water-bot: #24153a; --sand: #7a3a64; --pearl: #ff8cc6; } }
+:root[data-theme="dark"] {
+  --bg: #1b1420; --muted: #b9a5bd; --card: #271d2c; --rule: #e07acb; --line: #43304a;
+  --accent: #f28ccf; --key: #2c2131; --key-edge: #4a3651; --off: #2a2030; --gold-soft: #3a3016;
+  --water-top: #4a2c5e; --water-bot: #24153a; --sand: #7a3a64; --pearl: #ff8cc6; }
+
+/* the tank floor becomes a carpet, bubbles become drifting sparkles */
+.tank::after { height: 12px; border-radius: 0; }
+.bubble { border: 0; background: #fff; box-shadow: 0 0 6px 2px rgba(255, 255, 255, .8);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); width: 9px; height: 9px; }
+/* gems: a faceted diamond shape */
+.pearl-icon, .pearl-fly { border-radius: 0; clip-path: polygon(50% 0, 100% 38%, 50% 100%, 0 38%);
+  background: linear-gradient(135deg, #fff 0 18%, var(--pearl) 45%, #c2307e); }
+.pearl-fly { box-shadow: none; }
+.tiara { width: 1.15em; height: 1.15em; vertical-align: -0.15em; }
+.big-icon svg.tiara { width: 96px; height: 96px; }
+/* drawn dress-up clothes: sized like an emoji, a little taller than the tiara */
+.outfit { width: 1.3em; height: 1.3em; vertical-align: -0.25em; }
+.big-icon svg.outfit { width: 112px; height: 112px; transform-origin: 50% 20%; animation: swish 1.6s ease-in-out .8s infinite alternate; }
+@keyframes swish { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+@media (prefers-reduced-motion: reduce) { .big-icon svg.outfit { animation: none; } }
+</style>
+</head>
+<body>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <header>
+    <h1>Princess Facts</h1>
+    <div class="hdr-right">
+      <div class="ops" id="ops" role="group" aria-label="Which facts to practice" style="display:flex;gap:6px"></div>
+      <button class="mute flash-btn" id="flash" aria-pressed="false" aria-label="Flash mode" title="Flash mode: answers are checked as soon as you type them" hidden></button>
+      <button class="mute" id="mute" aria-label="Sound on" title="Sound">🔊</button>
+    </div>
+  </header>
+
+  <div class="rooms" id="rooms" role="group" aria-label="Rooms" hidden></div>
+  <div class="tank" id="tank"></div>
+  <div class="meter-row">
+    <span><span class="pearl-icon"></span><span id="pearl-name"></span></span>
+    <div class="meter" id="pearl-meter"><i id="pearl-fill"></i></div>
+    <span id="pearl-count"><b>0</b> / 10</span>
+  </div>
+  <div class="drawers" id="drawers"></div>
+  <div class="drawer" id="drawer" hidden></div>
+
+  <div class="shelf" id="shelf" hidden></div>
+
+  <div class="modes" id="modes" hidden></div>
+  <div class="modebar" id="modebar" hidden></div>
+
+  <section class="card" id="card" aria-live="polite">
+    <span class="tag" id="tag">Addition</span>
+    <span class="badge" id="badge" hidden></span>
+    <div class="problem"><span id="q">7 + 5</span><span id="eq">=</span><span class="answer empty" id="ans">?</span><span id="q2" hidden></span></div>
+    <div class="feedback" id="fb"></div>
+    <span class="combo" id="combo"></span>
+    <div class="cheer" id="cheer"></div>
+  </section>
+
+  <div class="pad" id="pad">
+    <button class="key" id="k7">7</button><button class="key" id="k8">8</button><button class="key" id="k9">9</button>
+    <button class="key" id="k4">4</button><button class="key" id="k5">5</button><button class="key" id="k6">6</button>
+    <button class="key" id="k1">1</button><button class="key" id="k2">2</button><button class="key" id="k3">3</button>
+    <button class="key small" id="kdel" aria-label="Erase">⌫</button><button class="key" id="k0">0</button><button class="key go" id="kgo" aria-label="Check">✓</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <h2>Practice map</h2>
+  <p class="note">New cards join a few at a time. A card counts as known after two fast answers in a row, and a new one joins whenever fewer than four cards are still being learned. Green squares come up less often, red ones more. A dashed outline marks a tricky fact, and a star marks one that went from tricky to learned. Grey squares are locked: they open once the cards before them are known.</p>
+  <div class="legend">
+    <span><i style="background:var(--off)"></i>Locked</span>
+    <span><i style="border:1px dotted var(--key-edge)"></i>Not yet</span>
+    <span><i style="background:var(--card);border:1px solid var(--key-edge)"></i>Learning</span>
+    <span><i style="background:var(--heat0)"></i>Fast</span>
+    <span><i style="background:var(--heat1)"></i>Slow</span>
+    <span><i style="background:var(--heat2)"></i>Missed</span>
+    <span><i style="background:var(--heat3)"></i>Missed a lot</span>
+    <span><i style="border:1.5px dashed var(--bad)"></i>Tricky</span>
+    <span><i style="color:var(--gold);border:1px solid var(--key-edge)">★</i>Learned</span>
+  </div>
+  <div class="maps" id="maps"></div>
+
+  <div class="foot">
+    <button class="text-btn" id="reset">Reset progress</button>
+    <span id="confirm" hidden>
+      <button class="text-btn danger" id="reset-yes">Erase all progress</button>
+      <button class="text-btn" id="reset-no">Keep it</button>
+    </span>
+  </div>
+</div>
+
+<div class="big" id="big" hidden>
+  <div class="big-card">
+    <div class="big-icon" id="big-icon"></div>
+    <div class="big-title" id="big-title"></div>
+    <div class="big-fact" id="big-fact"></div>
+    <div class="big-sub" id="big-sub"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const GRACE_MS = 1000;
+  const IDLE_MS = 30000;  // a correct answer slower than this means the card sat unattended, so it isn't counted as slow
+  const W_MIN = 0.15, W_MAX = 12;
+  const FAST_MULT = 0.6, SLOW_MULT = 1.3, WRONG_MULT = 2.2;
+  const HARD_MIN_WRONG = 2, HARD_RATE = 0.4;
+  const KNOWN_RUN = 2, LEARN_RUN = 3;
+  const LEARNING_SIZE = 4, LEARNING_SHARE = 0.75;
+  const GOLDEN_CHANCE = 1 / 8, GOLDEN_PEARLS = 3;
+  const DAILY_GOAL = 20;
+  const INT_HOLD_MS = 2000, INT_BONUS = 50;  // hold 🔊 this long to reveal integrals; a bonus answer earns at least this many
+  const FLASH_TANK = 12;  // flash mode (answers checked without ✓) is earned once the collection holds this many items
+  const SHOP_TANK = 6, RUN_TANK = 18, CLOCK_TANK = 24;  // the shop, the run and beat the clock open at these collection sizes
+  const RAINBOW_CHANCE = 1 / 60;  // a known card can be a rainbow card; answering it fast opens a gift right away
+  const SHINY_AT = 3, DUP_PEARLS = 5;  // the third copy of a friend makes it shiny; copies after that pay back currency
+  const PITY_GIFTS = 8;  // a gift after this many without a super rare or better is at least super rare
+  const LEGEND_DAYS = 7;  // every this many days of goal streak brings a gift that is always legendary
+  const BADGE_PEARLS = 5, RUN_STEPS = 10, RUN_REPEAT_PEARLS = 5, CLOCK_MS = 60000, CLOCK_BEST_PEARLS = 5;
+  const SEASON_SHARE = 0.25;  // the share of gifts that bring an in-season visitor while any are still missing
+  const STAR_PATH = '<path d="M12 1.8l3.1 6.3 7 1-5 4.9 1.2 6.9L12 17.6l-6.3 3.3 1.2-6.9-5-4.9 7-1z"/>';
+  const STAR = `<svg viewBox="0 0 24 24" aria-hidden="true">${STAR_PATH}</svg>`;
+  const BOLT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 1.5 4 13.6h6.6L9.2 22.5 20 9.6h-6.9z"/></svg>';
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- theme (THEME/theme.js) ---------- */
+  // No tiara emoji exists, so the tiara is drawn inline. It sizes with the surrounding font like an emoji.
+  const TIARA = `<svg class="tiara" viewBox="0 0 64 48" aria-hidden="true"><path d="M4 42 Q32 30 60 42 L60 46 Q32 34 4 46Z" fill="#e3a400"/><path d="M6 41 L12 22 L20 34 L32 6 L44 34 L52 22 L58 41 Q32 29 6 41Z" fill="#ffc93c" stroke="#e3a400" stroke-width="2" stroke-linejoin="round"/><circle cx="32" cy="22" r="5" fill="#ff5d8f"/><circle cx="16" cy="32" r="3" fill="#8fd3f0"/><circle cx="48" cy="32" r="3" fill="#8fd3f0"/><circle cx="32" cy="6" r="3" fill="#fff"/><circle cx="12" cy="22" r="2.5" fill="#fff"/><circle cx="52" cy="22" r="2.5" fill="#fff"/></svg>`;
+  // Dress-up clothes have no emoji either, so they are drawn the same way. Flat fills only: a gradient's id
+  // would repeat in every copy on the page.
+  const BALL_GOWN = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><path d="M24 30 C18 40 8 48 3 58 Q8 62 13 59 Q18 63 23 60 Q28 64 32 61 Q36 64 41 60 Q46 63 51 59 Q56 62 61 58 C56 48 46 40 40 30Z" fill="#ff7eb6" stroke="#c93d80" stroke-width="1.5" stroke-linejoin="round"/><path d="M29 31 C27 41 23 51 19 60 Q25 63 32 61 Q39 63 45 60 C41 51 37 41 35 31Z" fill="#ffd0e5"/><path d="M20 59 Q23 56 26 60 Q29 57 32 60 Q35 57 38 60 Q41 56 44 59" fill="none" stroke="#ffc93c" stroke-width="2" stroke-linecap="round"/><path d="M25 34 C20 44 14 50 10 56 M39 34 C44 44 50 50 54 56" fill="none" stroke="#c93d80" stroke-width="1.2" stroke-linecap="round" opacity=".6"/><ellipse cx="21.5" cy="23" rx="5" ry="3.6" fill="#ffb3d4" stroke="#c93d80" stroke-width="1.2"/><ellipse cx="42.5" cy="23" rx="5" ry="3.6" fill="#ffb3d4" stroke="#c93d80" stroke-width="1.2"/><path d="M24 18 Q28 15 32 19 Q36 15 40 18 L40 31 L24 31Z" fill="#e8458f" stroke="#b02a6c" stroke-width="1.2" stroke-linejoin="round"/><rect x="22.5" y="28" width="19" height="4" rx="2" fill="#ffc93c" stroke="#e3a400" stroke-width="1"/><circle cx="32" cy="30" r="2.6" fill="#8fd3f0" stroke="#fff" stroke-width="1"/><g fill="#fff"><circle cx="25" cy="46" r="1.3"/><circle cx="39" cy="44" r="1.3"/><circle cx="32" cy="52" r="1.3"/><circle cx="13" cy="55" r="1"/><circle cx="51" cy="55" r="1"/><circle cx="29" cy="38" r="1"/><circle cx="36" cy="37" r="1"/></g></svg>`;
+  const TUTU = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><path d="M27 8 L28 16 M37 8 L36 16" stroke="#7a5ae0" stroke-width="2" stroke-linecap="round"/><path d="M22 34 L8 46 Q12 50 16 47 Q19 52 24 48 Q28 53 32 49 Q36 53 40 48 Q45 52 48 47 Q52 50 56 46 L42 34Z" fill="#e3d8ff" stroke="#9b7bff" stroke-width="1.3" stroke-linejoin="round"/><path d="M23 32 L11 42 Q15 46 19 43 Q22 47 26 44 Q29 48 32 45 Q35 48 38 44 Q42 47 45 43 Q49 46 53 42 L41 32Z" fill="#b9a2ff" stroke="#7a5ae0" stroke-width="1.3" stroke-linejoin="round"/><path d="M26 14 Q32 19 38 14 L41 33 L23 33Z" fill="#9b7bff" stroke="#6a48d4" stroke-width="1.2" stroke-linejoin="round"/><path d="M32 30 L25 26 L25 35Z M32 30 L39 26 L39 35Z" fill="#ff5d8f" stroke="#d6336c" stroke-width="1" stroke-linejoin="round"/><circle cx="32" cy="30" r="2.2" fill="#ff8fb1" stroke="#d6336c" stroke-width="1"/><g fill="#fff"><circle cx="18" cy="44" r="1.1"/><circle cx="27" cy="41" r="1.1"/><circle cx="37" cy="41" r="1.1"/><circle cx="46" cy="44" r="1.1"/><circle cx="32" cy="22" r="1.1"/><circle cx="29" cy="18" r=".8"/><circle cx="35" cy="18" r=".8"/></g></svg>`;
+  const STARLIGHT_GOWN = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><path d="M25 28 C21 38 14 46 10 52 Q32 57 54 52 C50 46 43 38 39 28Z" fill="#9ad8ff" stroke="#3a8fd0" stroke-width="1.3" stroke-linejoin="round"/><path d="M12 50 C9 55 6 58 3 61 Q32 66 61 61 C58 58 55 55 52 50 Q32 56 12 50Z" fill="#6fc3ff" stroke="#3a8fd0" stroke-width="1.3" stroke-linejoin="round"/><path d="M19 42 Q32 47 45 42" fill="none" stroke="#e6f6ff" stroke-width="2" stroke-linecap="round"/><path d="M8 56 Q32 62 56 56" fill="none" stroke="#e6f6ff" stroke-width="2" stroke-linecap="round"/><path d="M23 18 Q27 15 32 19 Q37 15 41 18 L40 30 L24 30Z" fill="#cdeeff" stroke="#3a8fd0" stroke-width="1.2" stroke-linejoin="round"/><ellipse cx="21.5" cy="21" rx="4.5" ry="3.4" fill="#e6f6ff" fill-opacity=".9" stroke="#3a8fd0" stroke-width="1"/><ellipse cx="42.5" cy="21" rx="4.5" ry="3.4" fill="#e6f6ff" fill-opacity=".9" stroke="#3a8fd0" stroke-width="1"/><rect x="23" y="27.5" width="18" height="3.5" rx="1.75" fill="#e9eef5" stroke="#9fb3c8" stroke-width="1"/><g fill="#fff" stroke="#ffd84d" stroke-width=".6" stroke-linejoin="round"><path d="M32 33 l1.4 3 3.2.4-2.4 2.2.7 3.2-2.9-1.6-2.9 1.6.7-3.2-2.4-2.2 3.2-.4Z"/><path d="M20 50 l1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z"/><path d="M44 50 l1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z"/></g><g fill="#fff"><circle cx="26" cy="38" r="1"/><circle cx="38" cy="39" r="1"/><circle cx="32" cy="48" r="1.2"/><circle cx="12" cy="59" r="1"/><circle cx="52" cy="59" r="1"/><circle cx="32" cy="23" r="1.6" fill="#ffd84d"/><circle cx="18" cy="45" r="1"/><circle cx="46" cy="45" r="1"/><circle cx="24" cy="58" r="1"/><circle cx="40" cy="58" r="1"/></g></svg>`;
+  const CAPE = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 12 C22 13 17 24 12 58 Q22 62 32 59 Q42 62 52 58 C47 24 42 13 32 12Z" fill="#d12a4a" stroke="#8e1530" stroke-width="1.4" stroke-linejoin="round"/><path d="M32 16 C28 26 27 44 26 59 Q32 61 38 59 C37 44 36 26 32 16Z" fill="#ffc93c" stroke="#e3a400" stroke-width="1"/><path d="M13 56 Q22 61 32 58 Q42 61 51 56" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><ellipse cx="32" cy="15" rx="13" ry="5.5" fill="#fff" stroke="#c9c2cc" stroke-width="1"/><g fill="#3a2a35"><circle cx="23" cy="15" r="1"/><circle cx="32" cy="18" r="1"/><circle cx="41" cy="15" r="1"/><circle cx="19" cy="58" r="1"/><circle cx="32" cy="59.5" r="1"/><circle cx="45" cy="58" r="1"/></g><circle cx="32" cy="20" r="3" fill="#8fd3f0" stroke="#e3a400" stroke-width="1.5"/></svg>`;
+  const HENNIN = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><path d="M30 5 C38 14 48 22 60 26 C56 34 52 44 54 58 C46 46 42 36 40 30" fill="#e6d4ff" fill-opacity=".85" stroke="#a98be8" stroke-width="1.2" stroke-linejoin="round"/><path d="M30 4 L16 52 Q30 58 44 52Z" fill="#ff7eb6" stroke="#c93d80" stroke-width="1.5" stroke-linejoin="round"/><path d="M26 18 L35 21 M23 29 L38 34 M20 40 L41 46" stroke="#ffc93c" stroke-width="1.6" stroke-linecap="round"/><path d="M15 50 Q30 58 45 50 L46 55 Q30 63 14 55Z" fill="#ffc93c" stroke="#e3a400" stroke-width="1.2" stroke-linejoin="round"/><circle cx="30" cy="57" r="2.4" fill="#8fd3f0" stroke="#fff" stroke-width="1"/><circle cx="21" cy="54.5" r="1.4" fill="#fff"/><circle cx="39" cy="54.5" r="1.4" fill="#fff"/><circle cx="30" cy="4" r="2.6" fill="#fff" stroke="#c93d80" stroke-width="1"/></svg>`;
+  const WINGS = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><g stroke-linejoin="round" stroke-width="1.4"><path d="M31 30 C24 12 10 4 5 12 C1 20 12 30 31 32Z" fill="#b8ecff" fill-opacity=".85" stroke="#4fb3dc"/><path d="M33 30 C40 12 54 4 59 12 C63 20 52 30 33 32Z" fill="#b8ecff" fill-opacity=".85" stroke="#4fb3dc"/><path d="M31 33 C20 34 10 42 13 52 C16 59 28 50 31 36Z" fill="#ffc6e5" fill-opacity=".9" stroke="#e070ad"/><path d="M33 33 C44 34 54 42 51 52 C48 59 36 50 33 36Z" fill="#ffc6e5" fill-opacity=".9" stroke="#e070ad"/></g><path d="M29 29 C22 20 14 14 9 13 M35 29 C42 20 50 14 55 13 M30 35 C24 40 19 45 17 50 M34 35 C40 40 45 45 47 50" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".9"/><ellipse cx="32" cy="32" rx="2.4" ry="5" fill="#b98bff" stroke="#7a5ae0" stroke-width="1"/><g fill="#fff"><circle cx="14" cy="20" r="1.3"/><circle cx="50" cy="20" r="1.3"/><circle cx="20" cy="46" r="1.1"/><circle cx="44" cy="46" r="1.1"/></g></svg>`;
+  const drawn = body => `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true">${body}</svg>`;
+  const recolor = (s, map) => Object.entries(map).reduce((t, [from, to]) => t.split(from).join(to), s);
+  // Seasonal gowns are the ball gown in other colors.
+  const SNOW_GOWN = recolor(BALL_GOWN, { "#ff7eb6": "#cfeeff", "#c93d80": "#5aa9d6", "#ffd0e5": "#f4fbff", "#ffb3d4": "#e2f4ff", "#e8458f": "#8fd0f5", "#b02a6c": "#3a8fc0" });
+  const PUMPKIN_GOWN = recolor(BALL_GOWN, { "#ff7eb6": "#ff9a3c", "#c93d80": "#b8560a", "#ffd0e5": "#6b3fa0", "#ffb3d4": "#ffc27a", "#e8458f": "#7a4ab5", "#b02a6c": "#4a2a75" });
+  const CARRIAGE = drawn(`<path d="M32 18Q30 10 35 7" fill="none" stroke="#3f8f3a" stroke-width="3" stroke-linecap="round"/><path d="M35 9q7-3 9 3-6 2-9-3Z" fill="#5cb85c"/><ellipse cx="32" cy="34" rx="23" ry="17" fill="#ff9a3c" stroke="#d96b10" stroke-width="2"/><path d="M32 17v34M20 20q-6 14 0 28M44 20q6 14 0 28" fill="none" stroke="#d96b10" stroke-width="1.5"/><rect x="25" y="25" width="14" height="13" rx="6" fill="#bfe8ff" stroke="#e3a400" stroke-width="2.5"/><g fill="none" stroke="#e3a400" stroke-width="3"><circle cx="17" cy="52" r="8"/><circle cx="47" cy="52" r="8"/></g><path d="M17 44v16M9 52h16M47 44v16M39 52h16" stroke="#e3a400" stroke-width="1.5"/>`);
+  const THRONE = drawn(`<path d="M18 7 24 13 32 4 40 13 46 7V36H18Z" fill="#c93d80" stroke="#e3a400" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="21" r="4" fill="#8fd3f0" stroke="#fff" stroke-width="1.5"/><path d="M16 45 14 60M48 45 50 60" stroke="#e3a400" stroke-width="4" stroke-linecap="round"/><rect x="11" y="34" width="42" height="11" rx="4" fill="#ff7eb6" stroke="#e3a400" stroke-width="2"/><rect x="9" y="26" width="7" height="21" rx="2.5" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5"/><rect x="48" y="26" width="7" height="21" rx="2.5" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5"/>`);
+  const PEGASUS = drawn(`<path d="M15 34Q4 36 6 49" fill="none" stroke="#c9b3ff" stroke-width="5" stroke-linecap="round"/><path d="M20 40v16M26 42v15M38 42v15M44 40v16" stroke="#e8e2f5" stroke-width="4" stroke-linecap="round"/><path d="M18 57h4M24 58h4M36 58h4M42 57h4" stroke="#ffc93c" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="31" cy="37" rx="16" ry="9" fill="#fff" stroke="#b9a8de" stroke-width="1.5"/><path d="M40 33 47 14 56 13 60 19 50 22 47 37Z" fill="#fff" stroke="#b9a8de" stroke-width="1.5" stroke-linejoin="round"/><path d="M47 14Q42 21 41 31" fill="none" stroke="#c9b3ff" stroke-width="4" stroke-linecap="round"/><circle cx="53" cy="16" r="1.6" fill="#2a2a2a"/><path d="M31 33Q19 14 7 8 13 17 11 20 19 22 17 26 25 28 31 33Z" fill="#f4efff" stroke="#b9a8de" stroke-width="1.5" stroke-linejoin="round"/>`);
+  // The dress-up doll's head. Clothes are layered around it.
+  const DOLL = `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 30Q12 6 32 6 52 6 50 30 52 46 46 52H18Q12 46 14 30Z" fill="#7a4a2a"/><rect x="28" y="40" width="8" height="16" fill="#f1c39c"/><ellipse cx="32" cy="30" rx="13" ry="15" fill="#f8d4b4"/><path d="M19 27Q21 12 32 12 43 12 45 27 40 18 32 18 24 18 19 27Z" fill="#7a4a2a"/><circle cx="27" cy="30" r="2" fill="#3a2a2a"/><circle cx="37" cy="30" r="2" fill="#3a2a2a"/><circle cx="23.5" cy="35" r="2.6" fill="#ff8fb1" opacity=".5"/><circle cx="40.5" cy="35" r="2.6" fill="#ff8fb1" opacity=".5"/><path d="M28 37Q32 40.5 36 37" fill="none" stroke="#c0505a" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+  const THEME = {
+    home: "Your castle",
+    currency: "Gems",
+    collection: "Royal treasures",
+    gift: { icon: "🎁", title: "A royal gift!", fresh: "Something new for your castle!", again: "Another one for your castle!" },
+    fastWords: ["Royally done!", "Sparkle power!", "Magical!", "Crown-worthy!", "Dazzling!", "Fit for a queen!"],
+    starter: "gown",
+    // Each room is its own collection; filling one opens the next. The first room's items keep their original keys.
+    // r is the rarity tier (0 common to 3 legendary); floor items walk along the bottom. Keys must be unique across rooms.
+    // `colors` paints the room (top, bottom, floor); the first room uses the page palette.
+    rooms: [
+      { name: "Castle", decor: `<span class="weed" style="left:5%">🌷</span><span class="weed" style="left:80%;animation-delay:-2s">🌸</span>`,
+        creatures: {
+          gown: { e: "👗", name: "Sundress", r: 0 }, kimono: { e: "👘", name: "Silk robe", r: 0 },
+          ribbon: { e: "🎀", name: "Ribbon", r: 0 }, rose: { e: "🌹", name: "Rose", r: 0 },
+          purse: { e: "👛", name: "Purse", r: 0 }, cupcake: { e: "🧁", name: "Royal cupcake", r: 0 },
+          tutu: { e: TUTU, name: "Tutu dress", r: 0 },
+          slipper: { e: "👠", name: "Glass slipper", r: 0, floor: 1 },
+          tiara: { e: TIARA, name: "Tiara", r: 1 }, ring: { e: "💍", name: "Ring", r: 1 },
+          swan: { e: "🦢", name: "Swan", r: 1 }, butterfly: { e: "🦋", name: "Butterfly", r: 1 },
+          frog: { e: "🐸", name: "Frog prince", r: 1, floor: 1 },
+          cape: { e: CAPE, name: "Royal cape", r: 1 }, hennin: { e: HENNIN, name: "Princess hat", r: 1 },
+          wings: { e: WINGS, name: "Fairy wings", r: 1 },
+          crown: { e: "👑", name: "Crown", r: 2 }, jewel: { e: "💎", name: "Royal jewel", r: 2 },
+          fairy: { e: "🧚", name: "Fairy godmother", r: 2 }, dragon: { e: "🐉", name: "Friendly dragon", r: 2 },
+          unicorn: { e: "🦄", name: "Unicorn", r: 2, floor: 1 },
+          ballgown: { e: BALL_GOWN, name: "Ball gown", r: 2 },
+          princess: { e: "👸", name: "Princess", r: 3 },
+          starlight: { e: STARLIGHT_GOWN, name: "Starlight gown", r: 3 },
+        } },
+      { name: "Garden", colors: ["#d9f5c8", "#8fd18a", "#7cb85a"],
+        decor: `<span class="weed" style="left:4%">🌷</span><span class="weed" style="left:86%;animation-delay:-1s">🌼</span>`,
+        creatures: {
+          bunny: { e: "🐇", name: "Bunny", r: 0, floor: 1 }, hedgehog: { e: "🦔", name: "Hedgehog", r: 0, floor: 1 },
+          bee: { e: "🐝", name: "Bumblebee", r: 0 }, sunflower: { e: "🌻", name: "Sunflower", r: 0, floor: 1 },
+          ladybug: { e: "🐞", name: "Ladybug", r: 0 }, strawberry: { e: "🍓", name: "Strawberry", r: 0 },
+          peacock: { e: "🦚", name: "Peacock", r: 1, floor: 1 }, dove: { e: "🕊️", name: "Dove", r: 1 },
+          teapot: { e: "🫖", name: "Garden tea set", r: 1, floor: 1 },
+          flamingo: { e: "🦩", name: "Flamingo", r: 2, floor: 1 }, rainbow: { e: "🌈", name: "Rainbow", r: 2 },
+          wand: { e: "🪄", name: "Magic wand", r: 3 },
+        } },
+      { name: "Stables", colors: ["#ffe9c2", "#e8b878", "#b8864a"],
+        decor: `<span class="weed" style="left:6%">🌾</span><span class="weed" style="left:82%;animation-delay:-2s">🌾</span>`,
+        creatures: {
+          kitten: { e: "🐈", name: "Kitten", r: 0, floor: 1 }, puppy: { e: "🐕", name: "Puppy", r: 0, floor: 1 },
+          lamb: { e: "🐑", name: "Lamb", r: 0, floor: 1 }, rooster: { e: "🐓", name: "Rooster", r: 0, floor: 1 },
+          carrot: { e: "🥕", name: "Carrot", r: 0 },
+          pony: { e: "🐴", name: "Pony", r: 1 }, deer: { e: "🦌", name: "Deer", r: 1, floor: 1 }, duck: { e: "🦆", name: "Duck", r: 1, floor: 1 },
+          horse: { e: "🐎", name: "Royal horse", r: 2, floor: 1 }, carriage: { e: CARRIAGE, name: "Pumpkin carriage", r: 2, floor: 1 },
+          pegasus: { e: PEGASUS, name: "Pegasus", r: 3 },
+        } },
+      { name: "Dragon tower", colors: ["#5a4a8a", "#241a40", "#4a3a5a"],
+        decor: `<span class="weed" style="left:8%">🕯️</span><span class="weed" style="left:84%;animation-delay:-1s">🕯️</span>`,
+        creatures: {
+          egg: { e: "🥚", name: "Dragon egg", r: 0, floor: 1 }, scroll: { e: "📜", name: "Magic scroll", r: 0 },
+          key: { e: "🗝️", name: "Golden key", r: 0 }, crystal: { e: "🔮", name: "Crystal ball", r: 1, floor: 1 },
+          owl: { e: "🦉", name: "Owl", r: 1 }, mirror: { e: "🪞", name: "Magic mirror", r: 1, floor: 1 },
+          throne: { e: THRONE, name: "Throne", r: 2, floor: 1 }, babydragon: { e: "🐲", name: "Baby dragon", r: 2 },
+          elf: { e: "🧝‍♀️", name: "Elf", r: 2 },
+          queen: { e: "🫅", name: "The queen", r: 3 },
+        } },
+    ],
+    // Visitors only come in their months (1 = January). They live in the first room.
+    seasonal: {
+      s_pumpkin: { e: "🎃", name: "Jack-o'-lantern", r: 0, floor: 1, months: [10] }, s_ghost: { e: "👻", name: "Friendly ghost", r: 1, months: [10] },
+      s_pumpkingown: { e: PUMPKIN_GOWN, name: "Pumpkin gown", r: 2, months: [10] },
+      s_snowflake: { e: "❄️", name: "Snowflake", r: 0, months: [12, 1] }, s_snowman: { e: "⛄", name: "Snowman", r: 1, floor: 1, months: [12, 1] },
+      s_snowgown: { e: SNOW_GOWN, name: "Snow gown", r: 2, months: [12, 1] },
+      s_letter: { e: "💌", name: "Love letter", r: 0, months: [2] }, s_heart: { e: "💖", name: "Sparkly heart", r: 1, months: [2] },
+      s_chick: { e: "🐣", name: "Spring chick", r: 0, floor: 1, months: [4] },
+    },
+    // Decorations from the shop, placed on the floor of any room.
+    shop: {
+      d_plant: { e: "🪴", name: "Potted plant" }, d_teddy: { e: "🧸", name: "Teddy bear" }, d_vase: { e: "🏺", name: "Vase" },
+      d_fountain: { e: "⛲", name: "Fountain" }, d_carousel: { e: "🎠", name: "Carousel horse" }, d_painting: { e: "🖼️", name: "Painting" },
+      d_piano: { e: "🎹", name: "Piano" }, d_sofa: { e: "🛋️", name: "Sofa" },
+    },
+    run: { name: "Royal ball run", icon: "🏰", mover: CARRIAGE, goal: "🏰", badge: "Belle of the ball",
+      intro: "Each fast answer moves the carriage closer. Ten fast answers get you to the ball!", done: "You made it to the ball!" },
+    // Dress-up: each slot lists the items that can go there; only ones you own show up.
+    dressUp: { doll: DOLL, slots: [
+      { key: "dress", name: "Dress", items: ["gown", "kimono", "tutu", "ballgown", "starlight", "s_pumpkingown", "s_snowgown"] },
+      { key: "head", name: "Head", items: ["tiara", "crown", "hennin", "ribbon"] },
+      { key: "back", name: "Back", items: ["wings", "cape"] },
+      { key: "hand", name: "Hand", items: ["wand", "rose", "purse", "butterfly", "cupcake", "sunflower", "jewel"] },
+      { key: "feet", name: "Feet", items: ["slipper"] },
+    ] },
+    pictures: ["castle", "heart", "rainbow", "star", "sun", "fish", "heart"],
+  };
+  // Every collectible in one table, each tagged with its room. Seasonal visitors live in the first room.
+  const ROOMS = THEME.rooms.map((rm, i) => ({ ...rm, i, keys: Object.keys(rm.creatures) }));
+  const CREATURES = {};
+  ROOMS.forEach(rm => rm.keys.forEach(k => CREATURES[k] = { ...rm.creatures[k], room: rm.i }));
+  const SEASONAL = THEME.seasonal || {}, SHOP_ITEMS = THEME.shop || {};
+  for (const k in SEASONAL) CREATURES[k] = { ...SEASONAL[k], room: 0, season: SEASONAL[k].months };
+  const RARITY = [
+    { name: "Common", w: 60, color: "var(--r0)" }, { name: "Rare", w: 28, color: "var(--r1)" },
+    { name: "Super rare", w: 10, color: "var(--r2)" }, { name: "Legendary", w: 2, color: "var(--r3)" },
+  ];
+
+  /* ---------- the facts ----------
+     Each family builds one card per (a, b) pair in rows × cols that passes `include`.
+     Families are defined per variant in variants/<name>/config.js, which sets FACTS and STORE.
+     A card's id is `${key}:${a}:${b}`, and saved progress is stored under that id, so:
+       - Add or remove pairs freely (widen rows/cols, change `include`). Cards that stay keep their
+         history; cards that leave are hidden but remembered, and come back with it if re-added.
+       - Add a family by adding an entry. It starts with no history and is on unless `on: false`.
+       - Never change what `make` shows for an existing key. To redefine a family, give it a new key. */
+  const range = (lo, hi) => Array.from({ length: hi - lo + 1 }, (_, i) => lo + i);
+  function addScore(a, b) {
+    if (a === 0 || b === 0) return 0;
+    if (a === 1 || b === 1) return 1;
+    if (a === 2 || b === 2) return 2;
+    if (a === 10 || b === 10) return 2.5;
+    if (a === b) return 3;
+    if (a + b <= 10) return 4;
+    if (Math.abs(a - b) === 1) return 5;
+    return 6;
+  }
+  const MUL_RANK = { 0: 0, 1: 1, 10: 2, 2: 3, 5: 4, 3: 5, 4: 6, 9: 7, 11: 8, 6: 9, 8: 10, 7: 11, 12: 12 };
+  const mulScore = (a, b) => Math.min(MUL_RANK[a] ?? 20, MUL_RANK[b] ?? 20);
+  /* ---------- this variant's facts and save slot (VARIANT/config.js) ---------- */
+  // Save slot. Must differ from other variants hosted on the same site.
+  const STORE = "flash-facts-flash1-v1";
+  // Families and stages with `after` stay hidden until every card they name has been known at least once
+  // ("add" = the whole family, "add.0" = its first stage). Each one opens with a "New cards" moment.
+  const FACTS = {
+    add: { name: "Addition", sym: "+", limit: 4000, rows: range(0, 10), cols: range(0, 10), how: "row + column",
+      make: (a, b) => ({ text: `${a} + ${b}`, ans: a + b }), score: addScore,
+      stages: [{ include: (a, b) => a <= 8 && b <= 8 }, { after: ["add.0"] }] },  // then 9s, 10s and teen numbers
+    sub: { name: "Subtraction", sym: "−", limit: 4500, rows: range(0, 8), cols: range(0, 8), how: "(row + column) − column",
+      make: (a, b) => ({ text: `${a + b} − ${b}`, ans: a }), score: addScore, after: ["add"] },
+    miss: { name: "Missing number", sym: "?", limit: 6000, rows: range(0, 8), cols: range(0, 8), how: "row + ? = row + column",
+      make: (a, b) => ({ text: `${a} + ? = ${a + b}`, ans: b, parts: [`${a} +`, `= ${a + b}`] }), score: addScore, after: ["sub"] },
+    ten: { name: "Make 10", sym: "10", limit: 5000, rows: range(0, 10), cols: [10], how: "row + ? = 10",
+      make: (a) => ({ text: `${a} + ? = 10`, ans: 10 - a, parts: [`${a} +`, "= 10"] }), score: (a) => addScore(a, 10 - a), after: ["add.0"] },
+    mul: { name: "Multiplication", sym: "×", limit: 5000, rows: range(0, 10), cols: [0, 1, 2, 5, 10], how: "row × column",
+      make: (a, b) => ({ text: `${a} × ${b}`, ans: a * b }), score: mulScore,
+      stages: [{ include: (a, b) => a <= 8 && b <= 2, after: ["add"] }, { include: (a, b) => b !== 5, after: ["mul.0"] }, { after: ["mul.1"] }] },
+  };
+  const OPS = Object.keys(FACTS);
+
+  /* ---------- deck, stages and teaching order ----------
+     A family's cards are split into stages (`stages` in the config, or one stage). A card belongs to the first stage
+     whose `include` it passes. A stage with `after` is locked until every card it names has been known at least once:
+     "add" names the whole family, "add.0" its first stage. Families whose first stage is locked are hidden. */
+  const deck = [], ORDER = {}, STAGES = {};
+  for (const op of OPS) {
+    const f = FACTS[op], cards = [], stages = f.stages || [{ after: f.after }];
+    stages.forEach((s, i) => STAGES[`${op}.${i}`] = { id: `${op}.${i}`, op, i, after: s.after || [], cards: [] });
+    for (const a of f.rows) for (const b of f.cols) {
+      if (f.include && !f.include(a, b)) continue;
+      const si = stages.findIndex(s => !s.include || s.include(a, b));
+      if (si < 0) continue;
+      const card = { id: `${op}:${a}:${b}`, op, a, b, stage: `${op}.${si}`, si, ...f.make(a, b) };
+      cards.push(card); STAGES[card.stage].cards.push(card.id);
+    }
+    const score = c => f.score ? f.score(c.a, c.b) : 0;
+    ORDER[op] = [...cards].sort((x, y) => x.si - y.si || score(x) - score(y) || (x.a + x.b) - (y.a + y.b) || x.a - y.a).map(c => c.id);
+    deck.push(...cards);
+  }
+  const byId = Object.fromEntries(deck.map(c => [c.id, c]));
+  // The whole fact, with the answer in place: "7 + 5 = 12", or "3 + 4 = 7" for a missing-number card.
+  const factText = c => c.parts ? `${c.parts[0]} ${c.ans} ${c.parts[1]}` : `${c.text} = ${c.ans}`;
+  const MAX_DIGITS = Math.max(...deck.map(c => String(c.ans).length));
+
+  /* ---------- saved state ---------- */
+  const today = () => new Date().toLocaleDateString("en-CA");
+  const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return d.toLocaleDateString("en-CA"); };
+  let state = { cards: {}, ops: {}, learned: [] };
+  try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && s.cards) state = Object.assign(state, s); } catch (e) {}
+  // Families missing from the save get their default; saved choices for removed families are kept but ignored.
+  state.ops = Object.assign(Object.fromEntries(OPS.map(op => [op, FACTS[op].on !== false])), state.ops);
+  if (!OPS.some(op => state.ops[op])) OPS.forEach(op => state.ops[op] = true);
+  if (!Array.isArray(state.learned)) state.learned = [];
+  if (!state.day || state.day.date !== today()) state.day = { date: today(), fast: 0, slow: 0, wrong: 0, times: [], goalDone: false };
+  if (typeof state.rr !== "number") state.rr = 0;
+  if (!Array.isArray(state.tank)) state.tank = [THEME.starter];
+  if (typeof state.pearls !== "number") state.pearls = 0;
+  if (typeof state.opened !== "number") state.opened = 0;
+  if (!state.days) state.days = { last: null, count: 0 };
+  if (!state.flashEarned) state.flash = false;
+  // Fields for unlocks, rooms, the shop, pets, badges and play modes. `room` is the room on show.
+  const blank = () => ({ unlocked: [], earned: {}, pets: {}, decor: [], placed: {}, outfit: { dress: THEME.starter }, badges: [],
+    dry: 0, bestRow: 0, best: {}, runs: 0, runDay: null, shop: null, room: 0, bought: 0, rainbows: 0 });
+  for (const [k, v] of Object.entries(blank())) if (state[k] === undefined) state[k] = v;
+  const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} };
+  const rec = id => state.cards[id] || (state.cards[id] = { w: 1, fast: 0, slow: 0, wrong: 0, run: 0 });
+  const meetsHard = r => r.wrong >= HARD_MIN_WRONG && r.wrong / (r.fast + r.slow + r.wrong) >= HARD_RATE;
+  for (const id in state.cards) { const r = state.cards[id]; if (r.hard === undefined && meetsHard(r)) r.hard = true; }
+  if (!Array.isArray(state.active)) state.active = Object.keys(state.cards).filter(id => byId[id] && (state.cards[id].run || 0) >= KNOWN_RUN);
+  const pearlGoal = () => Math.min(20, 8 + 2 * state.opened);
+  const streakDays = () => (state.days.last === today() || state.days.last === yesterday()) ? state.days.count : 0;
+
+  const isKnown = id => { const r = state.cards[id]; return !!r && !r.isNew && (r.run || 0) >= (r.hard ? LEARN_RUN : KNOWN_RUN); };
+  // `got` remembers that a card has been known at least once. Unlocks, badges and hidden pictures go by it,
+  // so one slow answer later doesn't take them away.
+  for (const id in state.cards) if (isKnown(id) || state.learned.includes(id)) state.cards[id].got = true;
+  const got = id => !!state.cards[id]?.got;
+  const refCards = ref => ref.includes(".") ? (STAGES[ref]?.cards || []) : (ORDER[ref] || []);
+  const refDone = ref => refCards(ref).every(got);
+  const stageOpen = sid => !STAGES[sid].after.length || state.unlocked.includes(sid);
+  const cardOpen = id => stageOpen(byId[id].stage);
+  const familyOpen = op => stageOpen(`${op}.0`);
+  const shownOps = () => OPS.filter(familyOpen);
+  // Cards already in play keep their stage open, so a save from before stages existed loses nothing.
+  for (const id of state.active) if (byId[id] && !stageOpen(byId[id].stage)) state.unlocked.push(byId[id].stage);
+  if (!shownOps().some(op => state.ops[op])) shownOps().forEach(op => state.ops[op] = true);
+  const inPlay = () => state.active.filter(id => byId[id] && state.ops[byId[id].op] && familyOpen(byId[id].op));
+  function nextNew() {
+    for (let i = 0; i < OPS.length; i++) {
+      const op = OPS[(state.rr + i) % OPS.length];
+      if (!state.ops[op] || !familyOpen(op)) continue;
+      const id = ORDER[op].find(x => !state.active.includes(x) && cardOpen(x));
+      if (id) { state.rr = (state.rr + i + 1) % OPS.length; return id; }
+    }
+    return null;
+  }
+  function topUp() {
+    let learning = inPlay().filter(id => !isKnown(id)).length;
+    while (learning < LEARNING_SIZE) {
+      const id = nextNew();
+      if (!id) break;
+      state.active.push(id);
+      const r = rec(id); r.isNew = true; r.run = 0;
+      learning++;
+    }
+  }
+
+  const session = { streak: 0 };
+  // A play mode in progress: "run" (ten fast answers to the goal) or "clock" (as many right as possible in a minute).
+  const mode = { kind: null, steps: 0, right: 0, end: 0, timer: null };
+  let drawer = null, petKey = null, decoKey = null;  // the open drawer, the friend it shows, the decoration being placed
+  let current = null, golden = false, rainbow = false, lastId = null, input = "", shownAt = 0, locked = false, advanceTimer = null;
+
+  const $ = id => document.getElementById(id);
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const choice = arr => arr[Math.floor(Math.random() * arr.length)];
+  const median = xs => { if (!xs.length) return null; const s = [...xs].sort((a, b) => a - b); const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+  const seeded = (i, k) => { const x = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return x - Math.floor(x); };
+  const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
+
+  /* ---------- sound ---------- */
+  let ac = null;
+  function audio() {
+    if (state.muted) return null;
+    if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+    if (ac.state === "suspended") ac.resume().catch(() => {});
+    return ac;
+  }
+  function tone(freq, dur = 0.15, { type = "sine", vol = 0.15, at = 0, slide = 0 } = {}) {
+    const a = audio(); if (!a) return;
+    const t = a.currentTime + at, o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(freq * slide, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.03);
+  }
+  const PENTA = [0, 2, 4, 7, 9];
+  const note = n => 523.25 * Math.pow(2, (PENTA[((n % 5) + 5) % 5] + 12 * Math.floor(n / 5)) / 12);
+  const sfx = {
+    tap: () => tone(1500, 0.025, { vol: 0.025, type: "triangle" }),
+    fast: s => { const n = Math.min(s - 1, 12); tone(note(n), 0.18, { vol: 0.14 }); tone(note(n + 2), 0.28, { vol: 0.12, at: 0.08 }); },
+    slow: () => tone(note(0), 0.22, { vol: 0.1, type: "triangle" }),
+    wrong: () => tone(230, 0.32, { vol: 0.12, type: "triangle", slide: 0.6 }),
+    pearl: () => { tone(1760, 0.07, { vol: 0.07 }); tone(2349, 0.12, { vol: 0.06, at: 0.05 }); },
+    golden: () => [0, 2, 4, 5, 7].forEach((n, i) => tone(note(n + 5), 0.12, { vol: 0.09, at: i * 0.05 })),
+    fresh: () => [0, 2, 4].forEach((n, i) => tone(note(n + 5), 0.15, { vol: 0.1, at: i * 0.07 })),
+    rattle: () => [0, 1, 2, 3, 4, 5].forEach(i => tone(300 + i * 40, 0.06, { vol: 0.06, type: "square", at: i * 0.12 })),
+    open: r => { const seq = r >= 2 ? [0, 2, 4, 5, 7, 9, 10, 12] : r === 1 ? [0, 2, 4, 5, 7] : [0, 2, 4]; seq.forEach((n, i) => tone(note(n), 0.25, { vol: 0.12, at: i * 0.08 })); },
+    fanfare: () => [[0, 0], [2, .12], [4, .24], [5, .36], [4, .5], [5, .6], [7, .72]].forEach(([n, t]) => tone(note(n), 0.3, { vol: 0.12, at: t })),
+    blub: () => tone(note(rand(3, 8) | 0), 0.1, { vol: 0.07, slide: 1.6 }),
+  };
+
+  /* ---------- particles ---------- */
+  const cv = $("fx"), ctx = cv.getContext("2d");
+  const COLORS = ["#ffc93c", "#ff5d8f", "#4d7cfe", "#29c27f", "#a66cff", "#ff8a3d", "#2ad1e0"];
+  let parts = [], running = false, lastT = 0;
+  function resize() { const d = devicePixelRatio || 1; cv.width = innerWidth * d; cv.height = innerHeight * d; ctx.setTransform(d, 0, 0, d, 0, 0); }
+  addEventListener("resize", resize); resize();
+  function addP(p) {
+    parts.push(Object.assign({ vx: 0, vy: 0, g: 0.1, drag: 0.98, size: 4, rot: 0, vr: 0, life: 80, max: 80, shape: "dot", color: choice(COLORS) }, p));
+    if (!running) { running = true; lastT = performance.now(); requestAnimationFrame(loop); }
+  }
+  function drawStar(x, y, r, rot) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.beginPath();
+    for (let i = 0; i < 10; i++) { const rr = i % 2 ? r * 0.45 : r, a = -Math.PI / 2 + i * Math.PI / 5; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+    ctx.closePath(); ctx.fill(); ctx.restore();
+  }
+  function loop(t) {
+    const k = Math.min(3, (t - lastT) / 16.67); lastT = t;
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    const next = [];
+    for (const p of parts) {
+      p.vx *= Math.pow(p.drag, k); p.vy = p.vy * Math.pow(p.drag, k) + p.g * k;
+      p.x += p.vx * k; p.y += p.vy * k; p.rot += p.vr * k; p.life -= k;
+      if (p.rocket && p.vy > -1) { burst(p.x, p.y, p.color, p.n); continue; }
+      if (p.life <= 0 || p.y > innerHeight + 40) continue;
+      ctx.globalAlpha = Math.min(1, p.life / (p.max * 0.35));
+      ctx.fillStyle = p.color;
+      if (p.shape === "star") drawStar(p.x, p.y, p.size, p.rot);
+      else if (p.shape === "rect") {
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        const h = p.size * 1.6 * Math.abs(Math.cos(p.rot * 2)) + 1;
+        ctx.fillRect(-p.size / 2, -h / 2, p.size, h); ctx.restore();
+      } else { ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); }
+      next.push(p);
+    }
+    ctx.globalAlpha = 1; parts = next;
+    if (parts.length) requestAnimationFrame(loop); else { running = false; ctx.clearRect(0, 0, innerWidth, innerHeight); }
+  }
+  function cardCenter() { const r = $("card").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }
+  function burst(x, y, color, n = 46) {
+    const palette = [color, color, "#ffffff", choice(COLORS)];
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 + rand(-0.1, 0.1), s = rand(2.2, 5.2), life = rand(55, 85);
+      addP({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, g: 0.06, drag: 0.965, size: rand(1.8, 3.2), color: choice(palette), life, max: life, shape: i % 7 === 0 ? "star" : "dot", vr: rand(-0.2, 0.2) });
+    }
+  }
+  function fireworks(count = 3) {
+    for (let i = 0; i < count; i++) setTimeout(() => {
+      const x = rand(innerWidth * 0.15, innerWidth * 0.85), h = rand(innerHeight * 0.45, innerHeight * 0.75), g = 0.16;
+      addP({ x, y: innerHeight + 5, vx: rand(-0.6, 0.6), vy: -Math.sqrt(2 * g * h), g, drag: 1, size: 2.6, color: choice(COLORS), rocket: true, n: Math.round(rand(40, 60)), life: 400, max: 400 });
+    }, i * 220);
+  }
+  function starShower(n = 28, colors = ["#ffc93c", "#ffd95e", "#ff5d8f", "#4d7cfe"]) {
+    for (let i = 0; i < n; i++) setTimeout(() => {
+      const life = rand(140, 190);
+      addP({ x: rand(0, innerWidth), y: -20, vx: rand(-0.6, 0.6), vy: rand(2, 4), g: 0.02, drag: 0.995, size: rand(7, 13), shape: "star", vr: rand(-0.08, 0.08), life, max: life, color: choice(colors) });
+    }, i * 35);
+  }
+  function sparkle(n = 30, spread = 6, colors) {
+    const [x, y] = cardCenter();
+    for (let i = 0; i < n; i++) {
+      const a = rand(0, Math.PI * 2), s = rand(spread * 0.4, spread), life = rand(40, 65);
+      addP({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 1.5, g: 0.09, drag: 0.93, size: rand(5, 10), shape: "star", vr: rand(-0.3, 0.3), life, max: life, color: colors ? choice(colors) : choice(COLORS) });
+    }
+  }
+  function confetti(n = 140) {
+    for (const side of [0, 1]) for (let i = 0; i < n / 2; i++) {
+      const a = side ? rand(-2.4, -1.8) : rand(-1.35, -0.75), s = rand(10, 17), life = rand(170, 230);
+      addP({ x: side ? innerWidth + 10 : -10, y: innerHeight * 0.85, vx: Math.cos(a) * s, vy: Math.sin(a) * s, g: 0.22, drag: 0.965, size: rand(6, 10), shape: "rect", vr: rand(-0.25, 0.25), life, max: life });
+    }
+  }
+  function coinShower() {
+    const [x, y] = cardCenter();
+    for (let i = 0; i < 40; i++) {
+      const life = rand(60, 90);
+      addP({ x: x + rand(-60, 60), y, vx: rand(-4, 4), vy: rand(-10, -5), g: 0.32, drag: 0.98, size: rand(3.5, 5.5), color: choice(["#ffc93c", "#ffd95e", "#f2b200"]), life, max: life });
+    }
+  }
+
+  function hearts(x, y) {
+    for (let i = 0; i < 16; i++) {
+      const life = rand(45, 70);
+      addP({ x: x + rand(-14, 14), y, vx: rand(-1.5, 1.5), vy: rand(-4, -1.5), g: -0.02, drag: 0.97, size: rand(5, 9), shape: "star",
+        vr: rand(-0.1, 0.1), life, max: life, color: choice(["#ff5d8f", "#ff8fb1", "#ffc93c"]) });
+    }
+  }
+
+  /* ---------- cheering ---------- */
+  const FAST_WORDS = ["You go girl!", "Lightning fast!", "Superstar!", "Nailed it!", "Math whiz!", "Wow!", "Zoom!",
+    "Brain power!", "On fire!", "Amazing!", "So quick!", "Boom!", "Brilliant!", "Yes, yes, yes!", ...THEME.fastWords];
+  const NEAR_WORDS = ["You got it!", "You figured it out!", "There it is!", "Way to stick with it!"];
+  const NEW_WORDS = ["New card!", "Card unlocked!", "One more for the deck!"];
+  function cheer(text, opts = {}) {
+    const el = $("cheer"), card = $("card");
+    el.textContent = text;
+    el.style.color = opts.color || choice(["#ff5d8f", "#4d7cfe", "#29c27f", "#a66cff", "#ff8a3d"]);
+    el.className = "cheer" + (opts.soft ? " soft" : "");
+    void el.offsetWidth; el.classList.add("pop");
+    card.classList.add("cheering");
+    card.classList.remove("glow"); void card.offsetWidth; card.classList.add("glow");
+  }
+  function clearCheer() { $("cheer").className = "cheer"; $("cheer").textContent = ""; $("card").classList.remove("cheering"); }
+  function renderCombo(bump) {
+    const el = $("combo"), s = session.streak;
+    el.textContent = s >= 2 ? `🔥 ${s}` : "";
+    if (bump && s >= 2) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
+  }
+  function celebrateFast() {
+    session.streak++; state.bestRow = Math.max(state.bestRow, session.streak);
+    renderCombo(true);
+    sfx.fast(session.streak);
+    const s = session.streak;
+    if (s % 5 === 0) {
+      cheer(`${s} in a row!`, { color: "#e3a400" });
+      if (!reduced) { fireworks(4 + Math.min(4, s / 5)); starShower(20); }
+      return;
+    }
+    cheer(choice(FAST_WORDS));
+    if (reduced) return;
+    const fx = choice(["fireworks", "stars", "sparkle", "mix"]);
+    if (fx === "fireworks") fireworks(2 + Math.floor(Math.random() * 2));
+    else if (fx === "stars") starShower();
+    else if (fx === "sparkle") sparkle(36, 8);
+    else { sparkle(24, 6); fireworks(1); }
+  }
+
+  /* ---------- pearls and the aquarium ---------- */
+  function addPearls(n) {
+    if (!reduced) {
+      const [x, y] = cardCenter(), t = $("pearl-meter").getBoundingClientRect();
+      for (let i = 0; i < Math.min(n, 12); i++) setTimeout(() => {
+        const p = document.createElement("div"); p.className = "pearl-fly";
+        p.style.left = (x - 8) + "px"; p.style.top = (y - 8) + "px";
+        document.body.appendChild(p);
+        const tx = t.left + t.width * Math.min(1, (state.pearls) / pearlGoal()) - x, ty = t.top + t.height / 2 - y;
+        requestAnimationFrame(() => requestAnimationFrame(() => { p.style.transform = `translate(${tx}px, ${ty}px) scale(.7)`; }));
+        setTimeout(() => { p.remove(); sfx.pearl(); const m = $("pearl-meter"); m.classList.remove("pulse"); void m.offsetWidth; m.classList.add("pulse"); }, 700);
+      }, i * 140);
+    }
+    state.pearls += n;
+    while (state.pearls >= pearlGoal()) { state.pearls -= pearlGoal(); state.opened++; enqueue(chestOverlay()); }
+    setTimeout(renderPearls, reduced ? 0 : 700);
+  }
+  function renderPearls() {
+    const g = pearlGoal();
+    $("pearl-fill").style.width = Math.min(100, (state.pearls / g) * 100) + "%";
+    $("pearl-count").innerHTML = `<b>${state.pearls}</b> / ${g}`;
+    if (drawer === "shop" || drawer === "pet") renderDrawers();  // what's affordable just changed
+  }
+  const esc = s => String(s).replace(/[&<>"']/g, ch => `&#${ch.charCodeAt(0)};`);
+  const curName = n => n === 1 ? THEME.currency.toLowerCase().replace(/s$/, "") : THEME.currency.toLowerCase();
+  const money = n => `${n} ${curName(n)}`;
+  const copies = k => state.tank.reduce((n, x) => n + (x === k), 0);
+  const owns = k => state.tank.includes(k);
+  const isShiny = k => copies(k) >= SHINY_AT;
+  const month = () => new Date().getMonth() + 1;
+  const monthName = m => new Date(2000, m - 1, 1).toLocaleString("en", { month: "long" });
+  const inSeason = k => !!CREATURES[k].season?.includes(month());
+  const roomDone = i => ROOMS[i].keys.every(owns);
+  const roomOpen = i => i === 0 || roomDone(i - 1);
+  const openRooms = () => ROOMS.filter(rm => roomOpen(rm.i));
+  const petName = k => state.pets[k]?.name || CREATURES[k].name;
+  function rollTier(min) {
+    let r = Math.random() * RARITY.slice(min).reduce((s, x) => s + x.w, 0);
+    for (let i = min; i < RARITY.length; i++) { r -= RARITY[i].w; if (r <= 0) return i; }
+    return RARITY.length - 1;
+  }
+  // Sometimes an in-season visitor; otherwise the first room that isn't full yet, or any room once all are full.
+  // Within the rolled tier, something new beats something not yet shiny, which beats anything.
+  function rollCreature(minTier = 0) {
+    const visitors = Object.keys(SEASONAL).filter(k => inSeason(k) && !owns(k) && CREATURES[k].r >= minTier);
+    if (visitors.length && Math.random() < SEASON_SHARE) return choice(visitors);
+    const open = openRooms(), room = open.find(rm => !roomDone(rm.i)) || choice(open);
+    if (state.dry + 1 >= PITY_GIFTS) minTier = Math.max(minTier, 2);
+    let pool = [];
+    for (let t = rollTier(minTier); t >= 0 && !pool.length; t--) pool = room.keys.filter(k => CREATURES[k].r === t);
+    const fresh = pool.filter(k => !owns(k)), dull = pool.filter(k => !isShiny(k));
+    return choice(fresh.length ? fresh : dull.length ? dull : pool);
+  }
+  // Adds a friend to the collection and queues what follows from it: a room opening, perks.
+  function gainCreature(k) {
+    const before = openRooms().length;
+    state.tank.push(k);
+    if (openRooms().length > before) enqueue(roomOverlay(ROOMS[openRooms().length - 1]));
+    earnPerks();
+  }
+  function renderTank() {
+    const tank = $("tank");
+    if (!roomOpen(state.room)) state.room = 0;
+    const rm = ROOMS[state.room], all = Object.keys(CREATURES);
+    const keys = [...new Set(state.tank)].filter(k => CREATURES[k]?.room === rm.i);
+    const n = keys.length, fs = n > 18 ? 1.25 : n > 10 ? 1.5 : 1.9;
+    tank.style.cssText = rm.colors ? `--water-top:${rm.colors[0]};--water-bot:${rm.colors[1]};--sand:${rm.colors[2]}` : "";
+    tank.setAttribute("aria-label", rm.i ? rm.name : THEME.home);
+    let html = rm.decor || "";
+    for (let i = 0; i < 6; i++) html += `<span class="bubble" style="left:${10 + seeded(i, 9) * 80}%;animation-duration:${4 + seeded(i, 3) * 4}s;animation-delay:-${seeded(i, 5) * 6}s"></span>`;
+    for (const [k, p] of Object.entries(state.placed))
+      if (p.room === rm.i && SHOP_ITEMS[k]) html += `<span class="deco" data-deco="${k}" style="left:${p.x}%" title="${SHOP_ITEMS[k].name}">${SHOP_ITEMS[k].e}</span>`;
+    for (const key of keys) {
+      // Seeded by the friend's place in the table, so each one keeps its spot and speed.
+      const c = CREATURES[key], i = all.indexOf(key), grow = 1 + Math.min(state.pets[key]?.fed || 0, 10) * 0.05;
+      const dur = 10 + seeded(i, 1) * 12, delay = -seeded(i, 2) * dur, top = 6 + seeded(i, 4) * 50;
+      html += `<span class="swim${c.floor ? " floor" : ""}" style="top:${top}%;left:${5 + seeded(i, 6) * 80}%;font-size:${(fs * grow).toFixed(2)}rem;animation-duration:${c.floor ? dur * 1.6 : dur}s;animation-delay:${delay}s"><span class="bob${isShiny(key) ? " shiny" : ""}" data-key="${key}" style="animation-delay:-${seeded(i, 7) * 2}s" title="${esc(petName(key))}">${c.e}</span></span>`;
+    }
+    tank.innerHTML = html;
+    const open = openRooms();
+    $("rooms").hidden = open.length < 2;
+    $("rooms").innerHTML = open.map(r => `<button class="pill" data-room="${r.i}" aria-pressed="${r.i === rm.i}">${r.name}</button>`).join("");
+    renderDrawers();
+  }
+  $("rooms").addEventListener("click", e => {
+    const b = e.target.closest("[data-room]"); if (!b) return;
+    state.room = +b.dataset.room; save(); renderTank();
+  });
+  $("tank").addEventListener("click", e => {
+    if (drawer === "decor") {
+      const d = e.target.closest(".deco");
+      if (d) { delete state.placed[d.dataset.deco]; sfx.blub(); }
+      else if (decoKey) {
+        const r = $("tank").getBoundingClientRect(), x = (e.clientX - r.left) / r.width * 100;
+        state.placed[decoKey] = { room: state.room, x: Math.round(Math.max(5, Math.min(95, isFinite(x) ? x : 50))) };
+        decoKey = null; sfx.pearl();
+      } else return;
+      save(); renderTank(); return;
+    }
+    const b = e.target.closest(".bob"); if (!b) return;
+    b.classList.remove("hop"); void b.offsetWidth; b.classList.add("hop"); sfx.blub();
+    setTimeout(() => b.classList.remove("hop"), 650);
+    openDrawer("pet", b.dataset.key);
+  });
+
+  /* ---------- hidden pictures: each learned card uncovers its square of the family's picture ---------- */
+  const inPoly = (x, y, pts) => {
+    let inside = false;
+    for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+      const [xi, yi] = pts[i], [xj, yj] = pts[j];
+      if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  };
+  const STAR_PTS = Array.from({ length: 10 }, (_, i) => { const r = i % 2 ? .2 : .47, a = -Math.PI / 2 + i * Math.PI / 5; return [.5 + r * Math.cos(a), .54 + r * Math.sin(a)]; });
+  // Each picture maps a point (u across, v down, both 0 to 1) to a color, so it fits a map of any size.
+  const PICTURES = {
+    rainbow: (u, v) => { const i = Math.floor((Math.hypot(u - .5, v - 1) - .3) / .1); return i >= 0 && i < 6 ? ["#7b5ad6", "#3f8fe0", "#4cbb5a", "#f5d33f", "#f39c33", "#e8453c"][i] : "#bfe6ff"; },
+    sun: (u, v) => Math.hypot(u - .7, v - .3) < .18 ? "#ffd23f" : v > .7 ? "#6cc25a" : "#9fd8ff",
+    heart: (u, v) => { const x = (u - .5) * 2.6, y = (.42 - v) * 2.6; return (x * x + y * y - 1) ** 3 - x * x * y ** 3 < 0 ? "#ff5d8f" : "#ffe3ee"; },
+    fish: (u, v) => Math.hypot(u - .3, v - .44) < .06 ? "#1d2433" : ((u - .42) / .3) ** 2 + ((v - .5) / .26) ** 2 < 1 ? "#ff8a3d"
+      : u > .66 && u < .96 && Math.abs(v - .5) < (u - .66) * 1.2 ? "#ff5d2a" : "#5fb8e8",
+    star: (u, v) => inPoly(u, v, STAR_PTS) ? "#ffd23f" : "#2a2f6b",
+    castle: (u, v) => {
+      if (v > .9) return "#6cc25a";
+      if (u > .42 && u < .58 && v > .66) return "#7a4a2a";
+      const left = u > .08 && u < .3, right = u > .7 && u < .92;
+      if ((left || right) && v > .3 || u > .15 && u < .85 && v > .5) return "#c9a6e8";
+      if (left && v > .08 + Math.abs(u - .19) * 1.9 || right && v > .08 + Math.abs(u - .81) * 1.9) return "#e8458f";
+      return "#ffe0f0";
+    },
+  };
+  function mosaic(op) {
+    const { rows, cols, name } = FACTS[op], list = THEME.pictures || ["star"];
+    const pic = PICTURES[list[OPS.indexOf(op) % list.length]] || PICTURES.star;
+    let cells = "", n = 0, done = 0;
+    rows.forEach((a, i) => cols.forEach((b, j) => {
+      const c = byId[`${op}:${a}:${b}`];
+      if (!c) { cells += `<i class="none"></i>`; return; }
+      n++;
+      if (got(c.id)) { done++; cells += `<i style="background:${pic((j + .5) / cols.length, (i + .5) / rows.length)}"></i>`; }
+      else cells += "<i></i>";
+    }));
+    return `<div><div class="mosaic" style="grid-template-columns:repeat(${cols.length}, 1fr);width:min(100%, ${cols.length * 0.95}rem)">${cells}</div>` +
+      `<div class="mosaic-cap">${name} · ${done === n ? "finished! ★" : `${done} of ${n}`}</div></div>`;
+  }
+
+  /* ---------- badges ---------- */
+  const BADGES = [
+    { id: "gift", icon: THEME.gift.icon, name: "First gift", hint: "Open a gift", test: () => state.tank.length > 1 },
+    { id: "row10", icon: "🔥", name: "Hot streak", hint: "10 fast in a row", test: () => state.bestRow >= 10 },
+    { id: "row25", icon: "☄️", name: "On fire", hint: "25 fast in a row", test: () => state.bestRow >= 25 },
+    { id: "row50", icon: "🚀", name: "Unstoppable", hint: "50 fast in a row", test: () => state.bestRow >= 50 },
+    { id: "perfect", icon: "💯", name: "Perfect day", hint: "Daily goal with no misses", test: () => state.day.goalDone && state.day.wrong === 0 },
+    { id: "days3", icon: "📅", name: "Three in a row", hint: "Daily goal 3 days running", test: () => streakDays() >= 3 },
+    { id: "days7", icon: "🗓️", name: "Full week", hint: "Daily goal 7 days running", test: () => streakDays() >= 7 },
+    { id: "shiny", icon: "✨", name: "Shiny!", hint: `Get ${SHINY_AT} of one friend`, test: () => Object.keys(CREATURES).some(isShiny) },
+    { id: "fed", icon: "🍽️", name: "Good keeper", hint: "Feed friends 10 times", test: () => Object.values(state.pets).reduce((s, p) => s + (p.fed || 0), 0) >= 10 },
+    { id: "named", icon: "🏷️", name: "Name giver", hint: "Give a friend a name", test: () => Object.values(state.pets).some(p => p.name) },
+    { id: "shop", icon: "🛍️", name: "Shopper", hint: "Buy something in the shop", test: () => state.bought > 0 },
+    { id: "rainbow", icon: "🌈", name: "Over the rainbow", hint: "Answer a rainbow card fast", test: () => state.rainbows > 0 },
+    { id: "run", icon: THEME.run.icon, name: THEME.run.badge, hint: `Finish a ${THEME.run.name.toLowerCase()}`, test: () => state.runs > 0 },
+    { id: "clock20", icon: "⏱️", name: "Speedy", hint: "20 right in Beat the clock", test: () => (state.best.clock || 0) >= 20 },
+    ...ROOMS.map(rm => ({ id: `room-${rm.i}`, icon: CREATURES[rm.keys[0]].e, name: `Full ${rm.name.toLowerCase()}`,
+      hint: `Find everything in the ${rm.name.toLowerCase()}`, test: () => roomDone(rm.i) })),
+    ...OPS.map(op => ({ id: `fam-${op}`, icon: FACTS[op].sym, name: `${FACTS[op].name} star`,
+      hint: `Learn every ${FACTS[op].name.toLowerCase()} card`, test: () => refDone(op) })),
+  ];
+  // Quiet awards without fanfare or currency (used on load, so an old save doesn't get a pile of overlays).
+  function checkBadges(quiet) {
+    for (const b of BADGES) if (!state.badges.includes(b.id) && b.test()) {
+      state.badges.push(b.id);
+      if (!quiet) { enqueue(badgeOverlay(b)); addPearls(BADGE_PEARLS); }
+    }
+  }
+
+  /* ---------- drawers under the tank ---------- */
+  const SHOP_PRICE = [8, 12, 16], DECOR_PRICE = 6;  // prices stay under the smallest full meter, so everything is affordable
+  const shopItem = k => SHOP_ITEMS[k] || CREATURES[k];
+  const priceOf = k => SHOP_ITEMS[k] ? DECOR_PRICE : SHOP_PRICE[CREATURES[k].r];
+  const ownsItem = k => SHOP_ITEMS[k] ? state.decor.includes(k) : owns(k);
+  // Three things a day, picked once and kept for the day: decorations and missing friends from open rooms (not legendary).
+  function shopOffers() {
+    if (state.shop?.date !== today()) {
+      const pool = [...Object.keys(SHOP_ITEMS).filter(k => !state.decor.includes(k)),
+        ...openRooms().flatMap(rm => rm.keys).filter(k => !owns(k) && CREATURES[k].r <= 2)];
+      const items = [];
+      while (pool.length && items.length < 3) items.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+      state.shop = { date: today(), items }; save();
+    }
+    return state.shop.items.filter(shopItem);
+  }
+  const DRAWERS = [
+    { key: "dex", label: () => { const keys = openRooms().flatMap(rm => rm.keys); return `${THEME.collection} ${keys.filter(owns).length}/${keys.length}`; } },
+    { key: "shop", label: () => "Shop", show: () => state.tank.length >= SHOP_TANK },
+    { key: "decor", label: () => "Decorate", show: () => state.decor.length > 0 },
+    { key: "dress", label: () => "Dress up", show: () => !!THEME.dressUp },
+    { key: "badges", label: () => `Badges ${state.badges.length}/${BADGES.length}` },
+    { key: "pics", label: () => "Pictures" },
+  ];
+  const dexItem = k => {
+    const c = CREATURES[k], n = copies(k), col = RARITY[c.r].color;
+    if (!n) return `<div class="dex-item unknown" style="border-color:${col}"><span class="e">?</span>${c.season && !inSeason(k) ? `Comes in ${monthName(c.season[0])}` : RARITY[c.r].name}</div>`;
+    return `<button class="dex-item${isShiny(k) ? " shiny-item" : ""}" data-act="pet" data-key="${k}" style="border-color:${col}">${n > 1 ? `<span class="n">×${n}</span>` : ""}` +
+      `<span class="e${isShiny(k) ? " shiny" : ""}">${c.e}</span>${esc(petName(k))}</button>`;
+  };
+  const DRAWER_HTML = {
+    dex() {
+      let html = "";
+      for (const rm of ROOMS) {
+        if (!roomOpen(rm.i)) { html += `<p class="note">🔒 <b>${rm.name}</b>: find everything in the ${ROOMS[rm.i - 1].name.toLowerCase()} to open it.</p>`; break; }
+        html += `<h4>${rm.name} · ${rm.keys.filter(owns).length} of ${rm.keys.length}</h4><div class="dex-grid">${rm.keys.map(dexItem).join("")}</div>`;
+      }
+      const vis = Object.keys(SEASONAL);
+      if (vis.length) html += `<h4>Visitors · ${vis.filter(owns).length} of ${vis.length}</h4><div class="dex-grid">${vis.map(dexItem).join("")}</div>`;
+      return html + `<p class="note">Get ${SHINY_AT} of the same friend and it turns shiny. Tap a friend to feed it or give it a name.</p>`;
+    },
+    pet() {
+      const k = petKey, c = CREATURES[k], p = state.pets[k] || {}, fed = p.fed || 0, cost = fed + 1;
+      const kind = isShiny(k) ? `Shiny ${RARITY[c.r].name.toLowerCase()}` : RARITY[c.r].name;
+      return `<div class="pet"><span class="pet-e${isShiny(k) ? " shiny" : ""}">${c.e}</span>` +
+        `<div><b>${esc(petName(k))}</b>${p.name ? ` · ${c.name}` : ""} · <span style="color:${RARITY[c.r].color}">${kind}</span><br>` +
+        `<span class="note">${fed ? `Fed ${fed} time${fed > 1 ? "s" : ""}.` : "Not fed yet."} Each meal makes it a little bigger and costs one more than the last.</span></div>` +
+        `<div class="pet-row"><button class="pill" data-act="feed" ${state.pearls < cost ? "disabled" : ""}>Feed · ${money(cost)}</button>` +
+        `<label class="pet-row">Name <input id="pet-name" maxlength="14" value="${esc(p.name || "")}" placeholder="${esc(c.name)}" autocomplete="off"></label></div></div>`;
+    },
+    shop() {
+      const offers = shopOffers();
+      const items = offers.map(k => {
+        const it = shopItem(k), price = priceOf(k), have = ownsItem(k);
+        return `<button class="dex-item" data-act="buy" data-key="${k}" ${have || state.pearls < price ? "disabled" : ""}><span class="e">${it.e}</span>${it.name}<span class="price">${have ? "Yours!" : money(price)}</span></button>`;
+      }).join("");
+      return `<h4>Today's shop</h4>` + (items ? `<div class="dex-grid">${items}</div>` : `<p class="note">You have everything the shop sells!</p>`) +
+        `<p class="note">You have <b>${money(state.pearls)}</b>. Spending them makes the next gift take longer. New things come every day.</p>`;
+    },
+    decor() {
+      const room = ROOMS[state.room].name.toLowerCase();
+      return `<p class="note">${decoKey ? `Now tap the spot in the ${room} for the ${SHOP_ITEMS[decoKey].name.toLowerCase()}.` : "Pick a decoration, then tap the spot for it. Tap one that's already out to put it away."}</p>` +
+        `<div class="dex-grid">${state.decor.map(k => `<button class="dex-item" data-act="deco" data-key="${k}" aria-pressed="${decoKey === k}"><span class="e">${SHOP_ITEMS[k].e}</span>${SHOP_ITEMS[k].name}` +
+          (state.placed[k] ? `<span class="price">In the ${ROOMS[state.placed[k].room].name.toLowerCase()}</span>` : "") + `</button>`).join("")}</div>`;
+    },
+    dress() {
+      const D = THEME.dressUp, o = state.outfit;
+      const wear = slot => o[slot] && owns(o[slot]) ? CREATURES[o[slot]].e : "";
+      const doll = `<div class="doll" role="img" aria-label="Dress-up doll"><span class="d-back">${wear("back")}</span><span class="d-dress">${wear("dress")}</span>` +
+        `<span class="d-head">${D.doll}</span><span class="d-hat">${wear("head")}</span><span class="d-hand">${wear("hand")}</span><span class="d-feet">${wear("feet")}</span></div>`;
+      const rows = D.slots.map(s => {
+        const mine = s.items.filter(k => CREATURES[k] && owns(k));
+        return `<div class="slot-row"><span>${s.name}</span><button class="slot-btn" data-act="wear" data-slot="${s.key}" data-key="" aria-pressed="${!o[s.key]}" title="Nothing">∅</button>` +
+          mine.map(k => `<button class="slot-btn" data-act="wear" data-slot="${s.key}" data-key="${k}" aria-pressed="${o[s.key] === k}" title="${CREATURES[k].name}">${CREATURES[k].e}</button>`).join("") + `</div>`;
+      }).join("");
+      return `<div class="doll-wrap">${doll}<div class="slots">${rows}<p class="note">New clothes from gifts show up here.</p></div></div>`;
+    },
+    badges() {
+      return `<div class="badges">${BADGES.map(b => `<div class="bdg${state.badges.includes(b.id) ? "" : " locked"}"><span class="e">${b.icon}</span><b>${b.name}</b>${b.hint}</div>`).join("")}</div>` +
+        `<p class="note">Each new badge brings ${money(BADGE_PEARLS)}.</p>`;
+    },
+    pics() {
+      return `<p class="note">Every card you learn uncovers one square of its picture.</p><div class="mosaics">${shownOps().map(mosaic).join("")}</div>`;
+    },
+  };
+  function renderDrawers() {
+    $("drawers").innerHTML = DRAWERS.filter(d => !d.show || d.show())
+      .map(d => `<button class="pill" data-drawer="${d.key}" aria-pressed="${drawer === d.key}">${d.label()}</button>`).join("");
+    if (drawer && drawer !== "pet" && !DRAWERS.find(d => d.key === drawer && (!d.show || d.show()))) drawer = null;
+    $("drawer").hidden = !drawer;
+    $("tank").classList.toggle("decorating", drawer === "decor");
+    if (drawer) $("drawer").innerHTML = DRAWER_HTML[drawer]();
+  }
+  function openDrawer(key, pet) {
+    drawer = drawer === key && (key !== "pet" || petKey === pet) ? null : key;
+    petKey = pet || null; decoKey = null;
+    renderDrawers();
+  }
+  // Opens anything an action queued (a gift, a badge), unless a play mode is running; then it waits for the end.
+  function flushQueue() { if (queue.length && !overlay && !mode.kind) { locked = true; openNext(); } }
+  $("drawers").addEventListener("click", e => { const b = e.target.closest("[data-drawer]"); if (b) openDrawer(b.dataset.drawer); });
+  $("drawer").addEventListener("click", e => {
+    const b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
+    const k = b.dataset.key || petKey;
+    audio();
+    if (b.dataset.act === "pet") { openDrawer("pet", k); return; }
+    if (b.dataset.act === "feed") {
+      const p = state.pets[k] || (state.pets[k] = { fed: 0 }), cost = (p.fed || 0) + 1;
+      if (state.pearls < cost) return;
+      state.pearls -= cost; p.fed = (p.fed || 0) + 1;
+      sfx.fresh(); buzz(20);
+      if (!reduced) { const el = document.querySelector(`.bob[data-key="${k}"]`), r = (el || $("drawer")).getBoundingClientRect(); hearts(r.left + r.width / 2, r.top + r.height / 2); }
+      renderPearls();
+    } else if (b.dataset.act === "buy") {
+      const price = priceOf(k);
+      if (ownsItem(k) || state.pearls < price) return;
+      state.pearls -= price; state.bought = (state.bought || 0) + 1;
+      if (SHOP_ITEMS[k]) state.decor.push(k);
+      else { gainCreature(k); state.room = CREATURES[k].room; }
+      sfx.open(SHOP_ITEMS[k] ? 0 : CREATURES[k].r); if (!reduced) sparkle(30, 7);
+      renderPearls();
+    } else if (b.dataset.act === "deco") decoKey = decoKey === k ? null : k;
+    else if (b.dataset.act === "wear") { state.outfit[b.dataset.slot] = k || null; sfx.tap(); }
+    checkBadges(); save(); renderTank(); flushQueue();
+  });
+  $("drawer").addEventListener("change", e => {
+    if (e.target.id !== "pet-name") return;
+    const p = state.pets[petKey] || (state.pets[petKey] = { fed: 0 });
+    p.name = e.target.value.trim().slice(0, 14);
+    checkBadges(); save(); renderTank(); flushQueue();
+  });
+
+  /* ---------- big moments (queued) ---------- */
+  const queue = [];
+  let overlay = null;
+  const enqueue = o => queue.push(o);
+  function setBig({ icon, iconClass = "", title = "", fact = "", sub = "", factColor = "" }) {
+    const ic = $("big-icon"); ic.className = "big-icon"; void ic.offsetWidth; ic.className = "big-icon " + iconClass;
+    ic.innerHTML = icon;
+    $("big-title").textContent = title; $("big-fact").textContent = fact; $("big-fact").style.color = factColor;
+    $("big-sub").textContent = sub;
+  }
+  function openNext() {
+    clearTimeout(advanceTimer);
+    if (overlay && overlay.close) overlay.close();
+    overlay = queue.shift() || null;
+    if (!overlay) { $("big").hidden = true; show(); return; }
+    $("big").hidden = false;
+    const card = document.querySelector(".big-card"); card.style.animation = "none"; void card.offsetWidth; card.style.animation = "";
+    overlay.open();
+  }
+  function tapOverlay() {
+    if (!overlay) return;
+    if (overlay.tap && overlay.tap() === false) return;
+    openNext();
+  }
+  // During a play mode, big moments wait in the queue until the mode ends.
+  function advance() { queue.length && !mode.kind ? openNext() : show(); }
+
+  function learnedOverlay(card) {
+    const o = {
+      open() {
+        setBig({ icon: STAR, iconClass: "spin", title: choice(["You really learned it!", "You learned it!", "That one's yours now!"]),
+          fact: factText(card), sub: "This one goes on your star shelf." });
+        sfx.fanfare(); buzz([30, 60, 30]);
+        if (!reduced) { confetti(160); setTimeout(() => fireworks(4), 300); setTimeout(() => starShower(30), 700); }
+        o.timer = setTimeout(() => { if (overlay === o) openNext(); }, 3400);
+      },
+      close() { clearTimeout(o.timer); renderShelf(card.id); flyStar(card.id); },
+    };
+    return o;
+  }
+  // opts.minTier makes the gift at least that rare; opts.title replaces the usual title.
+  function chestOverlay(opts = {}) {
+    const title = opts.title || THEME.gift.title;
+    const o = { stage: 0, key: null,
+      open() { setBig({ icon: THEME.gift.icon, iconClass: "idle", title, sub: "Tap it to open" }); sfx.fresh(); },
+      tap() {
+        if (o.stage === 0) {
+          o.stage = 1; setBig({ icon: THEME.gift.icon, iconClass: "wobble", title, sub: "Here it comes…" });
+          sfx.rattle(); buzz([20, 80, 20, 80, 20]);
+          setTimeout(o.reveal, 820);
+          return false;
+        }
+        return o.stage === 2;
+      },
+      reveal() {
+        o.key = rollCreature(opts.minTier || 0);
+        const c = CREATURES[o.key], fresh = !owns(o.key);
+        state.dry = c.r >= 2 ? 0 : state.dry + 1;
+        gainCreature(o.key);
+        const n = copies(o.key), shiny = n >= SHINY_AT;
+        o.refund = n > SHINY_AT ? DUP_PEARLS : 0;
+        let sub = fresh ? THEME.gift.fresh : THEME.gift.again;
+        if (n === SHINY_AT) sub = `That's ${SHINY_AT}! Your ${c.name.toLowerCase()} turned shiny!`;
+        else if (n === SHINY_AT - 1) sub += ` One more and it turns shiny.`;
+        else if (o.refund) sub = `It's already shiny, so here's ${money(o.refund)}.`;
+        if (c.season && n < SHINY_AT) sub = `A visitor! It only comes in ${monthName(c.season[0])}.`;
+        checkBadges(); save();
+        setBig({ icon: shiny ? `<span class="shiny">${c.e}</span>` : c.e, iconClass: "reveal", title: `${shiny ? "Shiny " : ""}${c.name}!`,
+          fact: RARITY[c.r].name, factColor: RARITY[c.r].color, sub });
+        sfx.open(c.r); buzz(40);
+        if (!reduced) {
+          if (n === SHINY_AT) { starShower(40, ["#ffd95e", "#fff3b0", "#ffffff"]); fireworks(4); }
+          else if (c.r === 0) sparkle(30, 7);
+          else if (c.r === 1) { sparkle(40, 9, ["#b98bff", "#8a3ffc", "#ffffff"]); fireworks(2); }
+          else { confetti(c.r === 3 ? 220 : 160); fireworks(c.r === 3 ? 6 : 4); starShower(30); }
+        }
+        o.stage = 2;
+      },
+      close() {
+        if (!o.key) return;
+        state.room = CREATURES[o.key].room;
+        renderTank();
+        if (o.refund) addPearls(o.refund);
+      },
+    };
+    return o;
+  }
+  function roomOverlay(rm) {
+    return {
+      open() {
+        setBig({ icon: "🔑", iconClass: "reveal", title: `The ${rm.name.toLowerCase()} is open!`,
+          sub: `You found everything in the ${ROOMS[rm.i - 1].name.toLowerCase()}. New friends are waiting. Tap the room buttons above the ${ROOMS[0].name.toLowerCase()} to visit.` });
+        sfx.fanfare(); buzz([30, 60, 30]);
+        if (!reduced) { confetti(200); fireworks(5); }
+      },
+      close() { state.room = rm.i; save(); renderTank(); },
+    };
+  }
+  function badgeOverlay(b) {
+    return {
+      open() {
+        setBig({ icon: b.icon, iconClass: "spin", title: "New badge!", fact: b.name, sub: `${b.hint}. That's worth ${money(BADGE_PEARLS)}.` });
+        sfx.golden();
+        if (!reduced) { sparkle(36, 8, ["#ffc93c", "#ffd95e", "#ffffff"]); fireworks(2); }
+      },
+      close() { renderDrawers(); },
+    };
+  }
+  function unlockOverlay(stages) {
+    const fams = stages.filter(st => st.i === 0).map(st => FACTS[st.op]);
+    const grown = [...new Set(stages.filter(st => st.i > 0).map(st => FACTS[st.op].name.toLowerCase()))];
+    const sample = byId[choice(STAGES[stages[0].id].cards)];
+    const more = grown.length ? `harder ${grown.join(" and ")} cards` : "";
+    return {
+      open() {
+        setBig({ icon: "🔓", iconClass: "reveal", title: fams.length ? `New: ${fams.map(f => f.name).join(" and ")}!` : "New cards unlocked!",
+          fact: sample ? sample.text : "",
+          sub: (fams.length ? `Look for the ${fams.map(f => f.sym).join(" and ")} button at the top.${more ? ` There are ${more} too.` : ""}`
+                            : `You know all the cards so far, so ${more} are on the way.`) + " They join a few at a time." });
+        sfx.fanfare(); buzz([30, 60, 30]);
+        if (!reduced) { confetti(160); fireworks(4); }
+      },
+      close() { renderOps(); renderAll(); },
+    };
+  }
+  // Opens every locked stage whose `after` cards are all known. A family that appears is switched on.
+  function checkUnlocks(quiet) {
+    const fresh = Object.values(STAGES).filter(st => !stageOpen(st.id) && st.after.every(refDone));
+    if (!fresh.length) return;
+    for (const st of fresh) { state.unlocked.push(st.id); if (st.i === 0) state.ops[st.op] = true; }
+    if (!quiet) enqueue(unlockOverlay(fresh));
+    renderOps();
+  }
+  // The run and beat the clock are earned like flash mode, by the size of the collection.
+  const PERKS = [
+    { key: "run", at: RUN_TANK, icon: THEME.run.icon, title: `${THEME.run.name} unlocked!`, sub: `Tap “${THEME.run.name}” above the card. ${THEME.run.intro}` },
+    { key: "clock", at: CLOCK_TANK, icon: "⏱️", title: "Beat the clock unlocked!", sub: "Tap “Beat the clock” above the card, then answer as many as you can in one minute." },
+  ];
+  function earnPerks() {
+    let any = earnFlash();
+    for (const p of PERKS) if (!state.earned[p.key] && state.tank.length >= p.at) {
+      state.earned[p.key] = true; any = true;
+      enqueue({
+        open() { setBig({ icon: p.icon, iconClass: "reveal", title: p.title, sub: p.sub }); sfx.golden(); if (!reduced) { sparkle(30, 8); fireworks(3); } },
+        close() { renderModes(); },
+      });
+    }
+    return any;
+  }
+  // Flash mode: once earned, a toggle that checks the answer as soon as it has as many digits as the right one.
+  function earnFlash() {
+    if (state.flashEarned || state.tank.length < FLASH_TANK) return false;
+    state.flashEarned = true;
+    enqueue(flashOverlay());
+    return true;
+  }
+  function flashOverlay() {
+    return {
+      open() {
+        setBig({ icon: BOLT, iconClass: "reveal", title: "Flash mode unlocked!",
+          sub: "Tap the lightning bolt at the top to turn it on. Your answer is checked the moment you type it, with no ✓ to press. Fast, but no take-backs!" });
+        sfx.golden();
+        if (!reduced) { sparkle(30, 8, ["#ffc93c", "#ffd95e", "#ffffff"]); fireworks(3); }
+      },
+      close() { renderFlash(true); },
+    };
+  }
+  function renderFlash(isNew) {
+    const btn = $("flash");
+    btn.hidden = !state.flashEarned;
+    btn.setAttribute("aria-pressed", String(!!state.flash));
+    $("kgo").hidden = !!state.flash && !current?.integral;
+    if (isNew && !reduced) { btn.classList.remove("new"); void btn.offsetWidth; btn.classList.add("new"); }
+  }
+
+  function goalOverlay() {
+    return {
+      open() {
+        const d = streakDays();
+        setBig({ icon: "🏆", iconClass: "reveal", title: "Daily goal done!", fact: `${DAILY_GOAL} fast answers today`,
+          sub: d > 1 ? `That's ${d} days in a row!` : "Come back tomorrow to start a streak." });
+        sfx.fanfare();
+        if (!reduced) { fireworks(5); starShower(24); }
+      },
+    };
+  }
+
+  function flyStar(id) {
+    const target = document.querySelector(`.chip[data-id="${CSS.escape(id)}"] svg`);
+    if (!target || reduced) return;
+    const t = target.getBoundingClientRect();
+    const fly = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    fly.setAttribute("viewBox", "0 0 24 24"); fly.classList.add("flyer"); fly.innerHTML = STAR_PATH;
+    const sx = innerWidth / 2 - 20, sy = innerHeight / 2 - 20;
+    fly.style.left = sx + "px"; fly.style.top = sy + "px";
+    document.body.appendChild(fly);
+    requestAnimationFrame(() => requestAnimationFrame(() => { fly.style.transform = `translate(${t.left - sx - 12}px, ${t.top - sy - 12}px) rotate(360deg) scale(.4)`; }));
+    setTimeout(() => fly.remove(), 1000);
+  }
+
+  /* ---------- integrals (hidden testing shortcut) ----------
+     Holding the sound button for INT_HOLD_MS reveals an ∫ button. Integrals are made up on the spot and never saved.
+     A right answer earns 1 unless more integrals have been answered right than wrong this session (counted in
+     memory only), in which case it earns INT_BONUS, or enough to open the next gift and get halfway to the one after. */
+  const integ = { shown: false, on: false, right: 0, wrong: 0 };
+  const SUP = { 2: "²", 3: "³" };
+  const minus = n => n < 0 ? `−${-n}` : String(n);
+  function polyText(co) {
+    let out = "";
+    for (let k = co.length - 1; k >= 0; k--) {
+      const c = co[k]; if (!c) continue;
+      const abs = Math.abs(c), body = k === 0 ? String(abs) : (abs === 1 ? "" : abs) + "x" + (SUP[k] || "");
+      out += out ? (c < 0 ? " − " : " + ") + body : (c < 0 ? "−" : "") + body;
+    }
+    return out;
+  }
+  function makeIntegral() {
+    for (let tries = 0; tries < 5000; tries++) {
+      // Kept doable in your head: a leading term plus at most one lower one, positive coefficients, and usually from 0.
+      const deg = 1 + Math.floor(Math.random() * 3), co = Array(deg + 1).fill(0);
+      co[deg] = 1 + Math.floor(Math.random() * 6);
+      if (Math.random() < 0.5) co[Math.floor(Math.random() * deg)] = 1 + Math.floor(Math.random() * 6);
+      const lo = Math.random() < 0.85 ? 0 : 1, hi = lo + 1 + Math.floor(Math.random() * 3);
+      // 12 × the integral is a whole number, since 12 / (k + 1) is for every degree up to 3.
+      let twelve = 0;
+      for (let k = 0; k <= deg; k++) twelve += co[k] * (12 / (k + 1)) * (hi ** (k + 1) - lo ** (k + 1));
+      if (twelve % 12) continue;
+      const ans = twelve / 12;
+      if (ans < 2 || ans > 99) continue;
+      const terms = co.filter(c => c).length, poly = polyText(co);
+      return { id: "int", integral: true, ans, text: `∫ from ${minus(lo)} to ${minus(hi)} of ${poly} dx`,
+        html: `<span class="int"><span class="int-sign">∫</span><span class="int-lim"><span>${minus(hi)}</span><span>${minus(lo)}</span></span></span>&nbsp;${terms > 1 ? `(${poly})` : poly} dx` };
+    }
+    return { id: "int", integral: true, ans: 9, text: "∫ from 0 to 3 of 2x dx", html: `<span class="int"><span class="int-sign">∫</span><span class="int-lim"><span>3</span><span>0</span></span></span>&nbsp;2x dx` };
+  }
+  const intBonus = () => integ.right > integ.wrong;
+  const intReward = () => intBonus() ? Math.max(INT_BONUS, pearlGoal() - state.pearls + Math.ceil(Math.min(20, 8 + 2 * (state.opened + 1)) / 2)) : 1;
+
+  /* ---------- picking a card ---------- */
+  function weightedPick(ids) {
+    let total = 0;
+    for (const id of ids) total += (state.cards[id]?.w ?? 1);
+    let r = Math.random() * total;
+    for (const id of ids) { r -= (state.cards[id]?.w ?? 1); if (r <= 0) return id; }
+    return ids[ids.length - 1];
+  }
+  function pick() {
+    topUp();
+    let pool = inPlay();
+    if (pool.length > 1) pool = pool.filter(id => id !== lastId);
+    const fresh = pool.filter(id => state.cards[id]?.isNew);
+    if (fresh.length) return byId[fresh[0]];
+    const learning = pool.filter(id => !isKnown(id)), known = pool.filter(id => isKnown(id));
+    let group = pool;
+    if (learning.length && known.length) group = Math.random() < LEARNING_SHARE ? learning : known;
+    return byId[weightedPick(group)];
+  }
+
+  /* ---------- game flow ---------- */
+  function show() {
+    clearTimeout(advanceTimer);
+    clearCheer();
+    current = integ.on ? makeIntegral() : pick(); lastId = current.id; input = ""; locked = false;
+    $("card").classList.toggle("integral", !!current.integral);
+    $("eq").hidden = !!current.parts; $("q2").hidden = !current.parts; $("q2").textContent = current.parts ? current.parts[1] : "";
+    renderFlash();
+    if (current.integral) {
+      golden = rainbow = false; $("card").classList.remove("golden", "rainbow");
+      $("tag").textContent = `Integral · ${integ.right} right, ${integ.wrong} wrong`;
+      const badge = $("badge"), n = intReward();
+      badge.hidden = false; badge.className = n > 1 ? "badge gold" : "badge fresh";
+      const cur = THEME.currency.toLowerCase();
+      badge.textContent = `${n} ${n > 1 ? cur : cur.replace(/s$/, "")}`;
+      $("q").innerHTML = current.html;
+      $("fb").textContent = ""; $("fb").className = "feedback";
+      renderAnswer(); renderCombo(false);
+      return;
+    }
+    const r = state.cards[current.id];
+    rainbow = isKnown(current.id) && Math.random() < RAINBOW_CHANCE;
+    golden = !rainbow && isKnown(current.id) && Math.random() < GOLDEN_CHANCE;
+    $("card").classList.toggle("golden", golden);
+    $("card").classList.toggle("rainbow", rainbow);
+    $("tag").textContent = FACTS[current.op].name;
+    const badge = $("badge");
+    if (r?.isNew) { badge.hidden = false; badge.className = "badge fresh"; badge.textContent = "New card"; }
+    else if (rainbow) { badge.hidden = false; badge.className = "badge rainbow"; badge.textContent = "Rainbow · fast for a gift"; }
+    else if (golden) { badge.hidden = false; badge.className = "badge gold"; badge.textContent = `Golden · ${GOLDEN_PEARLS} ${THEME.currency.toLowerCase()}`; }
+    else if (r?.hard) { badge.hidden = false; badge.className = "badge tricky"; badge.textContent = "Tricky one"; }
+    else badge.hidden = true;
+    if (golden || rainbow) sfx.golden();
+    $("q").textContent = current.parts ? current.parts[0] : current.text;
+    if (r?.isNew) { $("fb").textContent = "Type the answer you see"; $("fb").className = "feedback hint"; }
+    else { $("fb").textContent = ""; $("fb").className = "feedback"; }
+    renderAnswer(); renderCombo(false);
+    shownAt = performance.now();
+  }
+  function renderAnswer() {
+    const el = $("ans");
+    if (!input && state.cards[current.id]?.isNew) { el.textContent = current.ans; el.className = "answer ghost"; return; }
+    el.textContent = input || "?";
+    el.className = "answer" + (input ? "" : " empty");
+  }
+  const flashReady = () => state.flash && !current.integral && input.length >= String(current.ans).length;
+  function press(d) {
+    audio();
+    if (locked || input.length >= (current.integral ? 2 : MAX_DIGITS)) return;
+    input += d; renderAnswer(); sfx.tap();
+    if (flashReady()) submit(true);
+  }
+  function erase() { if (!locked) { input = input.slice(0, -1); renderAnswer(); } }
+
+  // auto is true when flash mode checks the answer; with flash mode on, Enter only advances, it doesn't check.
+  function submit(auto) {
+    if (overlay) { tapOverlay(); return; }
+    if (locked) { advance(); return; }
+    if (!input || (state.flash && !auto && !current.integral)) return;
+    if (current.integral) { submitIntegral(); return; }
+    const r = rec(current.id);
+
+    if (r.isNew) {
+      if (+input !== current.ans) {
+        input = ""; renderAnswer();
+        $("fb").textContent = `It's ${current.ans}. Type ${current.ans}.`; $("fb").className = "feedback hint";
+        return;
+      }
+      locked = true; r.isNew = false;
+      cheer(choice(NEW_WORDS), { soft: true, color: "#4d7cfe" }); sfx.fresh();
+      if (!reduced) sparkle(18, 5);
+      save(); renderAll();
+      advanceTimer = setTimeout(advance, 1100);
+      return;
+    }
+
+    locked = true;
+    const ms = performance.now() - shownAt, limit = FACTS[current.op].limit, wasHard = !!r.hard, day = state.day;
+    const fb = $("fb"), secs = (ms / 1000).toFixed(1);
+    let delay = 1000;
+
+    if (+input === current.ans) {
+      const idle = ms > IDLE_MS;
+      if (!idle) {
+        r.t = [...(r.t || []), Math.round(ms)].slice(-5);
+        day.times.push(Math.round(ms)); if (day.times.length > 500) day.times.shift();
+      }
+      if (ms <= limit) {
+        r.fast++; day.fast++; r.run = (r.run || 0) + 1; r.w = Math.max(W_MIN, r.w * FAST_MULT);
+        if (isKnown(current.id)) r.got = true;
+        if (wasHard && r.run >= LEARN_RUN) {
+          r.hard = false; r.got = true;
+          if (!state.learned.includes(current.id)) state.learned.push(current.id);
+          session.streak++; state.bestRow = Math.max(state.bestRow, session.streak); renderCombo(true);
+          enqueue(learnedOverlay(current));
+          delay = 250;
+        } else {
+          celebrateFast();
+          if (golden) { cheer(choice(["Golden!", "Jackpot!", "Treasure!"]), { color: "#e3a400" }); if (!reduced) coinShower(); }
+          fb.textContent = `${secs}s`; fb.className = "feedback good";
+          delay = 1300;
+        }
+        if (rainbow) {
+          state.rainbows++;
+          cheer(choice(["Rainbow!", "Over the rainbow!"]), { color: "#a66cff" });
+          if (!reduced) starShower(30, ["#ff5d8f", "#ffc93c", "#29c27f", "#4d7cfe", "#a66cff"]);
+          enqueue(chestOverlay({ title: "A rainbow gift!" }));
+        }
+        addPearls(golden ? GOLDEN_PEARLS : 1);
+        if (day.fast === DAILY_GOAL && !day.goalDone) {
+          day.goalDone = true;
+          state.days.count = state.days.last === yesterday() ? state.days.count + 1 : state.days.last === today() ? state.days.count : 1;
+          state.days.last = today();
+          enqueue(goalOverlay());
+          if (state.days.count % LEGEND_DAYS === 0) enqueue(chestOverlay({ minTier: 3, title: `${state.days.count} days in a row: a legendary gift!` }));
+        }
+        if (mode.kind === "run") { mode.steps++; renderModebar(); if (mode.steps >= RUN_STEPS) finishRun(); }
+        if (queue.length && delay > 250) delay = 1100;
+      } else {
+        session.streak = 0; renderCombo(false);
+        if (!idle) { r.slow++; day.slow++; r.run = 0; r.w = Math.min(W_MAX, r.w * SLOW_MULT); }
+        if (idle) {
+          fb.textContent = "Right"; fb.className = "feedback";
+        } else if (wasHard && ms <= limit + GRACE_MS) {
+          cheer(choice(NEAR_WORDS), { soft: true, color: "#29c27f" }); sfx.slow();
+          if (!reduced) sparkle(14, 4);
+          fb.textContent = `${secs}s`; fb.className = "feedback good";
+          delay = 1500;
+        } else {
+          sfx.slow();
+          fb.textContent = `Right, ${secs}s`; fb.className = "feedback slow";
+        }
+      }
+    } else {
+      r.wrong++; day.wrong++; session.streak = 0; renderCombo(false); r.run = 0;
+      r.w = Math.min(W_MAX, Math.max(1, r.w) * WRONG_MULT);
+      if (meetsHard(r)) r.hard = true;
+      sfx.wrong(); buzz(60);
+      fb.textContent = factText(current); fb.className = "feedback bad";
+      $("ans").textContent = input;
+      const card = $("card"); card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
+      delay = 2200;
+    }
+    const right = +input === current.ans;
+    if (mode.kind === "clock") {
+      if (right) { mode.right++; renderModebar(); }
+      delay = Math.min(delay, right ? 450 : 1300);  // the clock is running, so keep the cards coming
+    }
+    checkUnlocks(); checkBadges();
+    save(); renderAll();
+    advanceTimer = setTimeout(advance, delay);
+  }
+
+  // Integrals don't touch card history, today's stats or the streak. No time limit.
+  function submitIntegral() {
+    locked = true;
+    const fb = $("fb");
+    let delay = 1300;
+    if (+input === current.ans) {
+      const n = intReward();
+      integ.right++;
+      cheer(n > 1 ? choice(["Jackpot!", "Calculus whiz!", "Integral hero!"]) : choice(FAST_WORDS), n > 1 ? { color: "#e3a400" } : {});
+      sfx.fast(1);
+      if (!reduced) { if (n > 1) { coinShower(); fireworks(3); } else sparkle(24, 6); }
+      fb.textContent = `+${n} ${THEME.currency.toLowerCase()}`; fb.className = "feedback good";
+      addPearls(n);
+      if (queue.length) delay = 1100;
+    } else {
+      integ.wrong++;
+      sfx.wrong(); buzz(60);
+      fb.textContent = `It's ${current.ans}`; fb.className = "feedback bad";
+      $("ans").textContent = input;
+      const card = $("card"); card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
+      delay = 2200;
+    }
+    $("tag").textContent = `Integral · ${integ.right} right, ${integ.wrong} wrong`;
+    advanceTimer = setTimeout(advance, delay);
+  }
+
+  /* ---------- panels ---------- */
+  function renderStats() {
+    const d = state.day, n = d.fast + d.slow + d.wrong, med = median(d.times);
+    const play = inPlay(), total = deck.filter(c => state.ops[c.op] && familyOpen(c.op) && cardOpen(c.id)).length;
+    const learning = play.filter(id => !isKnown(id)).length, days = streakDays();
+    $("stats").innerHTML =
+      `<div class="goal"><span>Today's goal</span><div class="meter"><i style="width:${Math.min(100, d.fast / DAILY_GOAL * 100)}%"></i></div><span><b>${Math.min(d.fast, DAILY_GOAL)}</b> / ${DAILY_GOAL} fast</span></div>` +
+      `<div class="row"><span>Today <b>${n}</b></span>` +
+      `<span><i class="dot" style="background:var(--good)"></i>Fast <b>${d.fast}</b></span>` +
+      `<span><i class="dot" style="background:var(--slow)"></i>Slow <b>${d.slow}</b></span>` +
+      `<span><i class="dot" style="background:var(--bad)"></i>Missed <b>${d.wrong}</b></span>` +
+      (days ? `<span>Goal streak <b>${days}</b> day${days > 1 ? "s" : ""}</span>` : "") + `</div>` +
+      `<div class="row"><span>Cards in play <b>${play.length}</b> of ${total}</span><span>Still learning <b>${learning}</b></span>` +
+      (med ? `<span>Typical time today <b>${(med / 1000).toFixed(1)}s</b></span>` : "") + `</div>`;
+  }
+  function renderShelf(newId) {
+    const el = $("shelf"), ids = state.learned.filter(id => byId[id]);
+    el.hidden = ids.length === 0;
+    el.innerHTML = `<span class="shelf-label">Learned</span>` + ids.map(id =>
+      `<span class="chip${id === newId ? " new" : ""}" data-id="${id}" title="${factText(byId[id])}">${STAR}${byId[id].text}</span>`).join("");
+  }
+  function heat(r) {
+    if (!r || r.isNew || !(r.fast + r.slow + r.wrong)) return "var(--card)";
+    if (r.w < 0.95) return "var(--heat0)";
+    if (r.w < 1.5) return r.wrong ? "var(--heat1)" : "var(--card)";
+    if (r.w < 3) return r.wrong ? "var(--heat2)" : "var(--heat1)";
+    return "var(--heat3)";
+  }
+  function renderMaps() {
+    const active = new Set(state.active), learned = new Set(state.learned);
+    let html = "";
+    for (const op of OPS) {
+      if (!state.ops[op] || !familyOpen(op)) continue;
+      const { name, how, limit, rows, cols } = FACTS[op];
+      let g = `<span class="hd"></span>`;
+      for (const b of cols) g += `<span class="hd">${b}</span>`;
+      for (const a of rows) {
+        g += `<span class="hd">${a}</span>`;
+        for (const b of cols) {
+          const c = byId[`${op}:${a}:${b}`];
+          if (!c) { g += `<span style="background:var(--off)"></span>`; continue; }
+          if (!cardOpen(c.id)) { g += `<span class="cell locked" title="${c.text}: locked for now"></span>`; continue; }
+          const r = state.cards[c.id], on = active.has(c.id);
+          const med = r?.t?.length ? `, usually ${(median(r.t) / 1000).toFixed(1)}s` : "";
+          const tip = r && (r.fast + r.slow + r.wrong)
+            ? `${factText(c)}: ${r.fast} fast, ${r.slow} slow, ${r.wrong} missed${med}${r.hard ? " (tricky)" : ""}${on ? "" : " (not in play yet)"}`
+            : `${c.text}: ${on ? "just added" : "not in play yet"}`;
+          g += `<span class="cell${r?.hard ? " hard" : ""}${on ? "" : " later"}" title="${tip}" style="${on ? `background:${heat(r)}` : ""}">${learned.has(c.id) ? "★" : ""}</span>`;
+        }
+      }
+      html += `<div class="map"><h3>${name} <small>· ${how} · ${limit / 1000}s</small></h3><div class="grid" style="grid-template-columns:1.4rem repeat(${cols.length}, minmax(0, 3rem))">${g}</div></div>`;
+    }
+    $("maps").innerHTML = html || `<p class="note">Turn on an operation above to see its map.</p>`;
+  }
+  function renderAll() { topUp(); renderStats(); renderMaps(); }
+
+  /* ---------- wiring ---------- */
+  for (let d = 0; d <= 9; d++) $("k" + d).addEventListener("click", () => press(String(d)));
+  $("kdel").addEventListener("click", erase);
+  $("kgo").addEventListener("click", () => { audio(); submit(); });
+  $("big").addEventListener("click", () => { audio(); tapOverlay(); });
+  document.addEventListener("keydown", e => {
+    if (e.target.closest && (e.target.closest(".foot") || e.target.closest("summary") || e.target.closest("input"))) return;
+    if (/^[0-9]$/.test(e.key)) { if (!overlay) press(e.key); e.preventDefault(); }
+    else if (e.key === "Backspace") { erase(); e.preventDefault(); }
+    else if (e.key === "Enter" || e.key === " ") { audio(); submit(); e.preventDefault(); }
+  });
+  const renderMute = () => { $("mute").textContent = state.muted ? "🔇" : "🔊"; $("mute").setAttribute("aria-label", state.muted ? "Sound off" : "Sound on"); };
+  let holdTimer = null, held = false;
+  const endHold = () => clearTimeout(holdTimer);
+  $("mute").addEventListener("pointerdown", () => {
+    held = false; endHold();
+    holdTimer = setTimeout(() => { held = true; buzz([20, 40, 20]); setIntegral(true); }, INT_HOLD_MS);
+  });
+  ["pointerup", "pointerleave", "pointercancel"].forEach(ev => $("mute").addEventListener(ev, endHold));
+  $("mute").addEventListener("contextmenu", e => e.preventDefault());
+  $("mute").addEventListener("click", () => {
+    if (held) { held = false; return; }  // a long press revealed integrals; don't also toggle sound
+    state.muted = !state.muted; save(); renderMute(); if (!state.muted) { audio(); sfx.pearl(); }
+  });
+
+  $("flash").innerHTML = BOLT;
+  $("flash").addEventListener("click", () => {
+    state.flash = !state.flash; save(); renderFlash();
+    if (current && !locked && !overlay && flashReady()) submit(true);
+  });
+
+  // One button per family that is open. The ∫ button, once revealed, stays at the end.
+  function renderOps() {
+    const intBtn = $("int-op");
+    $("ops").innerHTML = shownOps().map(op =>
+      `<button class="op-toggle" data-op="${op}" title="${FACTS[op].name}" aria-pressed="${!integ.on && !!state.ops[op]}">${FACTS[op].sym}</button>`).join("");
+    if (intBtn) $("ops").appendChild(intBtn);
+  }
+  $("ops").addEventListener("click", e => {
+    const btn = e.target.closest(".op-toggle[data-op]"); if (!btn) return;
+    if (integ.on) { setIntegral(false); return; }
+    const op = btn.dataset.op, on = shownOps().filter(o => state.ops[o]).length;
+    if (state.ops[op] && on === 1) return;
+    state.ops[op] = !state.ops[op];
+    btn.setAttribute("aria-pressed", String(state.ops[op]));
+    renderAll(); save(); if (!overlay && !locked) show();
+  });
+
+  /* ---------- play modes: the run and beat the clock ---------- */
+  function renderModes() {
+    const avail = [];
+    if (state.earned.run) avail.push(["run", `${THEME.run.icon} ${THEME.run.name}`]);
+    if (state.earned.clock) avail.push(["clock", "⏱️ Beat the clock"]);
+    $("modes").hidden = !avail.length;
+    $("modes").innerHTML = avail.map(([k, label]) =>
+      `<button class="pill" data-mode="${k}" aria-pressed="${mode.kind === k}" ${mode.kind && mode.kind !== k ? "disabled" : ""}>${mode.kind === k ? "Stop" : label}</button>`).join("");
+    renderModebar();
+  }
+  function renderModebar() {
+    const bar = $("modebar");
+    bar.hidden = !mode.kind;
+    if (!mode.kind) { bar.dataset.kind = ""; return; }
+    if (bar.dataset.kind !== mode.kind) {
+      bar.dataset.kind = mode.kind;
+      bar.innerHTML = mode.kind === "run"
+        ? `<span class="goal">${THEME.run.goal}</span><span class="mover">${THEME.run.mover}</span>`
+        : `<span class="left"></span><span class="clock"><span class="t"></span><span class="n"></span></span>`;
+    }
+    if (mode.kind === "run") {
+      bar.querySelector(".mover").style.left = `calc(${mode.steps / RUN_STEPS} * (100% - 4.4rem) + 6px)`;
+    } else {
+      const left = Math.max(0, mode.end - performance.now());
+      bar.querySelector(".left").style.width = `${left / CLOCK_MS * 100}%`;
+      bar.querySelector(".t").textContent = `⏱️ ${Math.ceil(left / 1000)}s`;
+      bar.querySelector(".n").textContent = `${mode.right} right`;
+    }
+  }
+  function startMode(kind) {
+    if (integ.on) setIntegral(false);
+    clearInterval(mode.timer);
+    Object.assign(mode, { kind, steps: 0, right: 0, end: performance.now() + CLOCK_MS });
+    session.streak = 0; renderCombo(false);
+    if (kind === "clock") mode.timer = setInterval(() => { if (performance.now() >= mode.end) timeUp(); else renderModebar(); }, 200);
+    renderModes();
+    if (!overlay) show();
+  }
+  function stopMode() { clearInterval(mode.timer); mode.kind = null; renderModes(); }
+  // Ends the mode and puts its result first in line. If a card is waiting for an answer, the result opens now;
+  // otherwise the pending advance opens it.
+  function finishMode(o) {
+    stopMode(); queue.unshift(o);
+    if (!locked && !overlay) { locked = true; openNext(); }
+  }
+  function finishRun() {
+    state.runs++;
+    const gift = state.runDay !== today();
+    state.runDay = today();
+    if (gift) queue.unshift(chestOverlay({ title: THEME.gift.title }));
+    finishMode({
+      open() {
+        setBig({ icon: THEME.run.goal, iconClass: "reveal", title: THEME.run.done,
+          sub: gift ? "Here's a gift for getting there!" : `Here's ${money(RUN_REPEAT_PEARLS)}. The gift comes with the first one each day.` });
+        sfx.fanfare(); buzz([30, 60, 30]);
+        if (!reduced) { confetti(160); fireworks(4); }
+      },
+    });
+    if (!gift) addPearls(RUN_REPEAT_PEARLS);
+  }
+  function timeUp() {
+    const score = mode.right, best = state.best.clock || 0, isBest = score > best;
+    if (isBest) state.best.clock = score;
+    clearTimeout(advanceTimer);
+    finishMode({
+      open() {
+        setBig({ icon: "⏱️", iconClass: "reveal", title: isBest && best ? "New best!" : "Time!", fact: `${score} right in one minute`,
+          sub: isBest && score ? `${best ? `Your old best was ${best}. ` : ""}That's worth ${money(CLOCK_BEST_PEARLS)}.` : `Your best is ${best}. Try again to beat it!` });
+        sfx.fanfare();
+        if (!reduced) { fireworks(isBest ? 5 : 2); if (isBest) starShower(24); }
+      },
+    });
+    if (!overlay) openNext();  // time ran out between cards: don't wait for the next one
+    if (isBest && score) addPearls(CLOCK_BEST_PEARLS);
+    checkBadges(); save();
+  }
+  $("modes").addEventListener("click", e => {
+    const b = e.target.closest("[data-mode]"); if (!b || b.disabled) return;
+    audio();
+    if (mode.kind) { stopMode(); flushQueue(); if (!overlay && !locked) show(); }
+    else startMode(b.dataset.mode);
+  });
+
+  function setIntegral(on) {
+    if (on && mode.kind) stopMode();
+    if (!integ.shown) {
+      integ.shown = true;
+      const b = document.createElement("button");
+      b.className = "op-toggle"; b.id = "int-op"; b.title = "Integrals"; b.textContent = "∫";
+      b.addEventListener("click", () => setIntegral(!integ.on));
+      $("ops").appendChild(b);
+      if (!reduced) b.style.animation = "chipin .6s cubic-bezier(.3,1.6,.5,1)";
+      sfx.golden();
+    }
+    integ.on = on;
+    $("int-op").setAttribute("aria-pressed", String(on));
+    document.querySelectorAll(".op-toggle[data-op]").forEach(b => b.setAttribute("aria-pressed", String(!on && !!state.ops[b.dataset.op])));
+    if (!overlay) show();
+  }
+
+  $("reset").addEventListener("click", () => { $("confirm").hidden = false; $("reset").hidden = true; });
+  $("reset-no").addEventListener("click", () => { $("confirm").hidden = true; $("reset").hidden = false; });
+  $("reset-yes").addEventListener("click", () => {
+    Object.assign(state, { cards: {}, learned: [], active: [], rr: 0, tank: [THEME.starter], pearls: 0, opened: 0, flashEarned: false, flash: false, days: { last: null, count: 0 },
+      day: { date: today(), fast: 0, slow: 0, wrong: 0, times: [], goalDone: false }, ...blank() });
+    OPS.forEach(op => state.ops[op] = FACTS[op].on !== false);
+    if (mode.kind) stopMode();
+    session.streak = 0; queue.length = 0; overlay = null; $("big").hidden = true; drawer = null; save();
+    $("confirm").hidden = true; $("reset").hidden = false;
+    renderOps(); renderAll(); renderShelf(); renderTank(); renderPearls(); renderFlash(); renderModes(); show();
+  });
+
+  $("pearl-name").textContent = THEME.currency;
+  // A save from an older version may already qualify for unlocks and perks: those get their moment now.
+  // Badges it already qualifies for are awarded quietly.
+  checkUnlocks(); earnPerks(); checkBadges(true);
+  renderMute(); renderOps(); renderAll(); renderShelf(); renderTank(); renderPearls(); renderFlash(); renderModes();
+  save();
+  if (queue.length) openNext(); else show();
+})();
+</script>
+
+</body></html>

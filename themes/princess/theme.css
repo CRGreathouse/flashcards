@@ -1,0 +1,30 @@
+/* Princess theme: pink and lavender palette, a castle room for the tank, gems instead of pearls. */
+:root {
+  --bg: #fbf0f6; --muted: #6e5a72; --card: #fffafc; --rule: #c45ab3; --line: #f0d3e6;
+  --accent: #b5338a; --key-edge: #ecd0e2; --off: #f1e3ec; --gold-soft: #fff0d6;
+  --water-top: #fde2f1; --water-bot: #d8b8f0; --sand: #e58fbf; --pearl: #ff6fb5;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1b1420; --muted: #b9a5bd; --card: #271d2c; --rule: #e07acb; --line: #43304a;
+  --accent: #f28ccf; --key: #2c2131; --key-edge: #4a3651; --off: #2a2030; --gold-soft: #3a3016;
+  --water-top: #4a2c5e; --water-bot: #24153a; --sand: #7a3a64; --pearl: #ff8cc6; } }
+:root[data-theme="dark"] {
+  --bg: #1b1420; --muted: #b9a5bd; --card: #271d2c; --rule: #e07acb; --line: #43304a;
+  --accent: #f28ccf; --key: #2c2131; --key-edge: #4a3651; --off: #2a2030; --gold-soft: #3a3016;
+  --water-top: #4a2c5e; --water-bot: #24153a; --sand: #7a3a64; --pearl: #ff8cc6; }
+
+/* the tank floor becomes a carpet, bubbles become drifting sparkles */
+.tank::after { height: 12px; border-radius: 0; }
+.bubble { border: 0; background: #fff; box-shadow: 0 0 6px 2px rgba(255, 255, 255, .8);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); width: 9px; height: 9px; }
+/* gems: a faceted diamond shape */
+.pearl-icon, .pearl-fly { border-radius: 0; clip-path: polygon(50% 0, 100% 38%, 50% 100%, 0 38%);
+  background: linear-gradient(135deg, #fff 0 18%, var(--pearl) 45%, #c2307e); }
+.pearl-fly { box-shadow: none; }
+.tiara { width: 1.15em; height: 1.15em; vertical-align: -0.15em; }
+.big-icon svg.tiara { width: 96px; height: 96px; }
+/* drawn dress-up clothes: sized like an emoji, a little taller than the tiara */
+.outfit { width: 1.3em; height: 1.3em; vertical-align: -0.25em; }
+.big-icon svg.outfit { width: 112px; height: 112px; transform-origin: 50% 20%; animation: swish 1.6s ease-in-out .8s infinite alternate; }
+@keyframes swish { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+@media (prefers-reduced-motion: reduce) { .big-icon svg.outfit { animation: none; } }

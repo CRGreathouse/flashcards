@@ -1,0 +1,109 @@
+  // No tiara emoji exists, so the tiara is drawn inline. It sizes with the surrounding font like an emoji.
+  const TIARA = `<svg class="tiara" viewBox="0 0 64 48" aria-hidden="true"><path d="M4 42 Q32 30 60 42 L60 46 Q32 34 4 46Z" fill="#e3a400"/><path d="M6 41 L12 22 L20 34 L32 6 L44 34 L52 22 L58 41 Q32 29 6 41Z" fill="#ffc93c" stroke="#e3a400" stroke-width="2" stroke-linejoin="round"/><circle cx="32" cy="22" r="5" fill="#ff5d8f"/><circle cx="16" cy="32" r="3" fill="#8fd3f0"/><circle cx="48" cy="32" r="3" fill="#8fd3f0"/><circle cx="32" cy="6" r="3" fill="#fff"/><circle cx="12" cy="22" r="2.5" fill="#fff"/><circle cx="52" cy="22" r="2.5" fill="#fff"/></svg>`;
+  // Dress-up clothes have no emoji either, so they are drawn the same way. Flat fills only: a gradient's id
+  // would repeat in every copy on the page.
+  const BALL_GOWN = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><path d="M24 30 C18 40 8 48 3 58 Q8 62 13 59 Q18 63 23 60 Q28 64 32 61 Q36 64 41 60 Q46 63 51 59 Q56 62 61 58 C56 48 46 40 40 30Z" fill="#ff7eb6" stroke="#c93d80" stroke-width="1.5" stroke-linejoin="round"/><path d="M29 31 C27 41 23 51 19 60 Q25 63 32 61 Q39 63 45 60 C41 51 37 41 35 31Z" fill="#ffd0e5"/><path d="M20 59 Q23 56 26 60 Q29 57 32 60 Q35 57 38 60 Q41 56 44 59" fill="none" stroke="#ffc93c" stroke-width="2" stroke-linecap="round"/><path d="M25 34 C20 44 14 50 10 56 M39 34 C44 44 50 50 54 56" fill="none" stroke="#c93d80" stroke-width="1.2" stroke-linecap="round" opacity=".6"/><ellipse cx="21.5" cy="23" rx="5" ry="3.6" fill="#ffb3d4" stroke="#c93d80" stroke-width="1.2"/><ellipse cx="42.5" cy="23" rx="5" ry="3.6" fill="#ffb3d4" stroke="#c93d80" stroke-width="1.2"/><path d="M24 18 Q28 15 32 19 Q36 15 40 18 L40 31 L24 31Z" fill="#e8458f" stroke="#b02a6c" stroke-width="1.2" stroke-linejoin="round"/><rect x="22.5" y="28" width="19" height="4" rx="2" fill="#ffc93c" stroke="#e3a400" stroke-width="1"/><circle cx="32" cy="30" r="2.6" fill="#8fd3f0" stroke="#fff" stroke-width="1"/><g fill="#fff"><circle cx="25" cy="46" r="1.3"/><circle cx="39" cy="44" r="1.3"/><circle cx="32" cy="52" r="1.3"/><circle cx="13" cy="55" r="1"/><circle cx="51" cy="55" r="1"/><circle cx="29" cy="38" r="1"/><circle cx="36" cy="37" r="1"/></g></svg>`;
+  const TUTU = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><path d="M27 8 L28 16 M37 8 L36 16" stroke="#7a5ae0" stroke-width="2" stroke-linecap="round"/><path d="M22 34 L8 46 Q12 50 16 47 Q19 52 24 48 Q28 53 32 49 Q36 53 40 48 Q45 52 48 47 Q52 50 56 46 L42 34Z" fill="#e3d8ff" stroke="#9b7bff" stroke-width="1.3" stroke-linejoin="round"/><path d="M23 32 L11 42 Q15 46 19 43 Q22 47 26 44 Q29 48 32 45 Q35 48 38 44 Q42 47 45 43 Q49 46 53 42 L41 32Z" fill="#b9a2ff" stroke="#7a5ae0" stroke-width="1.3" stroke-linejoin="round"/><path d="M26 14 Q32 19 38 14 L41 33 L23 33Z" fill="#9b7bff" stroke="#6a48d4" stroke-width="1.2" stroke-linejoin="round"/><path d="M32 30 L25 26 L25 35Z M32 30 L39 26 L39 35Z" fill="#ff5d8f" stroke="#d6336c" stroke-width="1" stroke-linejoin="round"/><circle cx="32" cy="30" r="2.2" fill="#ff8fb1" stroke="#d6336c" stroke-width="1"/><g fill="#fff"><circle cx="18" cy="44" r="1.1"/><circle cx="27" cy="41" r="1.1"/><circle cx="37" cy="41" r="1.1"/><circle cx="46" cy="44" r="1.1"/><circle cx="32" cy="22" r="1.1"/><circle cx="29" cy="18" r=".8"/><circle cx="35" cy="18" r=".8"/></g></svg>`;
+  const STARLIGHT_GOWN = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><path d="M25 28 C21 38 14 46 10 52 Q32 57 54 52 C50 46 43 38 39 28Z" fill="#9ad8ff" stroke="#3a8fd0" stroke-width="1.3" stroke-linejoin="round"/><path d="M12 50 C9 55 6 58 3 61 Q32 66 61 61 C58 58 55 55 52 50 Q32 56 12 50Z" fill="#6fc3ff" stroke="#3a8fd0" stroke-width="1.3" stroke-linejoin="round"/><path d="M19 42 Q32 47 45 42" fill="none" stroke="#e6f6ff" stroke-width="2" stroke-linecap="round"/><path d="M8 56 Q32 62 56 56" fill="none" stroke="#e6f6ff" stroke-width="2" stroke-linecap="round"/><path d="M23 18 Q27 15 32 19 Q37 15 41 18 L40 30 L24 30Z" fill="#cdeeff" stroke="#3a8fd0" stroke-width="1.2" stroke-linejoin="round"/><ellipse cx="21.5" cy="21" rx="4.5" ry="3.4" fill="#e6f6ff" fill-opacity=".9" stroke="#3a8fd0" stroke-width="1"/><ellipse cx="42.5" cy="21" rx="4.5" ry="3.4" fill="#e6f6ff" fill-opacity=".9" stroke="#3a8fd0" stroke-width="1"/><rect x="23" y="27.5" width="18" height="3.5" rx="1.75" fill="#e9eef5" stroke="#9fb3c8" stroke-width="1"/><g fill="#fff" stroke="#ffd84d" stroke-width=".6" stroke-linejoin="round"><path d="M32 33 l1.4 3 3.2.4-2.4 2.2.7 3.2-2.9-1.6-2.9 1.6.7-3.2-2.4-2.2 3.2-.4Z"/><path d="M20 50 l1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z"/><path d="M44 50 l1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z"/></g><g fill="#fff"><circle cx="26" cy="38" r="1"/><circle cx="38" cy="39" r="1"/><circle cx="32" cy="48" r="1.2"/><circle cx="12" cy="59" r="1"/><circle cx="52" cy="59" r="1"/><circle cx="32" cy="23" r="1.6" fill="#ffd84d"/><circle cx="18" cy="45" r="1"/><circle cx="46" cy="45" r="1"/><circle cx="24" cy="58" r="1"/><circle cx="40" cy="58" r="1"/></g></svg>`;
+  const CAPE = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 12 C22 13 17 24 12 58 Q22 62 32 59 Q42 62 52 58 C47 24 42 13 32 12Z" fill="#d12a4a" stroke="#8e1530" stroke-width="1.4" stroke-linejoin="round"/><path d="M32 16 C28 26 27 44 26 59 Q32 61 38 59 C37 44 36 26 32 16Z" fill="#ffc93c" stroke="#e3a400" stroke-width="1"/><path d="M13 56 Q22 61 32 58 Q42 61 51 56" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><ellipse cx="32" cy="15" rx="13" ry="5.5" fill="#fff" stroke="#c9c2cc" stroke-width="1"/><g fill="#3a2a35"><circle cx="23" cy="15" r="1"/><circle cx="32" cy="18" r="1"/><circle cx="41" cy="15" r="1"/><circle cx="19" cy="58" r="1"/><circle cx="32" cy="59.5" r="1"/><circle cx="45" cy="58" r="1"/></g><circle cx="32" cy="20" r="3" fill="#8fd3f0" stroke="#e3a400" stroke-width="1.5"/></svg>`;
+  const HENNIN = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><path d="M30 5 C38 14 48 22 60 26 C56 34 52 44 54 58 C46 46 42 36 40 30" fill="#e6d4ff" fill-opacity=".85" stroke="#a98be8" stroke-width="1.2" stroke-linejoin="round"/><path d="M30 4 L16 52 Q30 58 44 52Z" fill="#ff7eb6" stroke="#c93d80" stroke-width="1.5" stroke-linejoin="round"/><path d="M26 18 L35 21 M23 29 L38 34 M20 40 L41 46" stroke="#ffc93c" stroke-width="1.6" stroke-linecap="round"/><path d="M15 50 Q30 58 45 50 L46 55 Q30 63 14 55Z" fill="#ffc93c" stroke="#e3a400" stroke-width="1.2" stroke-linejoin="round"/><circle cx="30" cy="57" r="2.4" fill="#8fd3f0" stroke="#fff" stroke-width="1"/><circle cx="21" cy="54.5" r="1.4" fill="#fff"/><circle cx="39" cy="54.5" r="1.4" fill="#fff"/><circle cx="30" cy="4" r="2.6" fill="#fff" stroke="#c93d80" stroke-width="1"/></svg>`;
+  const WINGS = `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true"><g stroke-linejoin="round" stroke-width="1.4"><path d="M31 30 C24 12 10 4 5 12 C1 20 12 30 31 32Z" fill="#b8ecff" fill-opacity=".85" stroke="#4fb3dc"/><path d="M33 30 C40 12 54 4 59 12 C63 20 52 30 33 32Z" fill="#b8ecff" fill-opacity=".85" stroke="#4fb3dc"/><path d="M31 33 C20 34 10 42 13 52 C16 59 28 50 31 36Z" fill="#ffc6e5" fill-opacity=".9" stroke="#e070ad"/><path d="M33 33 C44 34 54 42 51 52 C48 59 36 50 33 36Z" fill="#ffc6e5" fill-opacity=".9" stroke="#e070ad"/></g><path d="M29 29 C22 20 14 14 9 13 M35 29 C42 20 50 14 55 13 M30 35 C24 40 19 45 17 50 M34 35 C40 40 45 45 47 50" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".9"/><ellipse cx="32" cy="32" rx="2.4" ry="5" fill="#b98bff" stroke="#7a5ae0" stroke-width="1"/><g fill="#fff"><circle cx="14" cy="20" r="1.3"/><circle cx="50" cy="20" r="1.3"/><circle cx="20" cy="46" r="1.1"/><circle cx="44" cy="46" r="1.1"/></g></svg>`;
+  const drawn = body => `<svg class="outfit" viewBox="0 0 64 64" aria-hidden="true">${body}</svg>`;
+  const recolor = (s, map) => Object.entries(map).reduce((t, [from, to]) => t.split(from).join(to), s);
+  // Seasonal gowns are the ball gown in other colors.
+  const SNOW_GOWN = recolor(BALL_GOWN, { "#ff7eb6": "#cfeeff", "#c93d80": "#5aa9d6", "#ffd0e5": "#f4fbff", "#ffb3d4": "#e2f4ff", "#e8458f": "#8fd0f5", "#b02a6c": "#3a8fc0" });
+  const PUMPKIN_GOWN = recolor(BALL_GOWN, { "#ff7eb6": "#ff9a3c", "#c93d80": "#b8560a", "#ffd0e5": "#6b3fa0", "#ffb3d4": "#ffc27a", "#e8458f": "#7a4ab5", "#b02a6c": "#4a2a75" });
+  const CARRIAGE = drawn(`<path d="M32 18Q30 10 35 7" fill="none" stroke="#3f8f3a" stroke-width="3" stroke-linecap="round"/><path d="M35 9q7-3 9 3-6 2-9-3Z" fill="#5cb85c"/><ellipse cx="32" cy="34" rx="23" ry="17" fill="#ff9a3c" stroke="#d96b10" stroke-width="2"/><path d="M32 17v34M20 20q-6 14 0 28M44 20q6 14 0 28" fill="none" stroke="#d96b10" stroke-width="1.5"/><rect x="25" y="25" width="14" height="13" rx="6" fill="#bfe8ff" stroke="#e3a400" stroke-width="2.5"/><g fill="none" stroke="#e3a400" stroke-width="3"><circle cx="17" cy="52" r="8"/><circle cx="47" cy="52" r="8"/></g><path d="M17 44v16M9 52h16M47 44v16M39 52h16" stroke="#e3a400" stroke-width="1.5"/>`);
+  const THRONE = drawn(`<path d="M18 7 24 13 32 4 40 13 46 7V36H18Z" fill="#c93d80" stroke="#e3a400" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="21" r="4" fill="#8fd3f0" stroke="#fff" stroke-width="1.5"/><path d="M16 45 14 60M48 45 50 60" stroke="#e3a400" stroke-width="4" stroke-linecap="round"/><rect x="11" y="34" width="42" height="11" rx="4" fill="#ff7eb6" stroke="#e3a400" stroke-width="2"/><rect x="9" y="26" width="7" height="21" rx="2.5" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5"/><rect x="48" y="26" width="7" height="21" rx="2.5" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5"/>`);
+  const PEGASUS = drawn(`<path d="M15 34Q4 36 6 49" fill="none" stroke="#c9b3ff" stroke-width="5" stroke-linecap="round"/><path d="M20 40v16M26 42v15M38 42v15M44 40v16" stroke="#e8e2f5" stroke-width="4" stroke-linecap="round"/><path d="M18 57h4M24 58h4M36 58h4M42 57h4" stroke="#ffc93c" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="31" cy="37" rx="16" ry="9" fill="#fff" stroke="#b9a8de" stroke-width="1.5"/><path d="M40 33 47 14 56 13 60 19 50 22 47 37Z" fill="#fff" stroke="#b9a8de" stroke-width="1.5" stroke-linejoin="round"/><path d="M47 14Q42 21 41 31" fill="none" stroke="#c9b3ff" stroke-width="4" stroke-linecap="round"/><circle cx="53" cy="16" r="1.6" fill="#2a2a2a"/><path d="M31 33Q19 14 7 8 13 17 11 20 19 22 17 26 25 28 31 33Z" fill="#f4efff" stroke="#b9a8de" stroke-width="1.5" stroke-linejoin="round"/>`);
+  // The dress-up doll's head. Clothes are layered around it.
+  const DOLL = `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 30Q12 6 32 6 52 6 50 30 52 46 46 52H18Q12 46 14 30Z" fill="#7a4a2a"/><rect x="28" y="40" width="8" height="16" fill="#f1c39c"/><ellipse cx="32" cy="30" rx="13" ry="15" fill="#f8d4b4"/><path d="M19 27Q21 12 32 12 43 12 45 27 40 18 32 18 24 18 19 27Z" fill="#7a4a2a"/><circle cx="27" cy="30" r="2" fill="#3a2a2a"/><circle cx="37" cy="30" r="2" fill="#3a2a2a"/><circle cx="23.5" cy="35" r="2.6" fill="#ff8fb1" opacity=".5"/><circle cx="40.5" cy="35" r="2.6" fill="#ff8fb1" opacity=".5"/><path d="M28 37Q32 40.5 36 37" fill="none" stroke="#c0505a" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+  const THEME = {
+    home: "Your castle",
+    currency: "Gems",
+    collection: "Royal treasures",
+    gift: { icon: "🎁", title: "A royal gift!", fresh: "Something new for your castle!", again: "Another one for your castle!" },
+    fastWords: ["Royally done!", "Sparkle power!", "Magical!", "Crown-worthy!", "Dazzling!", "Fit for a queen!"],
+    starter: "gown",
+    // Each room is its own collection; filling one opens the next. The first room's items keep their original keys.
+    // r is the rarity tier (0 common to 3 legendary); floor items walk along the bottom. Keys must be unique across rooms.
+    // `colors` paints the room (top, bottom, floor); the first room uses the page palette.
+    rooms: [
+      { name: "Castle", decor: `<span class="weed" style="left:5%">🌷</span><span class="weed" style="left:80%;animation-delay:-2s">🌸</span>`,
+        creatures: {
+          gown: { e: "👗", name: "Sundress", r: 0 }, kimono: { e: "👘", name: "Silk robe", r: 0 },
+          ribbon: { e: "🎀", name: "Ribbon", r: 0 }, rose: { e: "🌹", name: "Rose", r: 0 },
+          purse: { e: "👛", name: "Purse", r: 0 }, cupcake: { e: "🧁", name: "Royal cupcake", r: 0 },
+          tutu: { e: TUTU, name: "Tutu dress", r: 0 },
+          slipper: { e: "👠", name: "Glass slipper", r: 0, floor: 1 },
+          tiara: { e: TIARA, name: "Tiara", r: 1 }, ring: { e: "💍", name: "Ring", r: 1 },
+          swan: { e: "🦢", name: "Swan", r: 1 }, butterfly: { e: "🦋", name: "Butterfly", r: 1 },
+          frog: { e: "🐸", name: "Frog prince", r: 1, floor: 1 },
+          cape: { e: CAPE, name: "Royal cape", r: 1 }, hennin: { e: HENNIN, name: "Princess hat", r: 1 },
+          wings: { e: WINGS, name: "Fairy wings", r: 1 },
+          crown: { e: "👑", name: "Crown", r: 2 }, jewel: { e: "💎", name: "Royal jewel", r: 2 },
+          fairy: { e: "🧚", name: "Fairy godmother", r: 2 }, dragon: { e: "🐉", name: "Friendly dragon", r: 2 },
+          unicorn: { e: "🦄", name: "Unicorn", r: 2, floor: 1 },
+          ballgown: { e: BALL_GOWN, name: "Ball gown", r: 2 },
+          princess: { e: "👸", name: "Princess", r: 3 },
+          starlight: { e: STARLIGHT_GOWN, name: "Starlight gown", r: 3 },
+        } },
+      { name: "Garden", colors: ["#d9f5c8", "#8fd18a", "#7cb85a"],
+        decor: `<span class="weed" style="left:4%">🌷</span><span class="weed" style="left:86%;animation-delay:-1s">🌼</span>`,
+        creatures: {
+          bunny: { e: "🐇", name: "Bunny", r: 0, floor: 1 }, hedgehog: { e: "🦔", name: "Hedgehog", r: 0, floor: 1 },
+          bee: { e: "🐝", name: "Bumblebee", r: 0 }, sunflower: { e: "🌻", name: "Sunflower", r: 0, floor: 1 },
+          ladybug: { e: "🐞", name: "Ladybug", r: 0 }, strawberry: { e: "🍓", name: "Strawberry", r: 0 },
+          peacock: { e: "🦚", name: "Peacock", r: 1, floor: 1 }, dove: { e: "🕊️", name: "Dove", r: 1 },
+          teapot: { e: "🫖", name: "Garden tea set", r: 1, floor: 1 },
+          flamingo: { e: "🦩", name: "Flamingo", r: 2, floor: 1 }, rainbow: { e: "🌈", name: "Rainbow", r: 2 },
+          wand: { e: "🪄", name: "Magic wand", r: 3 },
+        } },
+      { name: "Stables", colors: ["#ffe9c2", "#e8b878", "#b8864a"],
+        decor: `<span class="weed" style="left:6%">🌾</span><span class="weed" style="left:82%;animation-delay:-2s">🌾</span>`,
+        creatures: {
+          kitten: { e: "🐈", name: "Kitten", r: 0, floor: 1 }, puppy: { e: "🐕", name: "Puppy", r: 0, floor: 1 },
+          lamb: { e: "🐑", name: "Lamb", r: 0, floor: 1 }, rooster: { e: "🐓", name: "Rooster", r: 0, floor: 1 },
+          carrot: { e: "🥕", name: "Carrot", r: 0 },
+          pony: { e: "🐴", name: "Pony", r: 1 }, deer: { e: "🦌", name: "Deer", r: 1, floor: 1 }, duck: { e: "🦆", name: "Duck", r: 1, floor: 1 },
+          horse: { e: "🐎", name: "Royal horse", r: 2, floor: 1 }, carriage: { e: CARRIAGE, name: "Pumpkin carriage", r: 2, floor: 1 },
+          pegasus: { e: PEGASUS, name: "Pegasus", r: 3 },
+        } },
+      { name: "Dragon tower", colors: ["#5a4a8a", "#241a40", "#4a3a5a"],
+        decor: `<span class="weed" style="left:8%">🕯️</span><span class="weed" style="left:84%;animation-delay:-1s">🕯️</span>`,
+        creatures: {
+          egg: { e: "🥚", name: "Dragon egg", r: 0, floor: 1 }, scroll: { e: "📜", name: "Magic scroll", r: 0 },
+          key: { e: "🗝️", name: "Golden key", r: 0 }, crystal: { e: "🔮", name: "Crystal ball", r: 1, floor: 1 },
+          owl: { e: "🦉", name: "Owl", r: 1 }, mirror: { e: "🪞", name: "Magic mirror", r: 1, floor: 1 },
+          throne: { e: THRONE, name: "Throne", r: 2, floor: 1 }, babydragon: { e: "🐲", name: "Baby dragon", r: 2 },
+          elf: { e: "🧝‍♀️", name: "Elf", r: 2 },
+          queen: { e: "🫅", name: "The queen", r: 3 },
+        } },
+    ],
+    // Visitors only come in their months (1 = January). They live in the first room.
+    seasonal: {
+      s_pumpkin: { e: "🎃", name: "Jack-o'-lantern", r: 0, floor: 1, months: [10] }, s_ghost: { e: "👻", name: "Friendly ghost", r: 1, months: [10] },
+      s_pumpkingown: { e: PUMPKIN_GOWN, name: "Pumpkin gown", r: 2, months: [10] },
+      s_snowflake: { e: "❄️", name: "Snowflake", r: 0, months: [12, 1] }, s_snowman: { e: "⛄", name: "Snowman", r: 1, floor: 1, months: [12, 1] },
+      s_snowgown: { e: SNOW_GOWN, name: "Snow gown", r: 2, months: [12, 1] },
+      s_letter: { e: "💌", name: "Love letter", r: 0, months: [2] }, s_heart: { e: "💖", name: "Sparkly heart", r: 1, months: [2] },
+      s_chick: { e: "🐣", name: "Spring chick", r: 0, floor: 1, months: [4] },
+    },
+    // Decorations from the shop, placed on the floor of any room.
+    shop: {
+      d_plant: { e: "🪴", name: "Potted plant" }, d_teddy: { e: "🧸", name: "Teddy bear" }, d_vase: { e: "🏺", name: "Vase" },
+      d_fountain: { e: "⛲", name: "Fountain" }, d_carousel: { e: "🎠", name: "Carousel horse" }, d_painting: { e: "🖼️", name: "Painting" },
+      d_piano: { e: "🎹", name: "Piano" }, d_sofa: { e: "🛋️", name: "Sofa" },
+    },
+    run: { name: "Royal ball run", icon: "🏰", mover: CARRIAGE, goal: "🏰", badge: "Belle of the ball",
+      intro: "Each fast answer moves the carriage closer. Ten fast answers get you to the ball!", done: "You made it to the ball!" },
+    // Dress-up: each slot lists the items that can go there; only ones you own show up.
+    dressUp: { doll: DOLL, slots: [
+      { key: "dress", name: "Dress", items: ["gown", "kimono", "tutu", "ballgown", "starlight", "s_pumpkingown", "s_snowgown"] },
+      { key: "head", name: "Head", items: ["tiara", "crown", "hennin", "ribbon"] },
+      { key: "back", name: "Back", items: ["wings", "cape"] },
+      { key: "hand", name: "Hand", items: ["wand", "rose", "purse", "butterfly", "cupcake", "sunflower", "jewel"] },
+      { key: "feet", name: "Feet", items: ["slipper"] },
+    ] },
+    pictures: ["castle", "heart", "rainbow", "star", "sun", "fish", "heart"],
+  };
