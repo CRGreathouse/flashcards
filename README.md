@@ -40,6 +40,7 @@ Once the collection holds 12 items (`FLASH_TANK` in `src/index.html`), the playe
 - **Dress up** (princess): put owned gowns, headwear, wings or cape, held items and slippers on a paper doll.
 - **Badges** for streaks, perfect days, full rooms, finishing a fact family and more. Each new one is worth 5 currency.
 - **Pictures**: every family's practice map hides a picture. Each card that has been known at least once uncovers its square.
+- **Earthquakes** (grade1, `EARTHQUAKES` in its `config.js`): a wrong answer can set off an earthquake. The page shakes with a rumble, and every prize tumbles off the shelves into a jumble on the floor. Each fast answer puts one back, starting with the room on show. It's only for show: fallen prizes are still owned and still count. The chance starts at 10%, rises 1% with every answer up to 80%, and drops to 0% after an earthquake.
 
 ### Ways to play
 

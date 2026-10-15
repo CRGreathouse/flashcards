@@ -116,6 +116,21 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 }
 .hover { display: inline-block; animation: hover ease-in-out infinite; }
 @keyframes hover { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(5px, -3px); } 50% { transform: translate(0, -5px); } 75% { transform: translate(-5px, -2px); } }
+/* earthquakes: prizes knocked to the floor lie there at an angle until fast answers put them back */
+.fallen { z-index: 3; }
+.fallen > span { display: inline-block; transform: rotate(var(--rot)); transform-origin: 50% 70%; }
+.fallen > span.drop { animation: drop .75s cubic-bezier(.5,0,.75,0) both; }
+@keyframes drop {
+  0% { transform: translateY(-80px) rotate(0); } 65% { transform: translateY(0) rotate(var(--rot)); }
+  80% { transform: translateY(-7px) rotate(var(--rot)); } 100% { transform: translateY(0) rotate(var(--rot)); }
+}
+.wrap.quake { animation: quake 1.2s linear; }
+@keyframes quake {
+  0%, 100% { transform: none; } 8% { transform: translate(-7px, 2px) rotate(-.6deg); } 16% { transform: translate(6px, -3px) rotate(.5deg); }
+  24% { transform: translate(-8px, -1px) rotate(-.4deg); } 32% { transform: translate(7px, 3px) rotate(.6deg); } 40% { transform: translate(-6px, 2px); }
+  50% { transform: translate(5px, -2px) rotate(.3deg); } 60% { transform: translate(-4px, 1px); } 70% { transform: translate(3px, -1px); }
+  80% { transform: translate(-2px, 1px); } 90% { transform: translate(1px, 0); }
+}
 .bubble { position: absolute; bottom: 10px; width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.7); z-index: 1; animation: rise linear infinite; }
 @keyframes rise { from { transform: translateY(0); opacity: .9; } to { transform: translateY(-110px); opacity: 0; } }
 
@@ -254,7 +269,7 @@ h2 { font-family: var(--display); font-weight: 600; font-size: 1.15rem; margin: 
   transition: transform .9s cubic-bezier(.5,-0.3,.4,1); }
 
 @media (prefers-reduced-motion: reduce) {
-  .card.shake, .card.glow, .cheer.pop, .big-card, .big-icon, .chip.new, .flash-btn.new, .combo.bump, .swim, .bob, .pace, .hover, .weed, .bubble, .card.golden::before { animation: none !important; }
+  .card.shake, .card.glow, .cheer.pop, .big-card, .big-icon, .chip.new, .flash-btn.new, .combo.bump, .wrap.quake, .fallen > span.drop, .swim, .bob, .pace, .hover, .weed, .bubble, .card.golden::before { animation: none !important; }
   .cheer.pop { opacity: 1; }
   .flyer, .pearl-fly, .bubble { display: none; }
 }
@@ -465,6 +480,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const LEGEND_DAYS = 7;  // every this many days of goal streak brings a gift that is always legendary
   const BADGE_PEARLS = 5, RUN_STEPS = 10, RUN_REPEAT_PEARLS = 5, CLOCK_MS = 60000, CLOCK_BEST_PEARLS = 5;
   const SEASON_SHARE = 0.25;  // the share of gifts that bring an in-season visitor while any are still missing
+  // Earthquake chance (percent) on a wrong answer: it starts here, grows by a step with every answer up to the max,
+  // and drops to 0 after a quake. Purely for show: fallen prizes are still owned, and fast answers put them back.
+  const QUAKE_START = 10, QUAKE_STEP = 1, QUAKE_MAX = 80;
   const STAR_PATH = '<path d="M12 1.8l3.1 6.3 7 1-5 4.9 1.2 6.9L12 17.6l-6.3 3.3 1.2-6.9-5-4.9 7-1z"/>';
   const STAR = `<svg viewBox="0 0 24 24" aria-hidden="true">${STAR_PATH}</svg>`;
   const BOLT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 1.5 4 13.6h6.6L9.2 22.5 20 9.6h-6.9z"/></svg>';
@@ -617,6 +635,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   /* ---------- this variant's facts and save slot (VARIANT/config.js) ---------- */
   // Save slot. Must differ from other variants hosted on the same site.
   const STORE = "flash-facts-flash1-v1";
+  // Earthquakes: a wrong answer can knock every prize off the shelves, and fast answers put them back one at a time.
+  const EARTHQUAKES = true;
   // Families and stages with `after` stay hidden until every card they name has been known at least once
   // ("add" = the whole family, "add.0" = its first stage). Each one opens with a "New cards" moment.
   const FACTS = {
@@ -634,6 +654,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       stages: [{ include: (a, b) => a <= 8 && b <= 2, after: ["add"] }, { include: (a, b) => b !== 5, after: ["mul.0"] }, { after: ["mul.1"] }] },
   };
   const OPS = Object.keys(FACTS);
+  const QUAKES = typeof EARTHQUAKES !== "undefined" && EARTHQUAKES;  // a variant turns earthquakes on in its config
 
   /* ---------- deck, stages and teaching order ----------
      A family's cards are split into stages (`stages` in the config, or one stage). A card belongs to the first stage
@@ -677,7 +698,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   if (!state.flashEarned) state.flash = false;
   // Fields for unlocks, rooms, the shop, pets, badges and play modes. `room` is the room on show.
   const blank = () => ({ unlocked: [], earned: {}, pets: {}, decor: [], placed: {}, outfit: { dress: THEME.starter }, badges: [],
-    dry: 0, bestRow: 0, best: {}, runs: 0, runDay: null, shop: null, room: 0, bought: 0, rainbows: 0 });
+    dry: 0, bestRow: 0, best: {}, runs: 0, runDay: null, shop: null, room: 0, bought: 0, rainbows: 0,
+    quake: { chance: QUAKE_START, fallen: [], n: 0 } });
   for (const [k, v] of Object.entries(blank())) if (state[k] === undefined) state[k] = v;
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} };
   const rec = id => state.cards[id] || (state.cards[id] = { w: 1, fast: 0, slow: 0, wrong: 0, run: 0 });
@@ -777,6 +799,20 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     open: r => { const seq = r >= 2 ? [0, 2, 4, 5, 7, 9, 10, 12] : r === 1 ? [0, 2, 4, 5, 7] : [0, 2, 4]; seq.forEach((n, i) => tone(note(n), 0.25, { vol: 0.12, at: i * 0.08 })); },
     fanfare: () => [[0, 0], [2, .12], [4, .24], [5, .36], [4, .5], [5, .6], [7, .72]].forEach(([n, t]) => tone(note(n), 0.3, { vol: 0.12, at: t })),
     blub: () => tone(note(rand(3, 8) | 0), 0.1, { vol: 0.07, slide: 1.6 }),
+    // A low rumble (filtered brown noise and a sinking growl), then things clattering to the floor.
+    quake: () => {
+      const a = audio(); if (!a) return;
+      const t = a.currentTime, dur = 1.7, buf = a.createBuffer(1, Math.floor(a.sampleRate * dur), a.sampleRate), d = buf.getChannelData(0);
+      let last = 0;
+      for (let i = 0; i < d.length; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.5; }
+      const src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+      src.buffer = buf; f.type = "lowpass"; f.frequency.value = 160;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.9, t + 0.15); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      src.connect(f).connect(g).connect(a.destination); src.start(t);
+      tone(70, 1.3, { type: "sawtooth", vol: 0.06, slide: 0.6 });
+      for (let i = 0; i < 8; i++) tone(rand(900, 2400), 0.07, { type: "triangle", vol: 0.05, at: 0.35 + i * 0.1 + rand(0, 0.06) });
+    },
+    restore: () => [4, 7].forEach((n, i) => tone(note(n + 5), 0.12, { vol: 0.07, at: 0.35 + i * 0.07 })),
   };
 
   /* ---------- particles ---------- */
@@ -968,8 +1004,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     const tank = $("tank");
     if (!roomOpen(state.room)) state.room = 0;
     const rm = ROOMS[state.room], all = Object.keys(CREATURES);
-    const keys = [...new Set(state.tank)].filter(k => CREATURES[k]?.room === rm.i);
-    const n = keys.length, fs = n > 18 ? 1.25 : n > 10 ? 1.5 : 1.9;
+    const owned = [...new Set(state.tank)].filter(k => CREATURES[k]?.room === rm.i);
+    const down = new Set(QUAKES ? state.quake.fallen : []), keys = owned.filter(k => !down.has(k));
+    const n = owned.length, fs = n > 18 ? 1.25 : n > 10 ? 1.5 : 1.9;
     tank.style.cssText = rm.colors ? `--water-top:${rm.colors[0]};--water-bot:${rm.colors[1]};--sand:${rm.colors[2]}` : "";
     tank.setAttribute("aria-label", rm.i ? rm.name : THEME.home);
     let html = rm.decor || "";
@@ -983,6 +1020,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       const dur = 10 + seeded(i, 1) * 12, delay = -seeded(i, 2) * dur, top = 6 + seeded(i, 4) * 50;
       html += `<span class="swim${c.floor ? " floor" : ""}" style="top:${top}%;left:${5 + seeded(i, 6) * 80}%;font-size:${(fs * grow).toFixed(2)}rem;animation-duration:${c.floor ? dur * 1.6 : dur}s;animation-delay:${delay}s"><span class="bob${isShiny(key) ? " shiny" : ""}" data-key="${key}" style="animation-delay:-${seeded(i, 7) * 2}s" title="${esc(petName(key))}">${c.e}</span></span>`;
     }
+    html += fallenRoom(owned.filter(k => down.has(k)));
     tank.innerHTML = html;
     const open = openRooms();
     $("rooms").hidden = open.length < 2;
@@ -1025,6 +1063,52 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     }
     return html;
   }
+  /* ---------- earthquakes (variants with EARTHQUAKES on) ----------
+     A wrong answer can set one off, knocking every prize onto the floor. Each fast answer puts one back.
+     Nothing is lost: fallen prizes are still owned, still count, and can still be tapped. */
+  let quakeDrop = false;  // true while rendering the moment of a quake, so the fallen prizes tumble down
+  // Fallen prizes lie in a jumble on the floor. Where each one lands is seeded by the quake's number, so it stays put.
+  function fallenRoom(list) {
+    const all = Object.keys(CREATURES), q = state.quake.n, size = `font-size:clamp(.95rem,${(64 / Math.max(list.length, 4)).toFixed(1)}cqw,1.5rem)`;
+    return list.map(key => {
+      const c = CREATURES[key], i = all.indexOf(key), grow = 1 + Math.min(state.pets[key]?.fed || 0, 10) * 0.05;
+      const left = 6 + seeded(i, 20 + q) * 88, bottom = 2 + seeded(i, 21 + q) * 7, rot = Math.round((seeded(i, 22 + q) * 2 - 1) * 150);
+      return `<span class="spot fallen" style="left:${left.toFixed(1)}%;bottom:${bottom.toFixed(1)}px;${size}">` +
+        `<span class="${quakeDrop ? "drop" : ""}" style="--rot:${rot}deg;animation-delay:${(seeded(i, 23 + q) * 0.5).toFixed(2)}s">` +
+        `<span style="display:inline-block;font-size:${grow.toFixed(2)}em"><span class="bob${isShiny(key) ? " shiny" : ""}" data-key="${key}" title="${esc(petName(key))}">${c.e}</span></span></span></span>`;
+    }).join("");
+  }
+  // Called after every graded answer. A miss may bring a quake; otherwise the chance grows, and a fast answer tidies up.
+  function quakeAfter(right, fast) {
+    if (!QUAKES) return;
+    const q = state.quake;
+    if (!right && Math.random() * 100 < q.chance) { earthquake(); return; }
+    q.chance = Math.min(QUAKE_MAX, q.chance + QUAKE_STEP);
+    if (right && fast) restoreOne();
+  }
+  function earthquake() {
+    const q = state.quake;
+    q.chance = 0; q.n++;
+    q.fallen = [...new Set(state.tank)].filter(k => CREATURES[k]);
+    setTimeout(() => {  // just after the wrong-answer sound
+      sfx.quake(); buzz([120, 60, 160, 60, 220, 80, 120]);
+      if (!reduced) { const w = document.querySelector(".wrap"); w.classList.remove("quake"); void w.offsetWidth; w.classList.add("quake"); }
+      quakeDrop = true; renderTank(); quakeDrop = false;
+    }, 300);
+  }
+  // Puts one fallen prize back, one from the room on show if there is one.
+  function restoreOne() {
+    const f = state.quake.fallen;
+    if (!f.length) return;
+    const i = Math.max(0, f.findIndex(k => CREATURES[k]?.room === state.room)), k = f.splice(i, 1)[0];
+    renderTank();
+    const el = document.querySelector(`#tank .bob[data-key="${k}"]`);
+    if (!el) return;
+    sfx.restore();
+    el.classList.add("hop"); setTimeout(() => el.classList.remove("hop"), 650);
+    if (!reduced) { const r = el.getBoundingClientRect(); hearts(r.left + r.width / 2, r.top + r.height / 2); }
+  }
+
   $("rooms").addEventListener("click", e => {
     const b = e.target.closest("[data-room]"); if (!b) return;
     state.room = +b.dataset.room; save(); renderTank();
@@ -1651,6 +1735,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       delay = 2200;
     }
     const right = +input === current.ans;
+    quakeAfter(right, right && ms <= limit);
     if (mode.kind === "clock") {
       if (right) { mode.right++; renderModebar(); }
       delay = Math.min(delay, right ? 450 : 1300);  // the clock is running, so keep the cards coming
