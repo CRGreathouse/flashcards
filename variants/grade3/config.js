@@ -9,7 +9,8 @@
   const FACTS = {
     add: { name: "Addition", sym: "+", limit: 4000, rows: range(1, 10), cols: range(1, 10), how: "row + column",
       make: (a, b) => ({ text: `${a} + ${b}`, ans: a + b }), score: addScore,
-      known: (a, b) => a <= 4 && b <= 4 },  // a new player starts out knowing 1–4 + 1–4, so practice begins with harder sums
+      known: (a, b) => a <= 4 && b <= 4,  // a new player starts out knowing 1–4 + 1–4, so practice begins with harder sums
+      proficient: (a, b) => a + b < 7 },  // and sums under 7 start (or are topped up to) well practiced, so they come up rarely
     sub: { name: "Subtraction", sym: "−", limit: 4500, rows: range(1, 10), cols: range(1, 10), how: "(row + column) − column",
       make: (a, b) => ({ text: `${a + b} − ${b}`, ans: a }), score: addScore },
     mul: { name: "Multiplication", sym: "×", limit: 5000, rows: range(1, 10), cols: range(1, 10), how: "row × column",

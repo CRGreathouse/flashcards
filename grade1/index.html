@@ -468,6 +468,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const FAST_MULT = 0.6, SLOW_MULT = 1.3, WRONG_MULT = 2.2;
   const HARD_MIN_WRONG = 2, HARD_RATE = 0.4;
   const KNOWN_RUN = 2, LEARN_RUN = 3;
+  const PROFICIENT_RUN = 4;  // a family's `proficient` cards are topped up to this many fast answers in a row (and the lowest weight)
   const LEARNING_SIZE = 4, LEARNING_SHARE = 0.75;
   const GOLDEN_CHANCE = 1 / 8, GOLDEN_PEARLS = 3;
   const DAILY_GOAL = 20;
@@ -698,7 +699,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   if (!state.flashEarned) state.flash = false;
   // Fields for unlocks, rooms, the shop, pets, badges and play modes. `room` is the room on show.
   const blank = () => ({ unlocked: [], earned: {}, pets: {}, decor: [], placed: {}, outfit: { dress: THEME.starter }, badges: [],
-    dry: 0, bestRow: 0, best: {}, runs: 0, runDay: null, shop: null, room: 0, bought: 0, rainbows: 0,
+    dry: 0, bestRow: 0, best: {}, runs: 0, runDay: null, shop: null, room: 0, bought: 0, rainbows: 0, proficient: [],
     quake: { chance: QUAKE_START, fallen: [], n: 0 } });
   for (const [k, v] of Object.entries(blank())) if (state[k] === undefined) state[k] = v;
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} };
@@ -715,13 +716,24 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   for (const id in state.cards) if (isKnown(id) || state.learned.includes(id)) state.cards[id].got = true;
   const got = id => !!state.cards[id]?.got;
   // Cards a family's `known(a, b)` picks start out known, as if answered fast twice. Only cards with no history are touched.
+  // Cards its `proficient(a, b)` picks are topped up, once per save, to PROFICIENT_RUN fast answers in a row and the lowest
+  // weight, so they come up rarely. That includes cards with history, but not tricky ones. A slow or wrong answer later
+  // brings a card back as usual, and since it only happens once, reloading doesn't undo that.
   function seedKnown() {
     for (const c of deck) {
       const f = FACTS[c.op];
+      if (f.proficient && !state.proficient.includes(c.op) && f.proficient(c.a, c.b)) {
+        const r = rec(c.id);
+        if (r.hard) continue;
+        r.run = Math.max(r.run || 0, PROFICIENT_RUN); r.w = Math.min(r.w ?? 1, W_MIN); r.got = true; delete r.isNew;
+        if (!state.active.includes(c.id)) state.active.push(c.id);
+        continue;
+      }
       if (!f.known || !f.known(c.a, c.b) || state.cards[c.id]) continue;
       state.cards[c.id] = { w: FAST_MULT ** KNOWN_RUN, fast: 0, slow: 0, wrong: 0, run: KNOWN_RUN, got: true };
       if (!state.active.includes(c.id)) state.active.push(c.id);
     }
+    for (const op of OPS) if (FACTS[op].proficient && !state.proficient.includes(op)) state.proficient.push(op);
   }
   const refCards = ref => ref.includes(".") ? (STAGES[ref]?.cards || []) : (ORDER[ref] || []);
   const refDone = ref => refCards(ref).every(got);

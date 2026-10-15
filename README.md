@@ -4,7 +4,7 @@ Flash-card practice for arithmetic facts. Answer quickly to earn stars and treas
 
 The game is built in two versions from the same code:
 
-- **grade3**: addition and subtraction to 10 + 10 (a new player starts out knowing 1–4 + 1–4), and multiplication and division by 1, 2, 5 and 10, with a sea theme (an aquarium, pearls and sea friends). Knowing all of ×1, 2, 5 and 10 unlocks the rest of the times tables and their division facts. Knowing all of addition unlocks sums of three numbers and adding across ten (27 + 5). Knowing all of subtraction unlocks subtracting across ten (43 − 8).
+- **grade3**: addition and subtraction to 10 + 10 (a new player starts out knowing 1–4 + 1–4, and sums under 7 start out well practiced), and multiplication and division by 1, 2, 5 and 10, with a sea theme (an aquarium, pearls and sea friends). Knowing all of ×1, 2, 5 and 10 unlocks the rest of the times tables and their division facts. Knowing all of addition unlocks sums of three numbers and adding across ten (27 + 5). Knowing all of subtraction unlocks subtracting across ten (43 − 8).
 - **grade1**: addition 0–8 + 0–8, with a princess theme (a castle, gems, dresses and tiaras). Knowing those unlocks the 9s, 10s and teen numbers (10 + 4) and Make 10 (6 + ? = 10). Knowing all of addition unlocks subtraction and multiplication ×0–2. Subtraction then unlocks missing numbers (3 + ? = 7). Multiplication grows to ×10 and then ×5.
 
 A family or stage that is still locked has no header button, and its cells on the practice map are grey. When it opens, a "New cards" moment plays and the family is switched on.
@@ -84,6 +84,7 @@ mul: { name: "Multiplication", sym: "×", limit: 5000, rows: range(1, 10), cols:
 - `score(a, b)` sets the teaching order. Lower scores are introduced first.
 - `on: false` makes a new family start switched off.
 - `known: (a, b) => …` picks cards that start out known (in play, as if answered fast twice). It only touches cards with no saved history, so it sets where a new player starts without changing anyone's progress.
+- `proficient: (a, b) => …` picks cards that are already well practiced: four fast answers in a row and the lowest weight, so they rarely come up. It applies once per save, to new and existing players alike, and raises a card's practice to that level without lowering it. It skips cards marked tricky. After that, a slow or wrong answer brings a card back as usual.
 - `after: ["add"]` hides the family until every `add` card has been known at least once (two fast answers in a row). `"add.0"` names just the first stage of `add`.
 - `stages: [{ include, after }, …]` splits a family into stages. A card belongs to the first stage whose `include` it passes (a stage with no `include` takes everything left). Later stages open by their own `after`. Cards come in stage order.
 - `make` can return `parts: ["3 +", "= 7"]` to put the answer box in the middle, as in missing-number cards.
