@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Princess Facts</title>
+<title>Queen Dress Up</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Flash-card practice for addition and multiplication facts, with a royal collection of dresses, tiaras and more to fill.">
 <link rel="icon" href="favicon.svg">
@@ -386,7 +386,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
 
 <div class="wrap">
   <header>
-    <h1>Princess Facts</h1>
+    <h1>Queen Dress Up</h1>
     <div class="hdr-right">
       <div class="ops" id="ops" role="group" aria-label="Which facts to practice" style="display:flex;gap:6px"></div>
       <button class="mute flash-btn" id="flash" aria-pressed="false" aria-label="Flash mode" title="Flash mode: answers are checked as soon as you type them" hidden></button>
@@ -469,12 +469,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const HARD_MIN_WRONG = 2, HARD_RATE = 0.4;
   const KNOWN_RUN = 2, LEARN_RUN = 3;
   const PROFICIENT_RUN = 4;  // a family's `proficient` cards are topped up to this many fast answers in a row (and the lowest weight)
-  const LEARNING_SIZE = 4, LEARNING_SHARE = 0.75;
+  const LEARNING_SHARE = 0.75;
   const GOLDEN_CHANCE = 1 / 8, GOLDEN_PEARLS = 3;
-  const DAILY_GOAL = 20;
   const INT_HOLD_MS = 2000, INT_BONUS = 50;  // hold 🔊 this long to reveal integrals; a bonus answer earns at least this many
-  const FLASH_TANK = 12;  // flash mode (answers checked without ✓) is earned once the collection holds this many items
-  const SHOP_TANK = 6, RUN_TANK = 18, CLOCK_TANK = 24;  // the shop, the run and beat the clock open at these collection sizes
   const RAINBOW_CHANCE = 1 / 60;  // a known card can be a rainbow card; answering it fast opens a gift right away
   const SHINY_AT = 3, DUP_PEARLS = 5;  // the third copy of a friend makes it shiny; copies after that pay back currency
   const PITY_GIFTS = 8;  // a gift after this many without a super rare or better is at least super rare
@@ -614,7 +611,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
 
   /* ---------- the facts ----------
      Each family builds one card per (a, b) pair in rows × cols that passes `include`.
-     Families are defined per variant in variants/<name>/config.js, which sets FACTS and STORE.
+     Families are defined per variant in variants/<name>/config.js, which sets FACTS, STORE and OPTIONS.
      A card's id is `${key}:${a}:${b}`, and saved progress is stored under that id, so:
        - Add or remove pairs freely (widen rows/cols, change `include`). Cards that stay keep their
          history; cards that leave are hidden but remembered, and come back with it if re-added.
@@ -636,8 +633,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   /* ---------- this variant's facts and save slot (VARIANT/config.js) ---------- */
   // Save slot. Must differ from other variants hosted on the same site.
   const STORE = "flash-facts-flash1-v1";
-  // Earthquakes: a wrong answer can knock every prize off the shelves, and fast answers put them back one at a time.
-  const EARTHQUAKES = true;
+  // Overrides for the settings in DEFAULT_OPTIONS (src/index.html).
+  const OPTIONS = { earthquakes: true };
   // Families and stages with `after` stay hidden until every card they name has been known at least once
   // ("add" = the whole family, "add.0" = its first stage). Each one opens with a "New cards" moment.
   const FACTS = {
@@ -655,7 +652,19 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       stages: [{ include: (a, b) => a <= 8 && b <= 2, after: ["add"] }, { include: (a, b) => b !== 5, after: ["mul.0"] }, { after: ["mul.1"] }] },
   };
   const OPS = Object.keys(FACTS);
-  const QUAKES = typeof EARTHQUAKES !== "undefined" && EARTHQUAKES;  // a variant turns earthquakes on in its config
+  // Settings a variant can change by setting OPTIONS in its config. Anything it leaves out keeps the default here.
+  const DEFAULT_OPTIONS = {
+    earthquakes: false,  // a wrong answer can knock every prize off the shelves; fast answers put them back one at a time
+    dailyGoal: 20,       // fast answers for the daily goal
+    learningSize: 4,     // a new card joins whenever fewer than this many are still being learned
+    flashAt: 12,         // flash mode (answers checked without ✓) is earned once the collection holds this many items
+    shopAt: 6, runAt: 18, clockAt: 24,  // the shop, the run and beat the clock open at these collection sizes
+  };
+  const VARIANT_OPTIONS = typeof OPTIONS !== "undefined" ? OPTIONS : {};
+  for (const k in VARIANT_OPTIONS) if (!(k in DEFAULT_OPTIONS)) console.warn(`Unknown option in config.js: ${k}`);
+  const OPT = { ...DEFAULT_OPTIONS, ...VARIANT_OPTIONS };
+  const { earthquakes: QUAKES, dailyGoal: DAILY_GOAL, learningSize: LEARNING_SIZE,
+    flashAt: FLASH_TANK, shopAt: SHOP_TANK, runAt: RUN_TANK, clockAt: CLOCK_TANK } = OPT;
 
   /* ---------- deck, stages and teaching order ----------
      A family's cards are split into stages (`stages` in the config, or one stage). A card belongs to the first stage
@@ -1075,7 +1084,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     }
     return html;
   }
-  /* ---------- earthquakes (variants with EARTHQUAKES on) ----------
+  /* ---------- earthquakes (variants with `earthquakes` on) ----------
      A wrong answer can set one off, knocking every prize onto the floor. Each fast answer puts one back.
      Nothing is lost: fallen prizes are still owned, still count, and can still be tapped. */
   let quakeDrop = false;  // true while rendering the moment of a quake, so the fallen prizes tumble down

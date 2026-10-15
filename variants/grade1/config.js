@@ -1,7 +1,7 @@
   // Save slot. Must differ from other variants hosted on the same site.
   const STORE = "flash-facts-flash1-v1";
-  // Earthquakes: a wrong answer can knock every prize off the shelves, and fast answers put them back one at a time.
-  const EARTHQUAKES = true;
+  // Overrides for the settings in DEFAULT_OPTIONS (src/index.html).
+  const OPTIONS = { earthquakes: true };
   // Families and stages with `after` stay hidden until every card they name has been known at least once
   // ("add" = the whole family, "add.0" = its first stage). Each one opens with a "New cards" moment.
   const FACTS = {

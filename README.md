@@ -4,10 +4,10 @@ Flash-card practice for arithmetic facts. Answer quickly to earn stars and treas
 
 The game is built in two versions from the same code:
 
-- **grade3**: addition and subtraction to 10 + 10 (a new player starts out knowing 1–4 + 1–4, and sums under 7 start out well practiced), and multiplication and division by 1, 2, 5 and 10, with a sea theme (an aquarium, pearls and sea friends). Knowing all of ×1, 2, 5 and 10 unlocks the rest of the times tables and their division facts. Knowing all of addition unlocks sums of three numbers and adding across ten (27 + 5). Knowing all of subtraction unlocks subtracting across ten (43 − 8).
-- **grade1**: addition 0–8 + 0–8, with a princess theme (a castle, gems, dresses and tiaras). Knowing those unlocks the 9s, 10s and teen numbers (10 + 4) and Make 10 (6 + ? = 10). Knowing all of addition unlocks subtraction and multiplication ×0–2. Subtraction then unlocks missing numbers (3 + ? = 7). Multiplication grows to ×10 and then ×5.
+- **grade3**: addition, subtraction, multiplication and division, with a sea theme (an aquarium, pearls and sea friends).
+- **grade1**: addition first, then subtraction and early multiplication, with a princess theme (a castle, gems, dresses and tiaras).
 
-A family or stage that is still locked has no header button, and its cells on the practice map are grey. When it opens, a "New cards" moment plays and the family is switched on.
+Which facts each version has, and what unlocks what, is set in its `variants/<name>/config.js`. A family or stage that is still locked has no header button, and its cells on the practice map are grey. When it opens, a "New cards" moment plays and the family is switched on.
 
 ## Building
 
@@ -26,7 +26,7 @@ Open a built `grade1/index.html` or `grade3/index.html` directly in a browser, o
 
 Use the operation buttons in the header to choose which facts to practice, then type each answer on the keypad (or a keyboard). The practice map at the bottom shows which facts are fast, slow or still missed.
 
-Once the collection holds 12 items (`FLASH_TANK` in `src/index.html`), the player earns **flash mode**. A small lightning bolt appears in the header. While it's on, the ✓ key is hidden and each answer is checked as soon as it has as many digits as the right answer. That's faster, but a typo counts as a miss. Tap the bolt again to turn it off and bring back ✓.
+Once the collection holds 12 items (the `flashAt` option), the player earns **flash mode**. A small lightning bolt appears in the header. While it's on, the ✓ key is hidden and each answer is checked as soon as it has as many digits as the right answer. That's faster, but a typo counts as a miss. Tap the bolt again to turn it off and bring back ✓.
 
 ### Collecting
 
@@ -40,7 +40,7 @@ Once the collection holds 12 items (`FLASH_TANK` in `src/index.html`), the playe
 - **Dress up** (princess): put owned gowns, headwear, wings or cape, held items and slippers on a paper doll.
 - **Badges** for streaks, perfect days, full rooms, finishing a fact family and more. Each new one is worth 5 currency.
 - **Pictures**: every family's practice map hides a picture. Each card that has been known at least once uncovers its square.
-- **Earthquakes** (grade1, `EARTHQUAKES` in its `config.js`): a wrong answer can set off an earthquake. The page shakes with a rumble, and every prize tumbles off the shelves into a jumble on the floor. Each fast answer puts one back, starting with the room on show. It's only for show: fallen prizes are still owned and still count. The chance starts at 10%, rises 1% with every answer up to 80%, and drops to 0% after an earthquake.
+- **Earthquakes** (grade1, the `earthquakes` option): a wrong answer can set off an earthquake. The page shakes with a rumble, and every prize tumbles off the shelves into a jumble on the floor. Each fast answer puts one back, starting with the room on show. It's only for show: fallen prizes are still owned and still count. The chance starts at 10%, rises 1% with every answer up to 80%, and drops to 0% after an earthquake.
 
 ### Ways to play
 
@@ -56,13 +56,17 @@ Progress is saved in the browser's `localStorage`, so it stays on the device it 
 ```
 src/index.html          the shared game: markup, styles and script
 themes/<theme>/         theme.css (palette and decoration), theme.js (names, words, collectible items), favicon.svg
-variants/<name>/        variant.sh (TITLE, DESCRIPTION, THEME), config.js (the facts and the save slot)
+variants/<name>/        variant.sh (TITLE, DESCRIPTION, THEME), config.js (the facts, save slot and options)
 build.sh                puts them together into ./<name>/index.html
 ```
 
 `src/index.html` has `/*@include VARIANT/config.js*/`, `/*@include THEME/theme.js*/` and `/*@include THEME/theme.css*/` lines, which the build replaces with the files. It also replaces `{{TITLE}}` and `{{DESCRIPTION}}`. Each built page is a single file with no build-time dependencies. Its only external request is for Google Fonts, and it falls back to system fonts without it.
 
 To add a version, copy a folder in `variants/` and edit it. To add a theme, copy a folder in `themes/`. A theme sets `rooms` (each with its own `creatures`, `decor` and `colors`), `seasonal` visitors (with `months`), `shop` decorations, `run` (the run's name and pictures), `pictures` (which hidden picture goes with each fact family) and, optionally, `dressUp` and `display`. With `display: "shelves"` (the princess theme) a room is a display room instead of an aquarium: items sit on shelves, or with `floor`, `walk` or `fly` they stand on the floor, stroll about on it or hover in the air. Each item has a fixed spot, so the gaps show what's still missing. An item can be any HTML, not just an emoji. The princess tiara, dress-up clothes, carriage, throne and pegasus, and the sea's starfish, seahorse, manta ray, anglerfish, narwhal, kraken and treasure chest, are inline SVGs. Creature keys must be unique across rooms, and the first room keeps the original keys so saved collections carry over.
+
+### Options
+
+A variant's `config.js` sets `OPTIONS`, which overrides any of the settings in `DEFAULT_OPTIONS` in `src/index.html`: `earthquakes` (off by default), `dailyGoal`, `learningSize` (how many cards are learned at once), and `flashAt`, `shopAt`, `runAt` and `clockAt` (the collection sizes that open flash mode, the shop, the run and beat the clock). An unknown key logs a warning in the console.
 
 ### Saved progress across versions
 

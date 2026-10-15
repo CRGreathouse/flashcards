@@ -1,5 +1,7 @@
   // Save slot. Keep this the same so existing progress carries over; variants on one site need different slots.
   const STORE = "flash-facts-v1";
+  // Overrides for the settings in DEFAULT_OPTIONS (src/index.html). None: grade3 uses the defaults.
+  const OPTIONS = {};
   const MUL_SET = [1, 2, 5, 10];
   const basicMul = (a, b) => MUL_SET.includes(a) || MUL_SET.includes(b);
   // A third number for each "three numbers" card. About a third of them hide a pair that makes 10.
