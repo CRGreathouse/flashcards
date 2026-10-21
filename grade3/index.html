@@ -87,6 +87,10 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 @keyframes sway { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
 .swim { position: absolute; z-index: 2; line-height: 1; animation: swim linear infinite; }
 .swim.floor { top: auto !important; bottom: 5px; animation-name: crawl; }
+/* belly-up: floats at the surface, drifting without turning */
+.swim.belly { top: 2px !important; animation-name: drift; animation-timing-function: ease-in-out; }
+.upside { display: inline-block; transform: scaleY(-1); }
+@keyframes drift { 0%, 100% { left: 6%; } 50% { left: calc(90% - 2rem); } }
 @keyframes swim {
   0% { left: 2%; transform: scaleX(-1); } 48% { left: calc(96% - 2rem); transform: scaleX(-1); }
   50% { left: calc(96% - 2rem); transform: scaleX(1); } 98% { left: 2%; transform: scaleX(1); } 100% { left: 2%; transform: scaleX(-1); }
@@ -97,6 +101,16 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 }
 .bob { display: inline-block; cursor: pointer; animation: bob 2.4s ease-in-out infinite alternate; }
 .bob.hop { animation: hop .6s ease-out; }
+.bob.ghost { cursor: default; filter: brightness(0); opacity: .16; }
+.papel { position: absolute; top: 0; left: 0; right: 0; z-index: 3; display: flex; justify-content: space-around; pointer-events: none;
+  border-top: 2px solid rgba(90, 60, 70, .55); }
+.papel svg { width: 8%; max-width: 24px; height: auto; display: block; }
+.papel + .holiday-name { top: 26px; }
+/* a holiday's currency icon is an emoji in place of the pearl */
+.pearl-icon.emoji, .pearl-fly.emoji { width: auto; height: auto; background: none; box-shadow: none; clip-path: none; border-radius: 0; line-height: 1; }
+.pearl-icon.emoji { font-size: 13px; }
+.pearl-fly.emoji { font-size: 18px; }
+.holiday-name { position: absolute; top: 4px; left: 8px; z-index: 4; font-size: .7rem; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); pointer-events: none; }
 @keyframes bob { from { transform: translateY(-3px); } to { transform: translateY(3px); } }
 @keyframes hop { 0% { transform: translateY(0) scale(1); } 40% { transform: translateY(-18px) scale(1.25); } 100% { transform: translateY(0) scale(1); } }
 /* display room (THEME.display = "shelves"): shelves on the back wall, walkers on the floor, fliers above */
@@ -446,7 +460,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const PITY_GIFTS = 8;  // a gift after this many without a super rare or better is at least super rare
   const LEGEND_DAYS = 7;  // every this many days of goal streak brings a gift that is always legendary
   const BADGE_PEARLS = 5, RUN_STEPS = 10, RUN_REPEAT_PEARLS = 5, CLOCK_MS = 60000, CLOCK_BEST_PEARLS = 5;
-  const SEASON_SHARE = 0.25;  // the share of gifts that bring an in-season visitor while any are still missing
+  // While a holiday item is missing, at least this share of gifts brings one. The share rises as the window runs out,
+  // planning on this many gifts a day, so ordinary play finishes the set before it closes.
+  const SEASON_SHARE = 0.25, HOLIDAY_GIFTS_PER_DAY = 1;
   // Earthquake chance (percent) on a wrong answer: it starts here, grows by a step with every answer up to the max,
   // and drops to 0 after a quake. Purely for show: fallen prizes are still owned, and fast answers put them back.
   const QUAKE_START = 10, QUAKE_STEP = 1, QUAKE_MAX = 80;
@@ -454,6 +470,59 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const STAR = `<svg viewBox="0 0 24 24" aria-hidden="true">${STAR_PATH}</svg>`;
   const BOLT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 1.5 4 13.6h6.6L9.2 22.5 20 9.6h-6.9z"/></svg>';
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- holiday art both themes use ----------
+     Drawn inline because no emoji fits. They size with the surrounding font like an emoji. Flat fills only. */
+  const art = body => `<svg class="drawn" viewBox="0 0 64 64" aria-hidden="true">${body}</svg>`;
+  const petals = (cx, cy, r, n, size, fill) => Array.from({ length: n }, (_, i) => { const a = 2 * Math.PI * i / n;
+    return `<circle cx="${(cx + r * Math.cos(a)).toFixed(1)}" cy="${(cy + r * Math.sin(a)).toFixed(1)}" r="${size}" fill="${fill}"/>`; }).join("");
+  const marigold = (x, y, s) => `<circle cx="${x}" cy="${y}" r="${9 * s}" fill="#f07b00"/>${petals(x, y, 7.5 * s, 12, 3 * s, "#ff9a1a")}` +
+    `${petals(x, y, 4.5 * s, 8, 2.6 * s, "#ffb52e")}<circle cx="${x}" cy="${y}" r="${2.6 * s}" fill="#e86a00"/>`;
+  const ART = {
+    candyCorn: art(`<path d="M32 6C37 6 53 47 51 53Q32 61 13 53C11 47 27 6 32 6Z" fill="#ffc93c"/><path d="M32 6C35.5 6 44 27 47.5 40Q32 45 16.5 40C20 27 28.5 6 32 6Z" fill="#ff8a1f"/>` +
+      `<path d="M32 6C34 6 37.5 14 40 22Q32 25 24 22C26.5 14 30 6 32 6Z" fill="#fff8ec"/><path d="M32 6C37 6 53 47 51 53Q32 61 13 53C11 47 27 6 32 6Z" fill="none" stroke="#c96a00" stroke-width="1.6" stroke-linejoin="round"/>`),
+    sugarSkull: art(`<path d="M32 6C18 6 10 16 10 28 10 37 15 42 19 44V51Q19 57 25 57H39Q45 57 45 51V44C49 42 54 37 54 28 54 16 46 6 32 6Z" fill="#fffaf2" stroke="#b8aaa0" stroke-width="1.5"/>` +
+      `${petals(22, 31, 7.4, 9, 2, "#ff5fa2")}${petals(42, 31, 7.4, 9, 2, "#2ad1e0")}<circle cx="22" cy="31" r="6.2" fill="#2ad1e0"/><circle cx="42" cy="31" r="6.2" fill="#ff5fa2"/>` +
+      `<circle cx="22" cy="31" r="4" fill="#2a1f33"/><circle cx="42" cy="31" r="4" fill="#2a1f33"/><circle cx="23.3" cy="29.6" r="1.2" fill="#fff"/><circle cx="43.3" cy="29.6" r="1.2" fill="#fff"/>` +
+      `<path d="M32 44C28.5 40.5 29 37 32 39 35 37 35.5 40.5 32 44Z" fill="#a66cff"/><path d="M24 50.5H40M27 48v5M30.5 48v5M34 48v5M37.5 48v5" stroke="#8a7a72" stroke-width="1.2" stroke-linecap="round"/>` +
+      `${petals(32, 16, 3.2, 5, 2.2, "#ff9a1a")}<circle cx="32" cy="16" r="1.8" fill="#ffd23f"/><path d="M16 21q3-3 6-1M48 21q-3-3-6-1" fill="none" stroke="#7fd18a" stroke-width="1.6" stroke-linecap="round"/>` +
+      `<g fill="#ffd23f"><circle cx="14.5" cy="38" r="1.4"/><circle cx="49.5" cy="38" r="1.4"/></g>`),
+    candyBucket: art(`<path d="M15 27Q32 2 49 27" fill="none" stroke="#3a2a35" stroke-width="2.2"/><g stroke="#3a2a35" stroke-width=".8"><circle cx="24" cy="25" r="4.5" fill="#ff5d8f"/><rect x="29" y="18" width="8" height="8" rx="2" fill="#4d7cfe" transform="rotate(20 33 22)"/><circle cx="40" cy="25" r="4" fill="#7fe05a"/></g>` +
+      `<path d="M13 27Q13 52 21 56H43Q51 52 51 27Z" fill="#ff8a1f" stroke="#c45a00" stroke-width="1.5" stroke-linejoin="round"/><ellipse cx="32" cy="27" rx="19" ry="3.6" fill="#ffb05c" stroke="#c45a00" stroke-width="1.3"/>` +
+      `<path d="M21 36l4-5 4 5ZM35 36l4-5 4 5ZM21 43Q32 52 43 43L40 44.5 37.5 42.5 35 45 32 43 29 45 26.5 42.5 24 44.5Z" fill="#5a2a00"/>`),
+    paintedBox: art(`<rect x="10" y="26" width="44" height="30" rx="3" fill="#2ad1e0" stroke="#127a85" stroke-width="1.5"/>` +
+      `<polyline points="10 33 14 29.5 18 33 22 29.5 26 33 30 29.5 34 33 38 29.5 42 33 46 29.5 50 33 54 29.5" fill="none" stroke="#ffd23f" stroke-width="2" stroke-linejoin="round"/>` +
+      `${petals(22, 45, 3.4, 6, 2.2, "#ff5fa2")}<circle cx="22" cy="45" r="1.8" fill="#ffd23f"/>${petals(42, 45, 3.4, 6, 2.2, "#a66cff")}<circle cx="42" cy="45" r="1.8" fill="#ffd23f"/>` +
+      `<rect x="7" y="18" width="50" height="10" rx="3" fill="#e83f8f" stroke="#a0205e" stroke-width="1.5"/><g fill="#fff"><circle cx="15" cy="23" r="1.4"/><circle cx="24" cy="23" r="1.4"/><circle cx="40" cy="23" r="1.4"/><circle cx="49" cy="23" r="1.4"/></g>` +
+      marigold(32, 15, .62)),
+    // Papel picado: a string of cut-paper flags, hung across the top of a room.
+    papelPicado: `<div class="papel" aria-hidden="true">${["#ff5fa2", "#ff9a1a", "#ffd23f", "#2ad1e0", "#7fd18a", "#a66cff", "#ff5fa2", "#2ad1e0"].map(c =>
+      `<svg viewBox="0 0 20 24"><path fill-rule="evenodd" fill="${c}" d="M0 0H20V20L17.5 23 15 20 12.5 23 10 20 7.5 23 5 20 2.5 23 0 20ZM10 5 13 9.5 10 14 7 9.5ZM3.6 5.4h2.6v2.6H3.6ZM13.8 5.4h2.6v2.6h-2.6ZM3.6 13.4h2.6v2.6H3.6ZM13.8 13.4h2.6v2.6h-2.6Z"/></svg>`).join("")}</div>`,
+    marigolds: art(`<path d="M32 60 20 30M32 60 32 24M32 60 44 32" stroke="#3f8f3a" stroke-width="2.6" stroke-linecap="round"/><path d="M26 46q-9-2-11-9 8 0 11 9ZM38 48q9-3 10-10-8 1-10 10Z" fill="#5cb85c"/>` +
+      marigold(20, 28, 1) + marigold(44, 31, 1) + marigold(32, 18, 1.15)),
+  };
+
+  // Holiday looks, for a theme's `holidays` to use (see LOOK below): page colors (light and dark), the holiday room's
+  // colors (top, bottom, floor), the gift (its icon, title and the colors that burst out as it opens), the currency's
+  // name and icon, and extra cheers for fast answers.
+  const LOOKS = {
+    halloween: {
+      light: { bg: "#fff1e0", accent: "#7a3fa0", rule: "#e8701a", line: "#f3d2b0", pearl: "#ff8a1f" },
+      dark: { bg: "#1c1420", accent: "#ff9a3c", rule: "#ff8a3d", line: "#3e2c45", pearl: "#ff9a3c" },
+      room: ["#6a4a8a", "#24123a", "#e8701a"],
+      gift: { icon: ART.candyBucket, title: "Trick or treat!", colors: ["#ff8a1f", "#7a3fa0", "#7fe05a", "#ffffff"] },
+      currency: { name: "Candy pieces", icon: "🍬" },
+      cheers: ["Boo-tiful!", "Fang-tastic!"],
+    },
+    muertos: {
+      light: { bg: "#fff0f6", accent: "#c2177a", rule: "#ff9a1a", line: "#f5cde0", pearl: "#ff9a1a" },
+      dark: { bg: "#1d1220", accent: "#ff6fb5", rule: "#ffb02e", line: "#45283f", pearl: "#ffb02e" },
+      room: ["#ffe3f0", "#f2a6cf", "#ff9a1a"],
+      gift: { icon: ART.paintedBox, title: "A painted box!", colors: ["#ff5fa2", "#2ad1e0", "#ffd23f", "#ff9a1a", "#a66cff"] },
+      currency: { name: "Marigold petals", icon: "🌼" },
+      cheers: ["¡Muy bien!", "¡Qué rápido!", "¡Excelente!"],
+    },
+  };
 
   /* ---------- theme (THEME/theme.js) ---------- */
   // Creatures with no emoji are drawn inline. They size with the surrounding font like an emoji. Flat fills only:
@@ -466,6 +535,80 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const NARWHAL = svg(`<path d="M19 27 2 17" stroke="#f3ead2" stroke-width="3.5" stroke-linecap="round"/><path d="M6 20l2-3M10 22l2-3M14 25l2-3" stroke="#c9bc96" stroke-width="1"/><path d="M18 31Q20 18 36 19 50 20 54 30L62 22 60 34 62 46 52 38Q46 46 32 45 18 44 18 31Z" fill="#8fb3d9" stroke="#4f7aa8" stroke-width="1.5" stroke-linejoin="round"/><path d="M22 37Q34 44 48 38" fill="none" stroke="#d6e6f5" stroke-width="3" stroke-linecap="round"/><circle cx="26" cy="28" r="2" fill="#1d2433"/><g fill="#6f97c2"><circle cx="38" cy="25" r="1.5"/><circle cx="44" cy="28" r="1.2"/><circle cx="34" cy="30" r="1.2"/></g>`);
   const KRAKEN = svg(`<g fill="none" stroke="#7b3fa0" stroke-width="6" stroke-linecap="round"><path d="M19 34C8 40 6 52 14 56 18 58 21 54 17 52"/><path d="M27 38C23 48 25 57 31 60"/><path d="M37 38C41 48 39 57 33 60"/><path d="M45 34C56 40 58 52 50 56 46 58 43 54 47 52"/></g><ellipse cx="32" cy="25" rx="18" ry="16" fill="#9b4fc4" stroke="#7b3fa0" stroke-width="2"/><path d="M23 11 25 3 29 8 32 1 35 8 39 3 41 11Z" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5" stroke-linejoin="round"/><circle cx="25" cy="24" r="5" fill="#fff"/><circle cx="39" cy="24" r="5" fill="#fff"/><circle cx="26" cy="25" r="2.5" fill="#2a1f33"/><circle cx="40" cy="25" r="2.5" fill="#2a1f33"/><path d="M27 33Q32 37 37 33" fill="none" stroke="#2a1f33" stroke-width="2" stroke-linecap="round"/><g fill="#c78be6"><circle cx="20" cy="16" r="2"/><circle cx="45" cy="17" r="1.6"/></g>`);
   const CHEST = svg(`<path d="M8 28Q8 13 32 13 56 13 56 28Z" fill="#b5651d" stroke="#7a3f10" stroke-width="2" stroke-linejoin="round"/><rect x="8" y="28" width="48" height="26" rx="3" fill="#c97a2b" stroke="#7a3f10" stroke-width="2"/><path d="M18 16v38M46 16v38" stroke="#ffc93c" stroke-width="5"/><rect x="27" y="29" width="10" height="11" rx="2" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5"/><circle cx="32" cy="33.5" r="1.6" fill="#7a3f10"/><g fill="#ffe27a"><circle cx="13" cy="25" r="1.6"/><circle cx="51" cy="23" r="1.3"/></g>`);
+  // One drawn fish, facing left like 🐟, with settings, so most holiday fish are this template rather than new drawings:
+  //   body, fin and line colors, and an optional belly color
+  //   pattern: "stripes", "spots", "hearts", "splats", "flowers", "zigzag", "stars" or "clovers", in the `marks` colors (cycled)
+  //   eyes: "normal", "x" or "odd" (mismatched); tail: "fork" or "point"
+  //   add: any of "fangs", "horns", "cape", "stitches", "halo", "bolts", "facets", "patch", "eyering", and `mark` (a symbol on its side)
+  //   hat: "witch", "santa", "party", "pilgrim", "leprechaun" or "bunny". Hats are template add-ons only: emoji differ from
+  //   device to device, so nothing can be lined up on them.
+  function fish(o) {
+    const { body, fin, line, belly, marks = ["#fff"], pattern, eyes = "normal", tail = "fork", add = [], hat, mark } = o;
+    const cx = 30, cy = 33, rx = 19, ry = 12.5, ink = "#1d2433", has = a => add.includes(a);
+    const half = x => ry * Math.sqrt(Math.max(0, 1 - ((x - cx) / rx) ** 2));
+    const at = (pts, f) => pts.map(([x, y], i) => f(x, y, marks[i % marks.length], i)).join("");
+    const SPOTS = [[27, 25.5], [35, 28], [42, 32], [31, 36.5], [38, 40], [24, 39], [44, 38], [30, 30]];
+    const patterns = {
+      stripes: () => [25, 32, 39, 45].map((x, i) => { const h = Math.min(half(x - 1.5), half(x + 1.5)) - .3;
+        return `<path d="M${x - 1.5} ${cy - h}h3v${2 * h}h-3Z" fill="${marks[i % marks.length]}"/>`; }).join(""),
+      spots: () => at(SPOTS, (x, y, c, i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? 1.7 : 2.3}" fill="${c}"/>`),
+      hearts: () => at(SPOTS.slice(0, 6), (x, y, c) => `<path transform="translate(${x} ${y}) scale(1.25)" d="M0 1.6C-3 -.8-1.4-3.2 0-1.5 1.4-3.2 3-.8 0 1.6Z" fill="${c}"/>`),
+      splats: () => at(SPOTS.slice(0, 6), (x, y, c, i) => `<g fill="${c}"><circle cx="${x}" cy="${y}" r="2.4"/><circle cx="${x + 2.6}" cy="${y - 1.8}" r=".9"/>` +
+        `<circle cx="${x - 2.4}" cy="${y + 1.9}" r=".8"/><circle cx="${x + (i % 2 ? -2.6 : 2.2)}" cy="${y + 2.2}" r=".6"/></g>`),
+      flowers: () => at(SPOTS.slice(0, 6), (x, y, c) => `<g fill="${c}">${[0, 72, 144, 216, 288].map(a => `<circle cx="${(x + 1.5 * Math.cos(a * Math.PI / 180)).toFixed(2)}" cy="${(y + 1.5 * Math.sin(a * Math.PI / 180)).toFixed(2)}" r="1.1"/>`).join("")}</g><circle cx="${x}" cy="${y}" r=".8" fill="#ffd23f"/>`),
+      zigzag: () => [27, 34, 40].map((y, i) => { const w = rx * Math.sqrt(1 - ((y - cy) / ry) ** 2) - 2, pts = [];
+        for (let x = cx - w + 3, k = 0; x <= cx + w; x += 3, k++) pts.push(`${x.toFixed(1)} ${y + (k % 2 ? -1.5 : 1.5)}`);
+        return `<polyline points="${pts.join(" ")}" fill="none" stroke="${marks[i % marks.length]}" stroke-width="1.6" stroke-linejoin="round"/>`; }).join(""),
+      stars: () => at(SPOTS.slice(0, 6), (x, y, c) => `<path transform="translate(${x} ${y}) scale(.17)" d="M0-12 3.5-4 12-3.7 5.5 2 7.6 10.5 0 6 -7.6 10.5-5.5 2-12-3.7-3.5-4Z" fill="${c}"/>`),
+      clovers: () => at(SPOTS.slice(0, 5), (x, y, c) => `<g fill="${c}"><circle cx="${x}" cy="${y - 1.3}" r="1.3"/><circle cx="${x - 1.3}" cy="${y + .4}" r="1.3"/>` +
+        `<circle cx="${x + 1.3}" cy="${y + .4}" r="1.3"/></g><path d="M${x} ${y + .6}q.4 1.6 1.4 2.4" stroke="${c}" stroke-width=".7" fill="none"/>`),
+    };
+    const hats = {
+      witch: `<path d="M9 22.5Q20 18 31 22Q20 25.5 9 22.5Z" fill="#2e1d40"/><path d="M14 21.5Q17 11 21 6Q23 2 28 3Q24 5 24 11L26 21Z" fill="#4a2d6b"/>` +
+        `<path d="M14.4 19.2Q20 17.4 25.6 19.2L25.9 21Q20 19.4 14.1 21Z" fill="#ff9a3c"/>`,
+      santa: `<path d="M13 21Q16 8 27 7Q33 8 33 15Q28 12 27 21Z" fill="#d6262f"/><rect x="11" y="18.6" width="18.5" height="4.6" rx="2.3" fill="#fff"/><circle cx="33" cy="15.5" r="2.6" fill="#fff"/>`,
+      party: `<path d="M14 21.5 20 5 26 21.5Z" fill="#4d7cfe"/><path d="M15.4 17.5h9.2M16.9 13.3h6.2M18.4 9.2h3.2" stroke="#ffc93c" stroke-width="1.8"/><circle cx="20" cy="5" r="2.2" fill="#ff5d8f"/>`,
+      pilgrim: `<path d="M9 22.6h22v-2.4H9Z" fill="#222"/><path d="M13 20.4 14.6 7.5h10.8L27 20.4Z" fill="#2b2b2b"/><rect x="13.5" y="16" width="13" height="2.6" fill="#8a6a3a"/><rect x="18" y="15.4" width="4" height="3.8" fill="none" stroke="#ffc93c" stroke-width="1"/>`,
+      leprechaun: `<path d="M9 22.6h22v-2.4H9Z" fill="#1e7a35"/><path d="M13 20.4 14.6 7.5h10.8L27 20.4Z" fill="#2ea04a"/><rect x="13.5" y="16" width="13" height="2.6" fill="#1d2433"/><rect x="18" y="15.4" width="4" height="3.8" fill="none" stroke="#ffc93c" stroke-width="1.2"/><path d="M27 12q3-2 4 1-3 1-4-1Z" fill="#7fd18a"/>`,
+      bunny: `<g stroke="#e0d6e6" stroke-width="1"><ellipse cx="15.5" cy="12" rx="3" ry="8.5" transform="rotate(-14 15.5 12)" fill="#fff"/><ellipse cx="23" cy="11" rx="3" ry="8.5" transform="rotate(10 23 11)" fill="#fff"/></g>` +
+        `<ellipse cx="15.5" cy="12.5" rx="1.4" ry="6" transform="rotate(-14 15.5 12.5)" fill="#ffb3d4"/><ellipse cx="23" cy="11.5" rx="1.4" ry="6" transform="rotate(10 23 11.5)" fill="#ffb3d4"/>`,
+    };
+    const eye = {
+      normal: `<circle cx="19" cy="30" r="3.6" fill="#fff"/><circle cx="18.2" cy="30" r="1.9" fill="${ink}"/>`,
+      x: `<path d="M16.6 27.6l4.8 4.8m0-4.8-4.8 4.8" stroke="${ink}" stroke-width="1.8" stroke-linecap="round"/>`,
+      odd: `<circle cx="18.5" cy="30.5" r="4.4" fill="#fff"/><circle cx="19.6" cy="29" r="1.1" fill="${ink}"/><circle cx="25.5" cy="27" r="2.1" fill="#fff"/><circle cx="25" cy="27.4" r="1.2" fill="${ink}"/>`,
+    }[eyes];
+    let s = "";
+    s += tail === "point"
+      ? `<path d="M46 31.2 55.5 32V29L62.5 33 55.5 37V34L46 34.8Z" fill="${fin}" stroke="${line}" stroke-width="1.2" stroke-linejoin="round"/>`
+      : `<path d="M46 33 61 21Q57 33 61 45Z" fill="${fin}" stroke="${line}" stroke-width="1.4" stroke-linejoin="round"/>`;
+    s += has("cape")
+      ? `<path d="M14 24 17 8 23 15.5 29.5 5.5 34.5 15.5 41.5 8.5 44 24Z" fill="#1d1424" stroke="#000" stroke-width="1" stroke-linejoin="round"/><path d="M19 23 21.4 13.6 26.4 18.4 29.6 11 33.4 18.4 38.8 14 39.6 23Z" fill="#c4122f"/>`
+      : `<path d="M20 22.5Q29 9 41 23.5Z" fill="${fin}" stroke="${line}" stroke-width="1.4" stroke-linejoin="round"/>`;
+    s += `<path d="M25 44.5Q30 51 36 44Z" fill="${fin}" stroke="${line}" stroke-width="1.2" stroke-linejoin="round"/>`;
+    s += `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${body}" stroke="${line}" stroke-width="1.6"/>`;
+    if (belly) s += `<path d="M13 37.5Q30 50 47 36.5Q30 42.5 13 37.5Z" fill="${belly}"/>`;
+    if (pattern) s += patterns[pattern]();
+    if (has("facets")) s += `<path d="M11 33 21 21.5 31 33 21 44.5M21 21.5H39L31 33 39 44.5H21M39 21.5 49 33 39 44.5" fill="none" stroke="#fff" stroke-width="1" stroke-opacity=".7" stroke-linejoin="round"/>`;
+    if (mark) s += `<text x="35" y="38" font-size="13" font-weight="700" font-family="Georgia, serif" text-anchor="middle" fill="${marks[0]}">${mark}</text>`;
+    s += `<path d="M25 25.5Q22 33 25 40.5" fill="none" stroke="${line}" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>`;
+    s += has("cape")
+      ? `<path d="M28 37.5 31.5 49 34 45.5 37 48.5 38.5 44.5 42.5 46 39 37Z" fill="#1d1424" stroke="#000" stroke-width="1" stroke-linejoin="round"/><path d="M30 38.5 33 45 35 42.5" fill="none" stroke="#c4122f" stroke-width="1"/>`
+      : `<path d="M29 37.5Q33 44 38 37Z" fill="${fin}" stroke="${line}" stroke-width="1" stroke-linejoin="round"/>`;
+    if (has("stitches")) s += `<path d="M31 22.5 36 43.5" stroke="${ink}" stroke-width="1.1"/>` +
+      [0.15, 0.35, 0.55, 0.75].map(t => { const x = 31 + 5 * t, y = 22.5 + 21 * t; return `<path d="M${x - 2.2} ${y + .5}h4.4" stroke="${ink}" stroke-width="1.1" stroke-linecap="round"/>`; }).join("");
+    if (has("bolts")) s += at([[25, 24.5], [40, 26], [36, 41], [17, 38.5]], (x, y) => `<circle cx="${x}" cy="${y}" r="1.8" fill="#c9ced6" stroke="#6b7480" stroke-width=".8"/><path d="M${x - 1} ${y}h2" stroke="#6b7480" stroke-width=".8"/>`);
+    if (has("eyering")) s += [0, 45, 90, 135, 180, 225, 270, 315].map((a, i) => `<circle cx="${(19 + 5.3 * Math.cos(a * Math.PI / 180)).toFixed(2)}" cy="${(30 + 5.3 * Math.sin(a * Math.PI / 180)).toFixed(2)}" r="1.5" fill="${marks[i % marks.length]}"/>`).join("");
+    s += eye;
+    if (has("patch")) s += `<path d="M13.5 23.5 27 36.5" stroke="${ink}" stroke-width="1.3"/><ellipse cx="19" cy="30" rx="4.3" ry="3.9" fill="${ink}"/>`;
+    s += `<path d="M11.5 35q2.5 1.6 4.3 0" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linecap="round"/>`;
+    if (has("fangs")) s += `<path d="M11.8 35.4l1.3 4.2 1.3-3.7ZM14.6 35.8l1.2 4 1.1-3.9Z" fill="#fff" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/>`;
+    if (has("horns")) s += `<path d="M15 23.5Q11 15 15.5 10.5Q15.5 17 19.5 22.2ZM23 21.8Q22 13 27.5 10Q25 16 26.6 21.6Z" fill="#7a0d16" stroke="#4a050b" stroke-width=".8" stroke-linejoin="round"/>`;
+    if (has("halo")) s += `<ellipse cx="22" cy="13.5" rx="7.5" ry="2.4" fill="none" stroke="#ffc93c" stroke-width="2.2"/>`;
+    if (hat) s += `<g transform="rotate(-12 20 22)">${hats[hat]}</g>`;
+    return svg(s);
+  }
+  // Candy corn and the Día de los Muertos art are shared with the princess theme (ART in src/index.html).
   const THEME = {
     home: "Your aquarium",
     currency: "Pearls",
@@ -509,13 +652,38 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
           kraken: { e: KRAKEN, name: "Kraken king", r: 3 },
         } },
     ],
-    // Visitors only come in their months (1 = January). They live in the first room.
-    seasonal: {
-      s_pumpkin: { e: "🎃", name: "Pumpkin", r: 0, floor: 1, months: [10] }, s_bat: { e: "🦇", name: "Bat", r: 0, months: [10] },
-      s_ghost: { e: "👻", name: "Friendly ghost", r: 1, months: [10] },
-      s_snowflake: { e: "❄️", name: "Snowflake", r: 0, months: [12, 1] }, s_snowman: { e: "⛄", name: "Snowman", r: 1, floor: 1, months: [12, 1] },
-      s_letter: { e: "💌", name: "Love letter", r: 0, months: [2] }, s_heart: { e: "💖", name: "Sparkly heart", r: 1, months: [2] },
-      s_chick: { e: "🐣", name: "Spring chick", r: 0, floor: 1, months: [4] },
+    // Holiday items only come while their holiday's window is open (HOLIDAYS in src/index.html), and live in the holiday room.
+    // `look` turns on a holiday look (LOOKS in src/index.html); `decor` hangs in the holiday room while the window is open.
+    // Keep their keys: saved collections go by them.
+    holidays: {
+      halloween: { look: LOOKS.halloween, items: {
+        s_pumpkin: { e: "🎃", name: "Pumpkin", r: 0, floor: 1 },
+        s_bat: { e: "🦇", name: "Bat", r: 0 },
+        s_ghost: { e: "👻", name: "Friendly ghost", r: 1 },
+        s_deadfish: { e: fish({ body: "#b9c2c9", fin: "#8e99a3", line: "#5b6670", belly: "#dfe5ea", eyes: "x" }), name: "Dead fish", r: 0, belly: 1 },
+        s_web: { e: "🕸️", name: "Spiderweb", r: 0, floor: 1 }, s_lollipop: { e: "🍭", name: "Lollipop", r: 0, floor: 1 },
+        s_candy: { e: "🍬", name: "Wrapped candy", r: 0, floor: 1 }, s_candycorn: { e: ART.candyCorn, name: "Candy corn", r: 0, floor: 1 },
+        s_zombie: { e: fish({ body: "#9db58a", fin: "#7a9068", line: "#4f6040", belly: "#c4d4b4", eyes: "odd", add: ["stitches"] }), name: "Zombie fish", r: 1 },
+        s_witchfish: { e: fish({ body: "#8fd16a", fin: "#5ea53c", line: "#3a6e22", belly: "#c9eeb0", hat: "witch" }), name: "Witch fish", r: 1 },
+        s_vampire: { e: fish({ body: "#d9d4e6", fin: "#8a7aa0", line: "#4a3a60", add: ["cape", "fangs"] }), name: "Vampire fish", r: 2 },
+        s_devil: { e: fish({ body: "#e0312f", fin: "#a5161a", line: "#6e0b0e", belly: "#ff7a5c", tail: "point", add: ["horns"] }), name: "Devil fish", r: 2 },
+      } },
+      muertos: { look: LOOKS.muertos, decor: ART.papelPicado, items: {
+        s_marigolds: { e: ART.marigolds, name: "Marigolds", r: 0, floor: 1 }, s_candle: { e: "🕯️", name: "Candle", r: 0, floor: 1 },
+        s_sugarskull: { e: ART.sugarSkull, name: "Sugar skull", r: 1, floor: 1 },
+        s_calavera: { e: fish({ body: "#fbf8f2", fin: "#ff5fa2", line: "#9a8f8a", pattern: "flowers", marks: ["#ff5fa2", "#2ad1e0", "#ff9a3c", "#a66cff"], add: ["eyering"] }), name: "Calavera fish", r: 2 },
+      } },
+      winter: { items: {
+        s_snowflake: { e: "❄️", name: "Snowflake", r: 0 },
+        s_snowman: { e: "⛄", name: "Snowman", r: 1, floor: 1 },
+      } },
+      valentine: { items: {
+        s_letter: { e: "💌", name: "Love letter", r: 0 },
+        s_heart: { e: "💖", name: "Sparkly heart", r: 1 },
+      } },
+      spring: { items: {
+        s_chick: { e: "🐣", name: "Spring chick", r: 0, floor: 1 },
+      } },
     },
     // Decorations from the shop, placed on the floor of any room.
     shop: {
@@ -527,12 +695,128 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       intro: "Each fast answer takes you deeper. Ten fast answers reach the treasure!", done: "You found the treasure!" },
     pictures: ["fish", "sun", "rainbow", "star", "heart", "castle", "fish"],
   };
-  // Every collectible in one table, each tagged with its room. Seasonal visitors live in the first room.
+
+  /* ---------- the holiday calendar ----------
+     Each holiday's first day comes from a rule for the year, and it lasts `days` days (default 1). Its window opens
+     `lead` weeks before the first day and runs through the last. A season has no single day: its window is its days.
+     A theme's `holidays` gives each id its items and look; a holiday the theme leaves out doesn't happen there.
+     Dates are the device's local date, counted in days since 1970. For testing, a hash on the link sets the date:
+     #halloween jumps to that holiday's day, #date=2026-12-20 to any day. It only moves the calendar, not daily stats. */
+  const dayNum = (y, m, d) => Math.round(Date.UTC(y, m - 1, d) / 864e5);
+  const yearOf = n => new Date(n * 864e5).getUTCFullYear();
+  const fixed = (m, d) => y => dayNum(y, m, d);
+  // The nth given weekday (0 = Sunday) of a month. Day 0 was a Thursday.
+  const nth = (m, wd, n) => y => { const first = dayNum(y, m, 1); return first + (wd - (first + 4) % 7 + 7) % 7 + 7 * (n - 1); };
+  // Easter Sunday by the Gregorian computus.
+  function easter(y) {
+    const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+    const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4;
+    const l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451), t = h + l - 7 * m + 114;
+    return dayNum(y, Math.floor(t / 31), t % 31 + 1);
+  }
+  // Festivals on a lunar calendar, looked up by year: { diwali: { 2026: [11, 8] } }. Past the table they don't happen.
+  const LUNAR = {};
+  const lunar = (id, shift = 0) => y => { const md = LUNAR[id]?.[y]; return md ? dayNum(y, ...md) + shift : null; };
+  // `when` finishes "It only comes …" and "Comes back …".
+  const HOLIDAYS = {
+    halloween: { name: "Halloween", first: fixed(10, 31), lead: 4 },
+    muertos: { name: "Día de los Muertos", first: fixed(11, 1), days: 2, lead: 1 },
+    diwali: { name: "Diwali", first: lunar("diwali"), lead: 1 },
+    thanksgiving: { name: "Thanksgiving", first: nth(11, 4, 4), lead: 1 },
+    gurpurab: { name: "Gurpurab", first: lunar("gurpurab"), lead: 0 },
+    christmas: { name: "Christmas", first: fixed(12, 25), lead: 4 },
+    newyear: { name: "New Year's", first: fixed(12, 31), days: 2, lead: 0, when: "at New Year's" },
+    mlk: { name: "Martin Luther King Jr. Day", first: nth(1, 1, 3), lead: 1 },
+    lunarnewyear: { name: "Lunar New Year", first: lunar("lunarnewyear", -1), days: 3, lead: 0 },  // the eve through the day after
+    valentine: { name: "Valentine's Day", first: fixed(2, 14), lead: 2 },
+    piday: { name: "Pi Day", first: fixed(3, 14), lead: 0 },
+    stpatrick: { name: "St. Patrick's Day", first: fixed(3, 17), lead: 1 },
+    easter: { name: "Easter", first: easter, lead: 2 },
+    holi: { name: "Holi", first: lunar("holi"), lead: 1 },
+    mahavir: { name: "Mahavir Jayanti", first: lunar("mahavir"), lead: 0 },
+    buddha: { name: "Buddha Purnima", first: lunar("buddha"), lead: 0 },
+    july4: { name: "Fourth of July", first: fixed(7, 4), lead: 1, when: "on the Fourth of July" },
+    gandhi: { name: "Gandhi Jayanti", first: fixed(10, 2), lead: 0 },
+    winter: { name: "Winter", first: fixed(12, 1), days: 62, season: true },  // Dec 1 – Jan 31
+    spring: { name: "Spring", first: fixed(4, 1), days: 30, season: true },   // April
+  };
+  const whenOf = id => { const h = HOLIDAYS[id]; return h.when || (h.season ? `in ${h.name.toLowerCase()}` : /Day$/.test(h.name) ? `on ${h.name}` : `at ${h.name}`); };
+  const warned = new Set();
+  // A holiday's window in year y: the day it opens, its first day and its last day.
+  function windowOf(id, y) {
+    const h = HOLIDAYS[id], first = h.first(y);
+    if (first == null) {
+      if (!warned.has(id)) { warned.add(id); console.warn(`No date for ${h.name} in ${y}: the lunar date table needs another year.`); }
+      return null;
+    }
+    return { id, year: y, open: first - 7 * (h.lead || 0), first, last: first + (h.days || 1) - 1 };
+  }
+  // The window that's open on day n, or else the next one to open.
+  const nextWindow = (id, n) => [-1, 0, 1].map(dy => windowOf(id, yearOf(n) + dy)).find(w => w && w.last >= n) || null;
+  const realDay = () => { const d = new Date(); return dayNum(d.getFullYear(), d.getMonth() + 1, d.getDate()); };
+  const CAL_DAY = (() => {
+    const h = decodeURIComponent(location.hash.slice(1)), m = h.match(/^date=(\d{4})-(\d\d?)-(\d\d?)$/);
+    if (m) return dayNum(+m[1], +m[2], +m[3]);
+    return HOLIDAYS[h] ? nextWindow(h, realDay())?.first ?? null : null;
+  })();
+  const calDay = () => CAL_DAY ?? realDay();
+  addEventListener("hashchange", () => location.reload());
+
+  // Every collectible in one table, each tagged with its room. Holiday items live in the holiday room,
+  // which comes after the theme's rooms and is always open.
   const ROOMS = THEME.rooms.map((rm, i) => ({ ...rm, i, keys: Object.keys(rm.creatures) }));
   const CREATURES = {};
   ROOMS.forEach(rm => rm.keys.forEach(k => CREATURES[k] = { ...rm.creatures[k], room: rm.i }));
-  const SEASONAL = THEME.seasonal || {}, SHOP_ITEMS = THEME.shop || {};
-  for (const k in SEASONAL) CREATURES[k] = { ...SEASONAL[k], room: 0, season: SEASONAL[k].months };
+  const SHOP_ITEMS = THEME.shop || {};
+  const HOLIDAY_ROOM = { name: "Holidays", ...THEME.holidayRoom, i: ROOMS.length, holiday: true };
+  const HOLIDAY_KEYS = {};  // the theme's holidays, in its order, each with its items' keys
+  for (const [id, h] of Object.entries(THEME.holidays || {})) {
+    if (!HOLIDAYS[id]) { console.warn(`Unknown holiday in theme.js: ${id}`); continue; }
+    HOLIDAY_KEYS[id] = Object.keys(h.items || {});
+    for (const k in h.items) CREATURES[k] = { ...h.items[k], room: HOLIDAY_ROOM.i, holiday: id };
+  }
+  const HAS_HOLIDAYS = Object.values(HOLIDAY_KEYS).some(ks => ks.length);
+  // The windows open on day n, soonest first.
+  const activeWindows = (n = calDay()) => Object.keys(HOLIDAY_KEYS).map(id => nextWindow(id, n)).filter(w => w && w.open <= n).sort((a, b) => a.first - b.first);
+  const isActive = id => activeWindows().some(w => w.id === id);
+  // The window that closed most recently before day n.
+  function lastWindow(n = calDay()) {
+    let best = null;
+    for (const id in HOLIDAY_KEYS) for (const dy of [-1, 0]) {
+      const w = windowOf(id, yearOf(n) + dy);
+      if (w && w.last < n && (!best || w.last > best.last)) best = w;
+    }
+    return best;
+  }
+  // The holiday whose look is on: one whose day is today, or else the soonest one. A season only if nothing else is.
+  function lookHoliday(n = calDay()) {
+    const rank = w => HOLIDAYS[w.id].season ? 2 : w.first <= n ? 0 : 1;
+    return activeWindows(n).filter(w => THEME.holidays[w.id].look).sort((a, b) => rank(a) - rank(b) || a.first - b.first)[0] || null;
+  }
+  // The holiday room on show: every active holiday's set, or the last one outside a window.
+  function holidayRoom() {
+    const ws = activeWindows(), shown = ws.length ? ws : [lastWindow()].filter(Boolean);
+    return { ...HOLIDAY_ROOM, ids: shown.map(w => w.id), keys: shown.flatMap(w => HOLIDAY_KEYS[w.id]) };
+  }
+  const roomAt = i => i === HOLIDAY_ROOM.i ? holidayRoom() : ROOMS[i];
+  // The look of the holiday that has one (lookHoliday). The currency is only renamed: the balance, prices and pace stay.
+  const LOOK = (id => id ? THEME.holidays[id].look : null)(lookHoliday()?.id);
+  if (LOOK) {
+    if (LOOK.gift) THEME.gift = { ...THEME.gift, ...LOOK.gift };
+    if (LOOK.currency) THEME.currency = LOOK.currency.name;
+    if (LOOK.cheers) THEME.fastWords = [...THEME.fastWords, ...LOOK.cheers, ...LOOK.cheers];  // twice, so they come up often
+    if (LOOK.room) HOLIDAY_ROOM.colors = LOOK.room;
+    const vars = o => Object.entries(o || {}).map(([k, v]) => `--${k}:${v};`).join("");
+    const css = document.createElement("style");
+    css.textContent = `:root{${vars(LOOK.light)}}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){${vars(LOOK.dark)}}}:root[data-theme="dark"]{${vars(LOOK.dark)}}`;
+    document.head.appendChild(css);
+  }
+  const currencyIcon = el => { if (LOOK?.currency?.icon) { el.textContent = LOOK.currency.icon; el.classList.add("emoji"); } return el; };
+  // A set should fit in its window at about one gift a day.
+  for (const id in HOLIDAY_KEYS) {
+    const w = nextWindow(id, calDay()), n = HOLIDAY_KEYS[id].length;
+    if (w && n > (w.last - w.open + 1) * HOLIDAY_GIFTS_PER_DAY) console.warn(`${HOLIDAYS[id].name} has ${n} items, more than its window can fill.`);
+  }
   const RARITY = [
     { name: "Common", w: 60, color: "var(--r0)" }, { name: "Rare", w: 28, color: "var(--r1)" },
     { name: "Super rare", w: 10, color: "var(--r2)" }, { name: "Legendary", w: 2, color: "var(--r3)" },
@@ -653,7 +937,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   if (!state.flashEarned) state.flash = false;
   // Fields for unlocks, rooms, the shop, pets, badges and play modes. `room` is the room on show.
   const blank = () => ({ unlocked: [], earned: {}, pets: {}, decor: [], placed: {}, outfit: { dress: THEME.starter }, badges: [],
-    dry: 0, bestRow: 0, best: {}, runs: 0, runDay: null, shop: null, room: 0, bought: 0, rainbows: 0, proficient: [],
+    holidayGifts: [], dry: 0, bestRow: 0, best: {}, runs: 0, runDay: null, shop: null, room: 0, bought: 0, rainbows: 0, proficient: [],
     quake: { chance: QUAKE_START, fallen: [], n: 0 } });
   for (const [k, v] of Object.entries(blank())) if (state[k] === undefined) state[k] = v;
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} };
@@ -911,7 +1195,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     if (!reduced) {
       const [x, y] = cardCenter(), t = $("pearl-meter").getBoundingClientRect();
       for (let i = 0; i < Math.min(n, 12); i++) setTimeout(() => {
-        const p = document.createElement("div"); p.className = "pearl-fly";
+        const p = currencyIcon(document.createElement("div")); p.classList.add("pearl-fly");
         p.style.left = (x - 8) + "px"; p.style.top = (y - 8) + "px";
         document.body.appendChild(p);
         const tx = t.left + t.width * Math.min(1, (state.pearls) / pearlGoal()) - x, ty = t.top + t.height / 2 - y;
@@ -935,11 +1219,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const copies = k => state.tank.reduce((n, x) => n + (x === k), 0);
   const owns = k => state.tank.includes(k);
   const isShiny = k => copies(k) >= SHINY_AT;
-  const month = () => new Date().getMonth() + 1;
-  const monthName = m => new Date(2000, m - 1, 1).toLocaleString("en", { month: "long" });
-  const inSeason = k => !!CREATURES[k].season?.includes(month());
   const roomDone = i => ROOMS[i].keys.every(owns);
-  const roomOpen = i => i === 0 || roomDone(i - 1);
+  const roomOpen = i => i === HOLIDAY_ROOM.i ? HAS_HOLIDAYS : i === 0 || roomDone(i - 1);
   const openRooms = () => ROOMS.filter(rm => roomOpen(rm.i));
   const petName = k => state.pets[k]?.name || CREATURES[k].name;
   function rollTier(min) {
@@ -947,11 +1228,23 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     for (let i = min; i < RARITY.length; i++) { r -= RARITY[i].w; if (r <= 0) return i; }
     return RARITY.length - 1;
   }
-  // Sometimes an in-season visitor; otherwise the first room that isn't full yet, or any room once all are full.
+  // A missing item from an open holiday window, and the share of gifts that should bring one: enough that
+  // at HOLIDAY_GIFTS_PER_DAY the set fills before the window closes.
+  function holidayOdds(minTier) {
+    const n = calDay(), missing = [];
+    let share = SEASON_SHARE;
+    for (const w of activeWindows(n)) {
+      const m = HOLIDAY_KEYS[w.id].filter(k => !owns(k) && CREATURES[k].r >= minTier);
+      missing.push(...m);
+      if (m.length) share = Math.max(share, m.length / ((w.last - n + 1) * HOLIDAY_GIFTS_PER_DAY));
+    }
+    return { missing, share };
+  }
+  // Sometimes a missing holiday item; otherwise the first room that isn't full yet, or any room once all are full.
   // Within the rolled tier, something new beats something not yet shiny, which beats anything.
   function rollCreature(minTier = 0) {
-    const visitors = Object.keys(SEASONAL).filter(k => inSeason(k) && !owns(k) && CREATURES[k].r >= minTier);
-    if (visitors.length && Math.random() < SEASON_SHARE) return choice(visitors);
+    const { missing, share } = holidayOdds(minTier);
+    if (missing.length && Math.random() < share) return choice(missing);
     const open = openRooms(), room = open.find(rm => !roomDone(rm.i)) || choice(open);
     if (state.dry + 1 >= PITY_GIFTS) minTier = Math.max(minTier, 2);
     let pool = [];
@@ -968,27 +1261,33 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   }
   function renderTank() {
     const tank = $("tank");
-    if (!roomOpen(state.room)) state.room = 0;
-    const rm = ROOMS[state.room], all = Object.keys(CREATURES);
-    const owned = [...new Set(state.tank)].filter(k => CREATURES[k]?.room === rm.i);
+    if (!roomAt(state.room) || !roomOpen(state.room)) state.room = 0;
+    const rm = roomAt(state.room), all = Object.keys(CREATURES);
+    const owned = rm.keys.filter(owns);
     const down = new Set(QUAKES ? state.quake.fallen : []), keys = owned.filter(k => !down.has(k));
-    const n = owned.length, fs = n > 18 ? 1.25 : n > 10 ? 1.5 : 1.9;
+    // The holiday room shows what's still missing as silhouettes.
+    const ghosts = rm.holiday ? rm.keys.filter(k => !owns(k)) : [];
+    const n = owned.length + ghosts.length, fs = n > 18 ? 1.25 : n > 10 ? 1.5 : 1.9;
     tank.style.cssText = rm.colors ? `--water-top:${rm.colors[0]};--water-bot:${rm.colors[1]};--sand:${rm.colors[2]}` : "";
+    if (rm.holiday && THEME.display !== "shelves" && n > 10) tank.style.height = "140px";  // room for a big set to swim
     tank.setAttribute("aria-label", rm.i ? rm.name : THEME.home);
     let html = rm.decor || "";
+    if (rm.holiday) for (const w of activeWindows()) html += THEME.holidays[w.id].decor || "";
+    if (rm.holiday) html += `<span class="holiday-name">${rm.ids.map(id => HOLIDAYS[id].name).join(" · ") || "No holidays yet"}</span>`;
     for (let i = 0; i < 6; i++) html += `<span class="bubble" style="left:${10 + seeded(i, 9) * 80}%;animation-duration:${4 + seeded(i, 3) * 4}s;animation-delay:-${seeded(i, 5) * 6}s"></span>`;
     for (const [k, p] of Object.entries(state.placed))
       if (p.room === rm.i && SHOP_ITEMS[k]) html += `<span class="deco" data-deco="${k}" style="left:${p.x}%" title="${SHOP_ITEMS[k].name}">${SHOP_ITEMS[k].e}</span>`;
-    if (THEME.display === "shelves") html += shelfRoom(rm, keys);
-    else for (const key of keys) {
+    if (THEME.display === "shelves") html += shelfRoom(rm, keys, ghosts);
+    else for (const key of [...keys, ...ghosts]) {
       // Seeded by the friend's place in the table, so each one keeps its spot and speed.
       const c = CREATURES[key], i = all.indexOf(key), grow = 1 + Math.min(state.pets[key]?.fed || 0, 10) * 0.05;
       const dur = 10 + seeded(i, 1) * 12, delay = -seeded(i, 2) * dur, top = 6 + seeded(i, 4) * 50;
-      html += `<span class="swim${c.floor ? " floor" : ""}" style="top:${top}%;left:${5 + seeded(i, 6) * 80}%;font-size:${(fs * grow).toFixed(2)}rem;animation-duration:${c.floor ? dur * 1.6 : dur}s;animation-delay:${delay}s"><span class="bob${isShiny(key) ? " shiny" : ""}" data-key="${key}" style="animation-delay:-${seeded(i, 7) * 2}s" title="${esc(petName(key))}">${c.e}</span></span>`;
+      const bob = bobHtml(key, `animation-delay:-${seeded(i, 7) * 2}s`);
+      html += `<span class="swim${c.floor ? " floor" : c.belly ? " belly" : ""}" style="top:${top}%;left:${5 + seeded(i, 6) * 80}%;font-size:${(fs * grow).toFixed(2)}rem;animation-duration:${c.floor ? dur * 1.6 : c.belly ? dur * 2.5 : dur}s;animation-delay:${delay}s">${c.belly ? `<span class="upside">${bob}</span>` : bob}</span>`;
     }
     html += fallenRoom(owned.filter(k => down.has(k)));
     tank.innerHTML = html;
-    const open = openRooms();
+    const open = [...openRooms(), ...HAS_HOLIDAYS ? [HOLIDAY_ROOM] : []];
     $("rooms").hidden = open.length < 2;
     $("rooms").innerHTML = open.map(r => `<button class="pill" data-room="${r.i}" aria-pressed="${r.i === rm.i}">${r.name}</button>`).join("");
     renderDrawers();
@@ -996,8 +1295,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   // A display room instead of an aquarium: things sit on shelves, `floor` items stand on the floor,
   // `walk` items pace around their spot and `fly` items hover in the air. Spots come from the room's whole
   // table (owned or not), so nothing moves when something new arrives and the gaps show what's still missing.
-  function shelfRoom(rm, keys) {
-    const all = Object.keys(CREATURES), table = all.filter(k => CREATURES[k].room === rm.i);
+  function shelfRoom(rm, keys, ghosts = []) {
+    const all = Object.keys(CREATURES), table = rm.keys;
     const kind = k => { const c = CREATURES[k]; return c.fly ? "fly" : c.walk ? "walk" : c.floor ? "floor" : "shelf"; };
     const shelf = table.filter(k => kind(k) === "shelf"), ground = table.filter(k => /floor|walk/.test(kind(k))), air = table.filter(k => kind(k) === "fly");
     const rows = shelf.length > 8 ? 2 : shelf.length ? 1 : 0, per = Math.ceil(shelf.length / (rows || 1));
@@ -1009,9 +1308,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     let html = "";
     for (let r = 0; r < rows; r++)
       html += `<span class="shelf" style="left:${50 - span / 2}%;width:${span}%;bottom:${boards[r]}px"></span>`;
-    for (const key of keys) {
-      const c = CREATURES[key], i = all.indexOf(key), k = kind(key), grow = 1 + Math.min(state.pets[key]?.fed || 0, 10) * 0.05;
-      const item = `<span class="bob${isShiny(key) ? " shiny" : ""}" data-key="${key}" title="${esc(petName(key))}">${c.e}</span>`;
+    for (const key of [...keys, ...ghosts]) {
+      const i = all.indexOf(key), k = kind(key), grow = 1 + Math.min(state.pets[key]?.fed || 0, 10) * 0.05;
+      const item = bobHtml(key);
       let pos, inner, n;
       if (k === "shelf") {
         const j = shelf.indexOf(key), r = Math.floor(j / per);
@@ -1029,6 +1328,10 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     }
     return html;
   }
+  // One friend in the tank, or the silhouette of one that's still missing (not tappable).
+  const bobHtml = (key, style = "") => owns(key)
+    ? `<span class="bob${isShiny(key) ? " shiny" : ""}" data-key="${key}" style="${style}" title="${esc(petName(key))}">${CREATURES[key].e}</span>`
+    : `<span class="bob ghost" style="${style}" aria-hidden="true">${CREATURES[key].e}</span>`;
   /* ---------- earthquakes (variants with `earthquakes` on) ----------
      A wrong answer can set one off, knocking every prize onto the floor. Each fast answer puts one back.
      Nothing is lost: fallen prizes are still owned, still count, and can still be tapped. */
@@ -1090,7 +1393,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       } else return;
       save(); renderTank(); return;
     }
-    const b = e.target.closest(".bob"); if (!b) return;
+    const b = e.target.closest(".bob[data-key]"); if (!b) return;
     b.classList.remove("hop"); void b.offsetWidth; b.classList.add("hop"); sfx.blub();
     setTimeout(() => b.classList.remove("hop"), 650);
     openDrawer("pet", b.dataset.key);
@@ -1193,7 +1496,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   ];
   const dexItem = k => {
     const c = CREATURES[k], n = copies(k), col = RARITY[c.r].color;
-    if (!n) return `<div class="dex-item unknown" style="border-color:${col}"><span class="e">?</span>${c.season && !inSeason(k) ? `Comes in ${monthName(c.season[0])}` : RARITY[c.r].name}</div>`;
+    if (!n) return `<div class="dex-item unknown" style="border-color:${col}"><span class="e">?</span>${c.holiday && !isActive(c.holiday) ? `Comes back ${whenOf(c.holiday)}` : RARITY[c.r].name}</div>`;
     return `<button class="dex-item${isShiny(k) ? " shiny-item" : ""}" data-act="pet" data-key="${k}" style="border-color:${col}">${n > 1 ? `<span class="n">×${n}</span>` : ""}` +
       `<span class="e${isShiny(k) ? " shiny" : ""}">${c.e}</span>${esc(petName(k))}</button>`;
   };
@@ -1204,8 +1507,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         if (!roomOpen(rm.i)) { html += `<p class="note">🔒 <b>${rm.name}</b>: find everything in the ${ROOMS[rm.i - 1].name.toLowerCase()} to open it.</p>`; break; }
         html += `<h4>${rm.name} · ${rm.keys.filter(owns).length} of ${rm.keys.length}</h4><div class="dex-grid">${rm.keys.map(dexItem).join("")}</div>`;
       }
-      const vis = Object.keys(SEASONAL);
-      if (vis.length) html += `<h4>Visitors · ${vis.filter(owns).length} of ${vis.length}</h4><div class="dex-grid">${vis.map(dexItem).join("")}</div>`;
+      for (const [id, ks] of Object.entries(HOLIDAY_KEYS))
+        if (ks.length) html += `<h4>${HOLIDAYS[id].name} · ${ks.filter(owns).length} of ${ks.length}</h4><div class="dex-grid">${ks.map(dexItem).join("")}</div>`;
       return html + `<p class="note">Get ${SHINY_AT} of the same friend and it turns shiny. Tap a friend to feed it or give it a name.</p>`;
     },
     pet() {
@@ -1227,10 +1530,10 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         `<p class="note">You have <b>${money(state.pearls)}</b>. Spending them makes the next gift take longer. New things come every day.</p>`;
     },
     decor() {
-      const room = ROOMS[state.room].name.toLowerCase();
+      const room = roomAt(state.room).name.toLowerCase();
       return `<p class="note">${decoKey ? `Now tap the spot in the ${room} for the ${SHOP_ITEMS[decoKey].name.toLowerCase()}.` : "Pick a decoration, then tap the spot for it. Tap one that's already out to put it away."}</p>` +
         `<div class="dex-grid">${state.decor.map(k => `<button class="dex-item" data-act="deco" data-key="${k}" aria-pressed="${decoKey === k}"><span class="e">${SHOP_ITEMS[k].e}</span>${SHOP_ITEMS[k].name}` +
-          (state.placed[k] ? `<span class="price">In the ${ROOMS[state.placed[k].room].name.toLowerCase()}</span>` : "") + `</button>`).join("")}</div>`;
+          (state.placed[k] ? `<span class="price">In the ${roomAt(state.placed[k].room).name.toLowerCase()}</span>` : "") + `</button>`).join("")}</div>`;
     },
     dress() {
       const D = THEME.dressUp, o = state.outfit;
@@ -1264,6 +1567,16 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     drawer = drawer === key && (key !== "pet" || petKey === pet) ? null : key;
     petKey = pet || null; decoKey = null;
     renderDrawers();
+  }
+  // A holiday with no lead time gives one free gift on its day.
+  function holidayGift() {
+    const n = calDay();
+    for (const w of activeWindows(n)) {
+      const h = HOLIDAYS[w.id], tag = `${w.id}-${w.year}`;
+      if (h.lead || h.season || w.first > n || state.holidayGifts.includes(tag)) continue;
+      state.holidayGifts.push(tag);
+      enqueue(chestOverlay({ title: `Happy ${h.name}!` }));
+    }
   }
   // Opens anything an action queued (a gift, a badge), unless a play mode is running; then it waits for the end.
   function flushQueue() { if (queue.length && !overlay && !mode.kind) { locked = true; openNext(); } }
@@ -1348,6 +1661,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         if (o.stage === 0) {
           o.stage = 1; setBig({ icon: THEME.gift.icon, iconClass: "wobble", title, sub: "Here it comes…" });
           sfx.rattle(); buzz([20, 80, 20, 80, 20]);
+          if (!reduced && THEME.gift.colors) setTimeout(() => sparkle(36, 8, THEME.gift.colors), 700);
           setTimeout(o.reveal, 820);
           return false;
         }
@@ -1364,7 +1678,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         if (n === SHINY_AT) sub = `That's ${SHINY_AT}! Your ${c.name.toLowerCase()} turned shiny!`;
         else if (n === SHINY_AT - 1) sub += ` One more and it turns shiny.`;
         else if (o.refund) sub = `It's already shiny, so here's ${money(o.refund)}.`;
-        if (c.season && n < SHINY_AT) sub = `A visitor! It only comes in ${monthName(c.season[0])}.`;
+        if (c.holiday && n < SHINY_AT) sub = `A visitor! It only comes ${whenOf(c.holiday)}.`;
         checkBadges(); save();
         setBig({ icon: shiny ? `<span class="shiny">${c.e}</span>` : c.e, iconClass: "reveal", title: `${shiny ? "Shiny " : ""}${c.name}!`,
           fact: RARITY[c.r].name, factColor: RARITY[c.r].color, sub });
@@ -1955,9 +2269,10 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   });
 
   $("pearl-name").textContent = THEME.currency;
+  currencyIcon(document.querySelector(".pearl-icon"));
   // A save from an older version may already qualify for unlocks and perks: those get their moment now.
   // Badges it already qualifies for are awarded quietly.
-  checkUnlocks(); earnPerks(); checkBadges(true);
+  checkUnlocks(); earnPerks(); checkBadges(true); holidayGift();
   renderMute(); renderOps(); renderAll(); renderShelf(); renderTank(); renderPearls(); renderFlash(); renderModes();
   save();
   if (queue.length) openNext(); else show();

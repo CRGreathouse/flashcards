@@ -13,6 +13,29 @@
   // Seasonal gowns are the ball gown in other colors.
   const SNOW_GOWN = recolor(BALL_GOWN, { "#ff7eb6": "#cfeeff", "#c93d80": "#5aa9d6", "#ffd0e5": "#f4fbff", "#ffb3d4": "#e2f4ff", "#e8458f": "#8fd0f5", "#b02a6c": "#3a8fc0" });
   const PUMPKIN_GOWN = recolor(BALL_GOWN, { "#ff7eb6": "#ff9a3c", "#c93d80": "#b8560a", "#ffd0e5": "#6b3fa0", "#ffb3d4": "#ffc27a", "#e8458f": "#7a4ab5", "#b02a6c": "#4a2a75" });
+  const VALENTINE_GOWN = recolor(BALL_GOWN, { "#ff7eb6": "#ff4f6d", "#c93d80": "#b3123a", "#ffd0e5": "#ffd6de", "#ffb3d4": "#ff9aac", "#e8458f": "#d61f45", "#b02a6c": "#8a0d2c" });
+  const BLOSSOM_GOWN = recolor(BALL_GOWN, { "#ff7eb6": "#b8e986", "#c93d80": "#5c9e2e", "#ffd0e5": "#fff7c2", "#ffb3d4": "#ffd6ec", "#e8458f": "#ff9ac8", "#b02a6c": "#c2408a" });
+  // The wardrobe: a few new shapes, and the castle's gowns in other colors.
+  const GOLDEN_GOWN = recolor(BALL_GOWN, { "#ffc93c": "#ffffff", "#e3a400": "#c99400", "#ff7eb6": "#ffd23f", "#c93d80": "#c99400", "#ffd0e5": "#fff2b3", "#ffb3d4": "#ffe27a", "#e8458f": "#f5b800", "#b02a6c": "#a87a00" });
+  const LILAC_GOWN = recolor(BALL_GOWN, { "#ff7eb6": "#c9a8ff", "#c93d80": "#7a5ae0", "#ffd0e5": "#efe6ff", "#ffb3d4": "#dccbff", "#e8458f": "#a07cf0", "#b02a6c": "#5a3ab8" });
+  const PINK_TUTU = recolor(TUTU, { "#e3d8ff": "#ffe0ee", "#9b7bff": "#ff7eb6", "#b9a2ff": "#ffb3d4", "#7a5ae0": "#c93d80", "#6a48d4": "#b02a6c", "#ff5d8f": "#8fd3f0", "#d6336c": "#3a8fd0", "#ff8fb1": "#cdeeff" });
+  const TWILIGHT_GOWN = recolor(STARLIGHT_GOWN, { "#9ad8ff": "#c9b3ff", "#3a8fd0": "#5a3ab8", "#6fc3ff": "#9b7bff", "#e6f6ff": "#f3edff", "#cdeeff": "#e3d8ff" });
+  const PARTY_DRESS = drawn(`<path d="M24 31 L11 51 Q32 58 53 51 L40 31Z" fill="#e84a5f" stroke="#a8263a" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 51 Q32 58 52 51" fill="none" stroke="#fff" stroke-width="2.4" stroke-dasharray=".1 3.2" stroke-linecap="round"/><ellipse cx="21.5" cy="22" rx="4.6" ry="3.4" fill="#ff8a9a" stroke="#a8263a" stroke-width="1.1"/><ellipse cx="42.5" cy="22" rx="4.6" ry="3.4" fill="#ff8a9a" stroke="#a8263a" stroke-width="1.1"/><path d="M24 17 Q28 14 32 18 Q36 14 40 17 L40 31 L24 31Z" fill="#e84a5f" stroke="#a8263a" stroke-width="1.2" stroke-linejoin="round"/><g fill="#fff"><circle cx="28" cy="22" r="1.2"/><circle cx="36" cy="24" r="1.2"/><circle cx="23" cy="40" r="1.6"/><circle cx="31" cy="37" r="1.6"/><circle cx="40" cy="41" r="1.6"/><circle cx="18" cy="48" r="1.6"/><circle cx="27" cy="46" r="1.6"/><circle cx="36" cy="49" r="1.6"/><circle cx="46" cy="47" r="1.6"/></g><rect x="23" y="28.5" width="18" height="3.5" rx="1.75" fill="#fff" stroke="#e0c8cc" stroke-width=".8"/><path d="M32 30 L26 26.5 L26 33.5Z M32 30 L38 26.5 L38 33.5Z" fill="#fff" stroke="#a8263a" stroke-width=".9" stroke-linejoin="round"/><circle cx="32" cy="30" r="1.8" fill="#ffd84d" stroke="#a8263a" stroke-width=".8"/>`);
+  const DAISY_DRESS = recolor(PARTY_DRESS, { "#e84a5f": "#7fd18a", "#a8263a": "#3f8f4a", "#ff8a9a": "#c4efc8", "#ffd84d": "#ff9ac8", "#fff": "#ffe066", "#e0c8cc": "#e3c440" });
+  const PETAL_DRESS = drawn(`<g stroke-width="1.2" stroke-linejoin="round"><path d="M30 30 C22 36 12 44 8 54 C18 54 26 46 30 30Z" fill="#ffd0e5" stroke="#d0508f"/><path d="M34 30 C42 36 52 44 56 54 C46 54 38 46 34 30Z" fill="#ffd0e5" stroke="#d0508f"/><path d="M30 30 C24 40 18 50 19 61 C27 56 31 46 31 30Z" fill="#ff9ccb" stroke="#d0508f"/><path d="M34 30 C40 40 46 50 45 61 C37 56 33 46 33 30Z" fill="#ff9ccb" stroke="#d0508f"/><path d="M32 30 C27 42 28 53 32 63 C36 53 37 42 32 30Z" fill="#ffd0e5" stroke="#d0508f"/></g><path d="M27 9 L27 17 M37 9 L37 17" stroke="#3f8f4a" stroke-width="1.8" stroke-linecap="round"/><path d="M25 16 Q32 21 39 16 L40 31 L24 31Z" fill="#7fcf7a" stroke="#3f8f4a" stroke-width="1.2" stroke-linejoin="round"/><path d="M28 21 Q32 25 36 21 M27 26 Q32 30 37 26" fill="none" stroke="#3f8f4a" stroke-width=".9" opacity=".6"/><circle cx="32" cy="31" r="2.4" fill="#ffe066" stroke="#e3a400" stroke-width=".8"/><g fill="#fff"><circle cx="16" cy="48" r="1"/><circle cx="48" cy="48" r="1"/><circle cx="24" cy="54" r="1.1"/><circle cx="40" cy="54" r="1.1"/><circle cx="32" cy="44" r="1.1"/></g>`);
+  const MERMAID_GOWN = drawn(`<path d="M27 46 C20 52 12 56 5 62 Q19 59 32 63 Q45 59 59 62 C52 56 44 52 37 46Z" fill="#7fe0d4" stroke="#1d7f78" stroke-width="1.3" stroke-linejoin="round"/><path d="M32 50 L32 61 M29 50 L20 60 M35 50 L44 60 M27 49 L11 59 M37 49 L53 59" stroke="#1d7f78" stroke-width="1" stroke-linecap="round" opacity=".5"/><path d="M24 17 Q28 14 32 18 Q36 14 40 17 L40 30 C41 38 39 43 37 48 L27 48 C25 43 23 38 24 30Z" fill="#3cc0b4" stroke="#1d7f78" stroke-width="1.3" stroke-linejoin="round"/><path d="M26 25 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 M26 34 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 M27 39 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 1.5 0 M28 44 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0" fill="none" stroke="#a6f0e6" stroke-width="1"/><path d="M24 17 Q28 14 32 18 Q36 14 40 17 L40 21 Q36 18 32 22 Q28 18 24 21Z" fill="#b48ef0" stroke="#6a48d4" stroke-width="1" stroke-linejoin="round"/><g fill="#fff" stroke="#c9b3ff" stroke-width=".5"><circle cx="25" cy="30" r="1.4"/><circle cx="28.5" cy="30.6" r="1.4"/><circle cx="32" cy="31" r="1.6"/><circle cx="35.5" cy="30.6" r="1.4"/><circle cx="39" cy="30" r="1.4"/></g><g fill="#fff"><circle cx="18" cy="58" r="1"/><circle cx="46" cy="58" r="1"/><circle cx="32" cy="56" r="1.1"/></g>`);
+  const RAINBOW_GOWN = drawn(`<path d="M24 30 L5 58 Q32 66 59 58 L40 30Z" fill="#b48ef0"/><path d="M24 30 L8.4 53 Q32 59 55.6 53 L40 30Z" fill="#6fb6ff"/><path d="M24 30 L12 48 Q32 53 52 48 L40 30Z" fill="#7fd88a"/><path d="M24 30 L16 42 Q32 47 48 42 L40 30Z" fill="#ffe066"/><path d="M24 30 L20 36 Q32 41 44 36 L40 30Z" fill="#ffab5c"/><path d="M24 30 L5 58 Q32 66 59 58 L40 30Z" fill="none" stroke="#7a5ae0" stroke-width="1.3" stroke-linejoin="round"/><g fill="#fff" stroke="#d8e6f5" stroke-width=".8"><circle cx="8" cy="58" r="3"/><circle cx="15" cy="60.5" r="3.4"/><circle cx="23" cy="62" r="3.4"/><circle cx="32" cy="62.5" r="3.6"/><circle cx="41" cy="62" r="3.4"/><circle cx="49" cy="60.5" r="3.4"/><circle cx="56" cy="58" r="3"/></g><ellipse cx="21.5" cy="22" rx="4.8" ry="3.5" fill="#fff" stroke="#7a5ae0" stroke-width="1.1"/><ellipse cx="42.5" cy="22" rx="4.8" ry="3.5" fill="#fff" stroke="#7a5ae0" stroke-width="1.1"/><path d="M24 17 Q28 14 32 18 Q36 14 40 17 L40 31 L24 31Z" fill="#ff6b6b" stroke="#c93d3d" stroke-width="1.2" stroke-linejoin="round"/><rect x="22.5" y="28" width="19" height="4" rx="2" fill="#fff" stroke="#7a5ae0" stroke-width="1"/><g fill="#fff" stroke="#ffd84d" stroke-width=".6" stroke-linejoin="round"><path d="M32 21 l1.2 2.5 2.7.4-2 1.9.5 2.7-2.4-1.3-2.4 1.3.5-2.7-2-1.9 2.7-.4Z"/><path d="M22 47 l1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z"/><path d="M42 47 l1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z"/></g>`);
+  // Holiday clothes. Shared holiday art (the candy bucket, sugar skull, marigolds) is ART in src/index.html.
+  const WITCH_DRESS = recolor(PARTY_DRESS, { "#e84a5f": "#4a2d6b", "#a8263a": "#24123a", "#ff8a9a": "#7a4ab5", "#fff": "#ff9a3c", "#ffd84d": "#7fe05a", "#e0c8cc": "#c45a00" });
+  const WITCH_HAT = drawn(`<ellipse cx="32" cy="49" rx="28" ry="7" fill="#2e1d40" stroke="#1a0f26" stroke-width="1.2"/><path d="M16 48Q24 31 27 17Q30 5 41 3Q35 10 36 20L46 48Z" fill="#4a2d6b" stroke="#24123a" stroke-width="1.3" stroke-linejoin="round"/>` +
+    `<path d="M18.2 42Q32 38.5 44 42L45.6 46.6Q32 42.5 16.6 46.6Z" fill="#ff9a3c"/><rect x="28" y="40.2" width="6.5" height="5.6" rx="1" fill="none" stroke="#ffd23f" stroke-width="1.4"/>` +
+    `<path d="M33 26l1 2 2.2.3-1.6 1.5.4 2.2-2-1-2 1 .4-2.2-1.6-1.5 2.2-.3Z" fill="#ffd23f"/>`);
+  const BAT_CAPE = drawn(`<path d="M32 12C22 13 14 26 5 50Q11 45 16 52 20 45 25 54 29 47 32 56 35 47 39 54 44 45 48 52 53 45 59 50C50 26 42 13 32 12Z" fill="#2e1d40" stroke="#14091f" stroke-width="1.3" stroke-linejoin="round"/>` +
+    `<path d="M32 17C27 26 25 40 24 51Q28 47 32 53 36 47 40 51C39 40 37 26 32 17Z" fill="#7a3fa0"/><path d="M8 47Q20 31 26 18M56 47Q44 31 38 18" fill="none" stroke="#5a3a78" stroke-width="1.1"/>` +
+    `<path d="M32 14 20 16 13 5 25 10ZM32 14 44 16 51 5 39 10Z" fill="#c4122f" stroke="#7a0a1c" stroke-width="1" stroke-linejoin="round"/><circle cx="32" cy="16" r="3" fill="#ff9a3c" stroke="#c45a00" stroke-width="1"/>`);
+  const MARIGOLD_CROWN = drawn(`<path d="M6 40Q32 24 58 40" fill="none" stroke="#3f8f3a" stroke-width="3" stroke-linecap="round"/><path d="M13 34q-1-7 5-9 0 7-5 9ZM51 34q1-7-5-9 0 7 5 9ZM25 28q1-6 6-7-1 6-6 7Z" fill="#5cb85c"/>` +
+    marigold(9, 40, .62) + marigold(19, 33, .7) + marigold(32, 30, .8) + marigold(45, 33, .7) + marigold(55, 40, .62));
+  const PAPEL_DRESS = recolor(RAINBOW_GOWN, { "#b48ef0": "#e83f8f", "#6fb6ff": "#ff9a1a", "#7fd88a": "#2ad1e0", "#ffe066": "#a66cff", "#ffab5c": "#7fd18a", "#ff6b6b": "#e83f8f", "#c93d3d": "#a0205e", "#7a5ae0": "#a0205e" });
   const CARRIAGE = drawn(`<path d="M32 18Q30 10 35 7" fill="none" stroke="#3f8f3a" stroke-width="3" stroke-linecap="round"/><path d="M35 9q7-3 9 3-6 2-9-3Z" fill="#5cb85c"/><ellipse cx="32" cy="34" rx="23" ry="17" fill="#ff9a3c" stroke="#d96b10" stroke-width="2"/><path d="M32 17v34M20 20q-6 14 0 28M44 20q6 14 0 28" fill="none" stroke="#d96b10" stroke-width="1.5"/><rect x="25" y="25" width="14" height="13" rx="6" fill="#bfe8ff" stroke="#e3a400" stroke-width="2.5"/><g fill="none" stroke="#e3a400" stroke-width="3"><circle cx="17" cy="52" r="8"/><circle cx="47" cy="52" r="8"/></g><path d="M17 44v16M9 52h16M47 44v16M39 52h16" stroke="#e3a400" stroke-width="1.5"/>`);
   const THRONE = drawn(`<path d="M18 7 24 13 32 4 40 13 46 7V36H18Z" fill="#c93d80" stroke="#e3a400" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="21" r="4" fill="#8fd3f0" stroke="#fff" stroke-width="1.5"/><path d="M16 45 14 60M48 45 50 60" stroke="#e3a400" stroke-width="4" stroke-linecap="round"/><rect x="11" y="34" width="42" height="11" rx="4" fill="#ff7eb6" stroke="#e3a400" stroke-width="2"/><rect x="9" y="26" width="7" height="21" rx="2.5" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5"/><rect x="48" y="26" width="7" height="21" rx="2.5" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5"/>`);
   const PEGASUS = drawn(`<path d="M15 34Q4 36 6 49" fill="none" stroke="#c9b3ff" stroke-width="5" stroke-linecap="round"/><path d="M20 40v16M26 42v15M38 42v15M44 40v16" stroke="#e8e2f5" stroke-width="4" stroke-linecap="round"/><path d="M18 57h4M24 58h4M36 58h4M42 57h4" stroke="#ffc93c" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="31" cy="37" rx="16" ry="9" fill="#fff" stroke="#b9a8de" stroke-width="1.5"/><path d="M40 33 47 14 56 13 60 19 50 22 47 37Z" fill="#fff" stroke="#b9a8de" stroke-width="1.5" stroke-linejoin="round"/><path d="M47 14Q42 21 41 31" fill="none" stroke="#c9b3ff" stroke-width="4" stroke-linecap="round"/><circle cx="53" cy="16" r="1.6" fill="#2a2a2a"/><path d="M31 33Q19 14 7 8 13 17 11 20 19 22 17 26 25 28 31 33Z" fill="#f4efff" stroke="#b9a8de" stroke-width="1.5" stroke-linejoin="round"/>`);
@@ -81,15 +104,47 @@
           elf: { e: "🧝‍♀️", name: "Elf", r: 2, walk: 1 },
           queen: { e: "🫅", name: "The queen", r: 3, walk: 1 },
         } },
+      { name: "Royal wardrobe", colors: ["#fff3e6", "#f5c6d6", "#c98aa8"],
+        decor: `<span class="weed" style="left:5%">🧵</span><span class="weed" style="left:84%;animation-delay:-2s">🎀</span>`,
+        creatures: {
+          partydress: { e: PARTY_DRESS, name: "Party dress", r: 0 }, daisydress: { e: DAISY_DRESS, name: "Daisy dress", r: 0 },
+          pinktutu: { e: PINK_TUTU, name: "Pink tutu", r: 0 },
+          petaldress: { e: PETAL_DRESS, name: "Flower fairy dress", r: 1 }, goldgown: { e: GOLDEN_GOWN, name: "Golden gown", r: 1 },
+          lilacgown: { e: LILAC_GOWN, name: "Lilac gown", r: 1 },
+          mermaidgown: { e: MERMAID_GOWN, name: "Mermaid gown", r: 2 }, twilightgown: { e: TWILIGHT_GOWN, name: "Twilight gown", r: 2 },
+          rainbowgown: { e: RAINBOW_GOWN, name: "Rainbow gown", r: 3 },
+        } },
     ],
-    // Visitors only come in their months (1 = January). They live in the first room.
-    seasonal: {
-      s_pumpkin: { e: "🎃", name: "Jack-o'-lantern", r: 0, floor: 1, months: [10] }, s_ghost: { e: "👻", name: "Friendly ghost", r: 1, fly: 1, months: [10] },
-      s_pumpkingown: { e: PUMPKIN_GOWN, name: "Pumpkin gown", r: 2, months: [10] },
-      s_snowflake: { e: "❄️", name: "Snowflake", r: 0, fly: 1, months: [12, 1] }, s_snowman: { e: "⛄", name: "Snowman", r: 1, floor: 1, months: [12, 1] },
-      s_snowgown: { e: SNOW_GOWN, name: "Snow gown", r: 2, months: [12, 1] },
-      s_letter: { e: "💌", name: "Love letter", r: 0, months: [2] }, s_heart: { e: "💖", name: "Sparkly heart", r: 1, fly: 1, months: [2] },
-      s_chick: { e: "🐣", name: "Spring chick", r: 0, walk: 1, months: [4] },
+    // Holiday items only come while their holiday's window is open (HOLIDAYS in src/index.html), and live in the holiday room.
+    // `look` turns on a holiday look (LOOKS in src/index.html); `decor` hangs in the holiday room while the window is open.
+    // Keep their keys: saved collections go by them.
+    holidays: {
+      halloween: { look: LOOKS.halloween, items: {
+        s_pumpkin: { e: "🎃", name: "Jack-o'-lantern", r: 0, floor: 1 },
+        s_ghost: { e: "👻", name: "Friendly ghost", r: 1, fly: 1 },
+        s_pumpkingown: { e: PUMPKIN_GOWN, name: "Pumpkin gown", r: 2 },
+        s_candybucket: { e: ART.candyBucket, name: "Candy bucket", r: 0 }, s_spiderweb: { e: "🕸️", name: "Spiderweb", r: 0 },
+        s_witchdress: { e: WITCH_DRESS, name: "Witch dress", r: 1 }, s_witchhat: { e: WITCH_HAT, name: "Witch hat", r: 1 },
+        s_batcape: { e: BAT_CAPE, name: "Bat-wing cape", r: 2 },
+      } },
+      muertos: { look: LOOKS.muertos, decor: ART.papelPicado, items: {
+        s_sugarskull: { e: ART.sugarSkull, name: "Sugar skull", r: 0 }, s_marigolds: { e: ART.marigolds, name: "Marigolds", r: 0 },
+        s_marigoldcrown: { e: MARIGOLD_CROWN, name: "Marigold crown", r: 1 }, s_papeldress: { e: PAPEL_DRESS, name: "Papel picado dress", r: 2 },
+      } },
+      winter: { items: {
+        s_snowflake: { e: "❄️", name: "Snowflake", r: 0, fly: 1 },
+        s_snowman: { e: "⛄", name: "Snowman", r: 1, floor: 1 },
+        s_snowgown: { e: SNOW_GOWN, name: "Snow gown", r: 2 },
+      } },
+      valentine: { items: {
+        s_letter: { e: "💌", name: "Love letter", r: 0 },
+        s_heart: { e: "💖", name: "Sparkly heart", r: 1, fly: 1 },
+        s_valentinegown: { e: VALENTINE_GOWN, name: "Valentine gown", r: 2 },
+      } },
+      spring: { items: {
+        s_chick: { e: "🐣", name: "Spring chick", r: 0, walk: 1 },
+        s_blossomgown: { e: BLOSSOM_GOWN, name: "Blossom gown", r: 2 },
+      } },
     },
     // Decorations from the shop, placed on the floor of any room.
     shop: {
@@ -101,10 +156,12 @@
       intro: "Each fast answer moves the carriage closer. Ten fast answers get you to the ball!", done: "You made it to the ball!" },
     // Dress-up: each slot lists the items that can go there; only ones you own show up.
     dressUp: { doll: DOLL, slots: [
-      { key: "dress", name: "Dress", items: ["gown", "kimono", "tutu", "ballgown", "starlight", "s_pumpkingown", "s_snowgown"] },
-      { key: "head", name: "Head", items: ["tiara", "crown", "hennin", "ribbon"] },
-      { key: "back", name: "Back", items: ["wings", "cape"] },
-      { key: "hand", name: "Hand", items: ["wand", "rose", "purse", "butterfly", "cupcake", "sunflower", "jewel"] },
+      { key: "dress", name: "Dress", items: ["gown", "kimono", "tutu", "ballgown", "starlight",
+        "partydress", "daisydress", "pinktutu", "petaldress", "goldgown", "lilacgown", "mermaidgown", "twilightgown", "rainbowgown",
+        "s_pumpkingown", "s_witchdress", "s_papeldress", "s_snowgown", "s_valentinegown", "s_blossomgown"] },
+      { key: "head", name: "Head", items: ["tiara", "crown", "hennin", "ribbon", "s_witchhat", "s_marigoldcrown"] },
+      { key: "back", name: "Back", items: ["wings", "cape", "s_batcape"] },
+      { key: "hand", name: "Hand", items: ["wand", "rose", "purse", "butterfly", "cupcake", "sunflower", "jewel", "s_candybucket"] },
       { key: "feet", name: "Feet", items: ["slipper"] },
     ] },
     pictures: ["castle", "heart", "rainbow", "star", "sun", "fish", "heart"],
