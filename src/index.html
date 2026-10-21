@@ -110,7 +110,25 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 .pearl-icon.emoji, .pearl-fly.emoji { width: auto; height: auto; background: none; box-shadow: none; clip-path: none; border-radius: 0; line-height: 1; }
 .pearl-icon.emoji { font-size: 13px; }
 .pearl-fly.emoji { font-size: 18px; }
-.holiday-name { position: absolute; top: 4px; left: 8px; z-index: 4; font-size: .7rem; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); pointer-events: none; }
+.holiday-name { position: absolute; top: 4px; left: 8px; z-index: 7; font-size: .7rem; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); pointer-events: none; }
+/* holiday effects (a look's `night`, `fall` and `lights`): a dark room, things falling through it, lights that glow */
+.tank.night::before { content: ""; position: absolute; inset: 0; z-index: 4; background: rgba(8, 10, 40, .5); pointer-events: none; }
+.fall { position: absolute; top: -12px; z-index: 5; pointer-events: none; animation: fall linear infinite; }
+.fall.dot { border-radius: 50%; }
+.fall.petal { border-radius: 50% 0; }
+.fall.leaf { border-radius: 0 70%; }
+@keyframes fall {
+  0% { transform: translate(0, 0) rotate(0); } 25% { transform: translate(9px, 45px) rotate(90deg); }
+  50% { transform: translate(-2px, 90px) rotate(180deg); } 75% { transform: translate(-10px, 135px) rotate(270deg); }
+  100% { transform: translate(0, 180px) rotate(360deg); }
+}
+.light { position: absolute; z-index: 6; line-height: 0; font-size: 15px; transform: translateX(-50%); pointer-events: none;
+  filter: drop-shadow(0 0 2px #ffd36a) drop-shadow(0 0 5px rgba(255, 180, 60, .7)); animation: flicker 1.8s ease-in-out infinite alternate; }
+.light.hang { transform: translate(-50%, 100%); }
+.light .drawn { width: 1em; height: 1em; vertical-align: 0; }
+.light.bulb { width: 6px; height: 8px; border-radius: 50% 50% 45% 45%; background: var(--c); filter: none; box-shadow: 0 0 4px 1px var(--c), 0 0 9px 2px var(--c); }
+.wire { position: absolute; z-index: 6; height: 0; border-top: 1px solid rgba(40, 50, 40, .7); pointer-events: none; }
+@keyframes flicker { from { opacity: .8; } to { opacity: 1; } }
 @keyframes bob { from { transform: translateY(-3px); } to { transform: translateY(3px); } }
 @keyframes hop { 0% { transform: translateY(0) scale(1); } 40% { transform: translateY(-18px) scale(1.25); } 100% { transform: translateY(0) scale(1); } }
 /* display room (THEME.display = "shelves"): shelves on the back wall, walkers on the floor, fliers above */
@@ -283,9 +301,9 @@ h2 { font-family: var(--display); font-weight: 600; font-size: 1.15rem; margin: 
   transition: transform .9s cubic-bezier(.5,-0.3,.4,1); }
 
 @media (prefers-reduced-motion: reduce) {
-  .card.shake, .card.glow, .cheer.pop, .big-card, .big-icon, .chip.new, .flash-btn.new, .combo.bump, .wrap.quake, .fallen > span.drop, .swim, .bob, .pace, .hover, .weed, .bubble, .card.golden::before { animation: none !important; }
+  .card.shake, .card.glow, .cheer.pop, .big-card, .big-icon, .chip.new, .flash-btn.new, .combo.bump, .wrap.quake, .fallen > span.drop, .swim, .bob, .pace, .hover, .weed, .bubble, .light, .card.golden::before { animation: none !important; }
   .cheer.pop { opacity: 1; }
-  .flyer, .pearl-fly, .bubble { display: none; }
+  .flyer, .pearl-fly, .bubble, .fall { display: none; }
 }
 
 /* rooms, decorations and shiny friends */
@@ -500,11 +518,31 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       `<svg viewBox="0 0 20 24"><path fill-rule="evenodd" fill="${c}" d="M0 0H20V20L17.5 23 15 20 12.5 23 10 20 7.5 23 5 20 2.5 23 0 20ZM10 5 13 9.5 10 14 7 9.5ZM3.6 5.4h2.6v2.6H3.6ZM13.8 5.4h2.6v2.6h-2.6ZM3.6 13.4h2.6v2.6H3.6ZM13.8 13.4h2.6v2.6h-2.6Z"/></svg>`).join("")}</div>`,
     marigolds: art(`<path d="M32 60 20 30M32 60 32 24M32 60 44 32" stroke="#3f8f3a" stroke-width="2.6" stroke-linecap="round"/><path d="M26 46q-9-2-11-9 8 0 11 9ZM38 48q9-3 10-10-8 1-10 10Z" fill="#5cb85c"/>` +
       marigold(20, 28, 1) + marigold(44, 31, 1) + marigold(32, 18, 1.15)),
+    // Lights for a look's `lights`, and items in their own right.
+    diya: art(`<path d="M32 8C39 18 41 27 32 36 23 27 25 18 32 8Z" fill="#ffb52e"/><path d="M32 18C35.2 24 35.6 29 32 33 28.4 29 28.8 24 32 18Z" fill="#fff3a0"/>` +
+      `<path d="M6 36H58Q54 56 32 56 10 56 6 36Z" fill="#c8642a" stroke="#7a3510" stroke-width="2" stroke-linejoin="round"/><path d="M11 42H53" stroke="#ffd23f" stroke-width="2.8" stroke-dasharray="3 4"/>`),
+    lantern: art(`<path d="M32 0V8" stroke="#7a3510" stroke-width="2"/><rect x="22" y="6" width="20" height="6" rx="2" fill="#e3a400"/><ellipse cx="32" cy="30" rx="20" ry="17" fill="#e8262c"/>` +
+      `<ellipse cx="32" cy="30" rx="9" ry="11" fill="#ff7a4a"/><path d="M32 13Q20 30 32 47M32 13Q44 30 32 47" fill="none" stroke="#b5121a" stroke-width="2"/>` +
+      `<rect x="22" y="45" width="20" height="6" rx="2" fill="#e3a400"/><path d="M32 51V63" stroke="#e3a400" stroke-width="3" stroke-linecap="round"/>`),
+  };
+  // A look's `fall`: what drifts down through the room.
+  const FALLS = {
+    snow: { shape: "dot", n: 16, size: [3, 6], colors: ["#ffffff", "#eef6ff"] },
+    petals: { shape: "petal", n: 10, size: [5, 8], colors: ["#ff9a1a", "#ffb52e", "#f07b00"] },
+    leaves: { shape: "leaf", n: 9, size: [7, 10], colors: ["#d9541e", "#e8901a", "#b5361b", "#c9a227"] },
+    powder: { shape: "dot", n: 22, size: [2, 4], colors: ["#ff3fa4", "#ffd23f", "#2ad1e0", "#7fe05a", "#a66cff", "#ff7a1a"] },
+  };
+  // A look's `lights`: along the sand of an aquarium, or the shelf edges of a display room. `hang` ones hang from a line.
+  const LIGHTS = {
+    diyas: { e: ART.diya },
+    lanterns: { e: ART.lantern, hang: true },
+    string: { bulbs: ["#ff5d5d", "#ffd23f", "#5ad1ff", "#7fe05a", "#ff8ad8"], hang: true },
   };
 
   // Holiday looks, for a theme's `holidays` to use (see LOOK below): page colors (light and dark), the holiday room's
   // colors (top, bottom, floor), the gift (its icon, title and the colors that burst out as it opens), the currency's
-  // name and icon, and extra cheers for fast answers.
+  // name and icon, and extra cheers for fast answers. Effects, shown in every room: `fireworks` makes every fast-answer
+  // celebration fireworks, `night` darkens the room, `fall` names a FALLS kind and `lights` a LIGHTS kind.
   const LOOKS = {
     halloween: {
       light: { bg: "#fff1e0", accent: "#7a3fa0", rule: "#e8701a", line: "#f3d2b0", pearl: "#ff8a1f" },
@@ -521,6 +559,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       gift: { icon: ART.paintedBox, title: "A painted box!", colors: ["#ff5fa2", "#2ad1e0", "#ffd23f", "#ff9a1a", "#a66cff"] },
       currency: { name: "Marigold petals", icon: "🌼" },
       cheers: ["¡Muy bien!", "¡Qué rápido!", "¡Excelente!"],
+      fall: "petals",
     },
   };
 
@@ -979,7 +1018,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     }
     cheer(choice(FAST_WORDS));
     if (reduced) return;
-    const fx = choice(["fireworks", "stars", "sparkle", "mix"]);
+    const fx = LOOK?.fireworks ? "fireworks" : choice(["fireworks", "stars", "sparkle", "mix"]);
     if (fx === "fireworks") fireworks(2 + Math.floor(Math.random() * 2));
     else if (fx === "stars") starShower();
     else if (fx === "sparkle") sparkle(36, 8);
@@ -1081,7 +1120,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       const bob = bobHtml(key, `animation-delay:-${seeded(i, 7) * 2}s`);
       html += `<span class="swim${c.floor ? " floor" : c.belly ? " belly" : ""}" style="top:${top}%;left:${5 + seeded(i, 6) * 80}%;font-size:${(fs * grow).toFixed(2)}rem;animation-duration:${c.floor ? dur * 1.6 : c.belly ? dur * 2.5 : dur}s;animation-delay:${delay}s">${c.belly ? `<span class="upside">${bob}</span>` : bob}</span>`;
     }
-    html += fallenRoom(owned.filter(k => down.has(k)));
+    if (THEME.display !== "shelves") html += roomLights();
+    html += fallenRoom(owned.filter(k => down.has(k))) + fallHtml();
+    tank.classList.toggle("night", !!LOOK?.night);
     tank.innerHTML = html;
     const open = [...openRooms(), ...HAS_HOLIDAYS ? [HOLIDAY_ROOM] : []];
     $("rooms").hidden = open.length < 2;
@@ -1104,6 +1145,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     let html = "";
     for (let r = 0; r < rows; r++)
       html += `<span class="shelf" style="left:${50 - span / 2}%;width:${span}%;bottom:${boards[r]}px"></span>`;
+    html += roomLights(boards.slice(0, rows), span, per);
     for (const key of [...keys, ...ghosts]) {
       const i = all.indexOf(key), k = kind(key), grow = 1 + Math.min(state.pets[key]?.fed || 0, 10) * 0.05;
       const item = bobHtml(key);
@@ -1121,6 +1163,39 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         inner = k === "walk" ? `<span class="pace" style="animation-duration:${(9 + seeded(i, 1) * 8).toFixed(1)}s;animation-delay:-${(seeded(i, 2) * 17).toFixed(1)}s">${item}</span>` : item;
       }
       html += `<span class="spot spot-${k}" style="${pos};${size(n)}"><span style="display:inline-block;font-size:${grow.toFixed(2)}em">${inner}</span></span>`;
+    }
+    return html;
+  }
+  // A look's falling things (FALLS), drifting down through the room. Seeded, so each keeps its place and pace.
+  function fallHtml() {
+    const f = FALLS[LOOK?.fall];
+    if (!f) return "";
+    let html = "";
+    for (let i = 0; i < f.n; i++) {
+      const s = f.size[0] + seeded(i, 30) * (f.size[1] - f.size[0]), dur = 6 + seeded(i, 31) * 6;
+      html += `<span class="fall ${f.shape}" style="left:${(seeded(i, 32) * 96).toFixed(1)}%;width:${s.toFixed(1)}px;height:${(f.shape === "dot" ? s : s * 0.6).toFixed(1)}px;` +
+        `background:${f.colors[i % f.colors.length]};animation-duration:${dur.toFixed(1)}s;animation-delay:-${(seeded(i, 33) * dur).toFixed(1)}s"></span>`;
+    }
+    return html;
+  }
+  // A look's lights (LIGHTS): a row on each shelf (standing between the spots, or hanging under the board), else along
+  // the floor. Lanterns with no shelf to hang from hang from the top of the room.
+  function roomLights(boards = [], span = 92, per = 6) {
+    const l = LIGHTS[LOOK?.lights];
+    if (!l) return "";
+    const n = m => l.bulbs ? m * 2 + 1 : m + 1;
+    if (boards.length) return boards.map(b => lightRow(l, 50 - span / 2, span, l.hang ? b : b + 5, n(per))).join("");
+    if (l.e && l.hang) return lightRow(l, 10, 80, 0, 5, true);
+    return lightRow(l, 4, 92, l.hang ? 13 : 3, n(6));
+  }
+  // n lights evenly from left to left + width (percent), on the line y px up from the floor (or down from the top).
+  function lightRow(l, left, width, y, n, top = false) {
+    const at = top ? `top:${y}px` : `bottom:${y}px`, hang = l.hang && !top ? " hang" : "";
+    let html = l.hang && !top ? `<span class="wire" style="left:${left}%;width:${width}%;${at}"></span>` : "";
+    for (let i = 0; i < n; i++) {
+      const x = (left + (n > 1 ? i * width / (n - 1) : width / 2)).toFixed(1), delay = `animation-delay:-${(seeded(i, 34) * 1.8).toFixed(1)}s`;
+      html += l.bulbs ? `<span class="light bulb${hang}" style="left:${x}%;${at};--c:${l.bulbs[i % l.bulbs.length]};${delay}"></span>`
+        : `<span class="light${hang}" style="left:${x}%;${at};${delay}">${l.e}</span>`;
     }
     return html;
   }
