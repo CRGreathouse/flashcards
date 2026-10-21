@@ -788,8 +788,22 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     const l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451), t = h + l - 7 * m + 114;
     return dayNum(y, Math.floor(t / 31), t % 31 + 1);
   }
-  // Festivals on a lunar calendar, looked up by year: { diwali: { 2026: [11, 8] } }. Past the table they don't happen.
-  const LUNAR = {};
+  // Festivals on a lunar calendar, looked up by year as [month, day]. Past the table they don't happen.
+  // The Indian festivals are Drik Panchang's dates for New Delhi (Diwali is Lakshmi Puja, Holi is Rangwali Holi,
+  // the day of colors). Lunar New Year is the first day of the year; the holiday starts on the eve.
+  const LUNAR = (() => {
+    const t = {
+      diwali:       "11-8 10-29 10-17 11-5 10-26 11-14 11-2 10-22 11-10 10-30",
+      gurpurab:     "11-24 11-14 11-2 11-21 11-10 11-28 11-17 11-6 11-25 11-15",
+      lunarnewyear: "2-17 2-6 1-26 2-13 2-3 1-23 2-11 1-31 2-19 2-8",
+      holi:         "3-4 3-22 3-11 3-1 3-20 3-9 3-27 3-16 3-5 3-24",
+      mahavir:      "3-31 4-19 4-7 4-26 4-16 4-5 4-23 4-12 4-1 4-20",
+      buddha:       "5-1 5-20 5-8 5-27 5-17 5-7 5-25 5-14 5-3 5-22",
+    };  // 2026 through 2035
+    const out = {};
+    for (const id in t) { out[id] = {}; t[id].split(" ").forEach((md, i) => out[id][2026 + i] = md.split("-").map(Number)); }
+    return out;
+  })();
   const lunar = (id, shift = 0) => y => { const md = LUNAR[id]?.[y]; return md ? dayNum(y, ...md) + shift : null; };
   // `when` finishes "It only comes …" and "Comes back …". `about` is the About card's one sentence, for a first grader.
   const HOLIDAYS = {
