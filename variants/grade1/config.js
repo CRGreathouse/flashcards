@@ -1,7 +1,7 @@
   // Save slot. Must differ from other variants hosted on the same site.
   const STORE = "flash-facts-flash1-v1";
   // Overrides for the settings in DEFAULT_OPTIONS (src/index.html).
-  const OPTIONS = { earthquakes: true };
+  const OPTIONS = { earthquakes: true, readAloud: true };
   // Families and stages with `after` stay hidden until every card they name has been known at least once
   // ("add" = the whole family, "add.0" = its first stage). Each one opens with a "New cards" moment.
   const FACTS = {

@@ -111,6 +111,9 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 .pearl-icon.emoji { font-size: 13px; }
 .pearl-fly.emoji { font-size: 18px; }
 .holiday-name { position: absolute; top: 4px; left: 8px; z-index: 7; font-size: .7rem; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); pointer-events: none; }
+/* tapping a holiday's name shows its About card again */
+.holiday-name button { font: inherit; color: inherit; background: none; border: 0; padding: 2px 0; cursor: pointer; pointer-events: auto;
+  text-decoration: underline dotted; text-underline-offset: 2px; }
 /* holiday effects (a look's `night`, `fall` and `lights`): a dark room, things falling through it, lights that glow */
 .tank.night::before { content: ""; position: absolute; inset: 0; z-index: 4; background: rgba(8, 10, 40, .5); pointer-events: none; }
 .fall { position: absolute; top: -12px; z-index: 5; pointer-events: none; animation: fall linear infinite; }
@@ -295,6 +298,8 @@ h2 { font-family: var(--display); font-weight: 600; font-size: 1.15rem; margin: 
 .big-title { font-family: var(--display); font-weight: 800; font-size: 2rem; margin: 8px 0 4px; text-wrap: balance; line-height: 1.1; }
 .big-fact { font-family: var(--display); font-weight: 600; font-size: 1.4rem; color: var(--accent); font-variant-numeric: tabular-nums; }
 .big-sub { color: var(--muted); margin-top: 8px; font-size: .95rem; }
+.big-sub.about { color: var(--ink); font-size: 1.15rem; line-height: 1.4; text-wrap: balance; }
+.big-say { margin-top: 14px; font-size: 1.8rem; line-height: 1; padding: 8px 18px; border: 0; border-radius: 999px; background: var(--gold-soft); color: var(--ink); cursor: pointer; }
 @keyframes bigin { from { transform: scale(.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes spin { from { transform: rotate(-200deg) scale(.2); } to { transform: rotate(0) scale(1); } }
 .flyer { position: fixed; z-index: 21; width: 40px; height: 40px; fill: var(--gold); pointer-events: none;
@@ -458,6 +463,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     <div class="big-title" id="big-title"></div>
     <div class="big-fact" id="big-fact"></div>
     <div class="big-sub" id="big-sub"></div>
+    <button class="big-say" id="big-say" hidden aria-label="Read it aloud">🔊</button>
   </div>
 </div>
 
@@ -756,26 +762,44 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   // Festivals on a lunar calendar, looked up by year: { diwali: { 2026: [11, 8] } }. Past the table they don't happen.
   const LUNAR = {};
   const lunar = (id, shift = 0) => y => { const md = LUNAR[id]?.[y]; return md ? dayNum(y, ...md) + shift : null; };
-  // `when` finishes "It only comes …" and "Comes back …".
+  // `when` finishes "It only comes …" and "Comes back …". `about` is the About card's one sentence, for a first grader.
   const HOLIDAYS = {
-    halloween: { name: "Halloween", first: fixed(10, 31), lead: 4 },
-    muertos: { name: "Día de los Muertos", first: fixed(11, 1), days: 2, lead: 1 },
-    diwali: { name: "Diwali", first: lunar("diwali"), lead: 1 },
-    thanksgiving: { name: "Thanksgiving", first: nth(11, 4, 4), lead: 1 },
-    gurpurab: { name: "Gurpurab", first: lunar("gurpurab"), lead: 0 },
-    christmas: { name: "Christmas", first: fixed(12, 25), lead: 4 },
-    newyear: { name: "New Year's", first: fixed(12, 31), days: 2, lead: 0, when: "at New Year's" },
-    mlk: { name: "Martin Luther King Jr. Day", first: nth(1, 1, 3), lead: 1 },
-    lunarnewyear: { name: "Lunar New Year", first: lunar("lunarnewyear", -1), days: 3, lead: 0 },  // the eve through the day after
-    valentine: { name: "Valentine's Day", first: fixed(2, 14), lead: 2 },
-    piday: { name: "Pi Day", first: fixed(3, 14), lead: 0 },
-    stpatrick: { name: "St. Patrick's Day", first: fixed(3, 17), lead: 1 },
-    easter: { name: "Easter", first: easter, lead: 2 },
-    holi: { name: "Holi", first: lunar("holi"), lead: 1 },
-    mahavir: { name: "Mahavir Jayanti", first: lunar("mahavir"), lead: 0 },
-    buddha: { name: "Buddha Purnima", first: lunar("buddha"), lead: 0 },
-    july4: { name: "Fourth of July", first: fixed(7, 4), lead: 1, when: "on the Fourth of July" },
-    gandhi: { name: "Gandhi Jayanti", first: fixed(10, 2), lead: 0 },
+    halloween: { name: "Halloween", first: fixed(10, 31), lead: 4, icon: "🎃",
+      about: "Halloween is a night for dressing up in costumes and going door to door for treats." },
+    muertos: { name: "Día de los Muertos", first: fixed(11, 1), days: 2, lead: 1, icon: "🌼",
+      about: "Día de los Muertos is when families remember people they loved, with flowers, candles and their favorite foods." },
+    diwali: { name: "Diwali", first: lunar("diwali"), lead: 1, icon: "🪔",
+      about: "Diwali is the festival of lights, when families light little lamps to show that light wins over darkness." },
+    thanksgiving: { name: "Thanksgiving", first: nth(11, 4, 4), lead: 1, icon: "🦃",
+      about: "Thanksgiving is a day for sharing a big meal and saying thank you for the good things we have." },
+    gurpurab: { name: "Gurpurab", first: lunar("gurpurab"), lead: 0, icon: "🪔",
+      about: "Gurpurab is the birthday of Guru Nanak, who taught Sikhs to share, work hard and treat everyone the same." },
+    christmas: { name: "Christmas", first: fixed(12, 25), lead: 4, icon: "🎄",
+      about: "Christmas is when Christians celebrate the birth of Jesus, and many families give each other presents." },
+    newyear: { name: "New Year's", first: fixed(12, 31), days: 2, lead: 0, when: "at New Year's", icon: "🎉",
+      about: "New Year's is when we say goodbye to the old year and cheer for the new one at midnight." },
+    mlk: { name: "Martin Luther King Jr. Day", first: nth(1, 1, 3), lead: 1, icon: "🕊️",
+      about: "Martin Luther King Jr. worked so everyone would be treated fairly." },
+    lunarnewyear: { name: "Lunar New Year", first: lunar("lunarnewyear", -1), days: 3, lead: 0, icon: "🏮",  // the eve through the day after
+      about: "Lunar New Year starts the year on the moon's calendar, with family dinners, red envelopes and lanterns." },
+    valentine: { name: "Valentine's Day", first: fixed(2, 14), lead: 2, icon: "💌",
+      about: "Valentine's Day is for telling the people you love that you care about them." },
+    piday: { name: "Pi Day", first: fixed(3, 14), lead: 0, icon: "🥧",
+      about: "Pi Day is March 14, or 3.14, a day for the number π and for eating pie." },
+    stpatrick: { name: "St. Patrick's Day", first: fixed(3, 17), lead: 1, icon: "☘️",
+      about: "St. Patrick's Day is an Irish holiday when people wear green and look for lucky shamrocks." },
+    easter: { name: "Easter", first: easter, lead: 2, icon: "🥚",
+      about: "Easter is when Christians celebrate Jesus coming back to life, and children hunt for eggs." },
+    holi: { name: "Holi", first: lunar("holi"), lead: 1, icon: "🎨",
+      about: "Holi is the festival of colors, when people welcome spring by throwing colored powder at each other." },
+    mahavir: { name: "Mahavir Jayanti", first: lunar("mahavir"), lead: 0, icon: "🪷",
+      about: "Mahavir Jayanti is a Jain holiday about being kind to every living thing." },
+    buddha: { name: "Buddha Purnima", first: lunar("buddha"), lead: 0, icon: "🪷",
+      about: "Buddha Purnima is a Buddhist holiday on the full moon, about being kind and peaceful." },
+    july4: { name: "Fourth of July", first: fixed(7, 4), lead: 1, when: "on the Fourth of July", icon: "🎆",
+      about: "The Fourth of July is the birthday of the United States, with parades and fireworks." },
+    gandhi: { name: "Gandhi Jayanti", first: fixed(10, 2), lead: 0, icon: "🧵",
+      about: "Gandhi helped India become free without fighting." },
     winter: { name: "Winter", first: fixed(12, 1), days: 62, season: true },  // Dec 1 – Jan 31
     spring: { name: "Spring", first: fixed(4, 1), days: 30, season: true },   // April
   };
@@ -927,6 +951,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     learningSize: 4,     // a new card joins whenever fewer than this many are still being learned
     flashAt: 12,         // flash mode (answers checked without ✓) is earned once the collection holds this many items
     shopAt: 6, runAt: 18, clockAt: 24,  // the shop, the run and beat the clock open at these collection sizes
+    readAloud: false,    // a holiday's About card has a 🔊 button that reads it aloud
   };
   const VARIANT_OPTIONS = typeof OPTIONS !== "undefined" ? OPTIONS : {};
   for (const k in VARIANT_OPTIONS) if (!(k in DEFAULT_OPTIONS)) console.warn(`Unknown option in config.js: ${k}`);
@@ -976,7 +1001,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   if (!state.flashEarned) state.flash = false;
   // Fields for unlocks, rooms, the shop, pets, badges and play modes. `room` is the room on show.
   const blank = () => ({ unlocked: [], earned: {}, pets: {}, decor: [], placed: {}, outfit: { dress: THEME.starter }, badges: [],
-    holidayGifts: [], dry: 0, bestRow: 0, best: {}, runs: 0, runDay: null, shop: null, room: 0, bought: 0, rainbows: 0, proficient: [],
+    holidayGifts: [], aboutSeen: [], dry: 0, bestRow: 0, best: {}, runs: 0, runDay: null, shop: null, room: 0, bought: 0, rainbows: 0, proficient: [],
     quake: { chance: QUAKE_START, fallen: [], n: 0 } });
   for (const [k, v] of Object.entries(blank())) if (state[k] === undefined) state[k] = v;
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} };
@@ -1312,7 +1337,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     tank.setAttribute("aria-label", rm.i ? rm.name : THEME.home);
     let html = rm.decor || "";
     if (rm.holiday) for (const w of activeWindows()) html += THEME.holidays[w.id].decor || "";
-    if (rm.holiday) html += `<span class="holiday-name">${rm.ids.map(id => HOLIDAYS[id].name).join(" · ") || "No holidays yet"}</span>`;
+    if (rm.holiday) html += `<span class="holiday-name">${rm.ids.map(id => HOLIDAYS[id].about ? `<button data-about="${id}">${HOLIDAYS[id].name}</button>` : HOLIDAYS[id].name).join(" · ") || "No holidays yet"}</span>`;
     for (let i = 0; i < 6; i++) html += `<span class="bubble" style="left:${10 + seeded(i, 9) * 80}%;animation-duration:${4 + seeded(i, 3) * 4}s;animation-delay:-${seeded(i, 5) * 6}s"></span>`;
     for (const [k, p] of Object.entries(state.placed))
       if (p.room === rm.i && SHOP_ITEMS[k]) html += `<span class="deco" data-deco="${k}" style="left:${p.x}%" title="${SHOP_ITEMS[k].name}">${SHOP_ITEMS[k].e}</span>`;
@@ -1458,6 +1483,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     state.room = +b.dataset.room; save(); renderTank();
   });
   $("tank").addEventListener("click", e => {
+    const ab = e.target.closest("[data-about]");
+    if (ab) { audio(); queue.unshift(aboutOverlay(ab.dataset.about)); if (!overlay) { locked = true; openNext(); } return; }
     if (drawer === "decor") {
       const d = e.target.closest(".deco");
       if (d) { delete state.placed[d.dataset.deco]; sfx.blub(); }
@@ -1653,6 +1680,15 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       enqueue(chestOverlay({ title: `Happy ${h.name}!` }));
     }
   }
+  // The first time she plays in a holiday's window, its About card. Comes before the day's gift.
+  function holidayAbout() {
+    for (const w of activeWindows()) {
+      const tag = `${w.id}-${w.year}`;
+      if (!HOLIDAYS[w.id].about || state.aboutSeen.includes(tag)) continue;
+      state.aboutSeen.push(tag);
+      enqueue(aboutOverlay(w.id));
+    }
+  }
   // Opens anything an action queued (a gift, a badge), unless a play mode is running; then it waits for the end.
   function flushQueue() { if (queue.length && !overlay && !mode.kind) { locked = true; openNext(); } }
   $("drawers").addEventListener("click", e => { const b = e.target.closest("[data-drawer]"); if (b) openDrawer(b.dataset.drawer); });
@@ -1695,7 +1731,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     const ic = $("big-icon"); ic.className = "big-icon"; void ic.offsetWidth; ic.className = "big-icon " + iconClass;
     ic.innerHTML = icon;
     $("big-title").textContent = title; $("big-fact").textContent = fact; $("big-fact").style.color = factColor;
-    $("big-sub").textContent = sub;
+    $("big-sub").textContent = sub; $("big-sub").classList.remove("about"); $("big-say").hidden = true;
   }
   function openNext() {
     clearTimeout(advanceTimer);
@@ -1774,6 +1810,28 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       },
     };
     return o;
+  }
+  // A holiday explained in one sentence. With OPT.readAloud, a 🔊 button reads it aloud.
+  const canSpeak = OPT.readAloud && "speechSynthesis" in window;
+  function aboutOverlay(id) {
+    const h = HOLIDAYS[id];
+    return {
+      open() {
+        setBig({ icon: h.icon || "📅", iconClass: "reveal", title: h.name, sub: h.about });
+        $("big-sub").classList.add("about");
+        if (canSpeak) $("big-say").hidden = false;
+        $("big-say").onclick = e => {
+          e.stopPropagation();
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(`${h.name}. ${h.about}`);
+          u.lang = "en-US"; u.rate = 0.9;
+          speechSynthesis.speak(u);
+        };
+        sfx.fresh();
+        if (!reduced) sparkle(24, 6);
+      },
+      close() { if (canSpeak) speechSynthesis.cancel(); },
+    };
   }
   function roomOverlay(rm) {
     return {
@@ -2347,7 +2405,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   currencyIcon(document.querySelector(".pearl-icon"));
   // A save from an older version may already qualify for unlocks and perks: those get their moment now.
   // Badges it already qualifies for are awarded quietly.
-  checkUnlocks(); earnPerks(); checkBadges(true); holidayGift();
+  checkUnlocks(); earnPerks(); checkBadges(true); holidayAbout(); holidayGift();
   renderMute(); renderOps(); renderAll(); renderShelf(); renderTank(); renderPearls(); renderFlash(); renderModes();
   save();
   if (queue.length) openNext(); else show();
