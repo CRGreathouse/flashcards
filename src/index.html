@@ -110,6 +110,12 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 .pearl-icon.emoji, .pearl-fly.emoji { width: auto; height: auto; background: none; box-shadow: none; clip-path: none; border-radius: 0; line-height: 1; }
 .pearl-icon.emoji { font-size: 13px; }
 .pearl-fly.emoji { font-size: 18px; }
+.emoji.lit { filter: drop-shadow(0 0 2px #ffd36a) drop-shadow(0 0 4px rgba(255, 170, 40, .8)); }
+.pearl-icon.lit { animation: flicker 1.8s ease-in-out infinite alternate; }
+/* a holiday item that glows, and a rangoli on the sand */
+.glow { display: inline-block; filter: drop-shadow(0 0 2px #ffe27a) drop-shadow(0 0 5px rgba(255, 190, 60, .8)); }
+.rangoli { position: absolute; bottom: -10px; left: 50%; z-index: 1; width: 64px; line-height: 0; transform: translateX(-50%) scaleY(.4); pointer-events: none; }
+.rangoli svg { width: 100%; height: auto; }
 .holiday-name { position: absolute; top: 4px; left: 8px; z-index: 7; font-size: .7rem; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); pointer-events: none; }
 /* tapping a holiday's name shows its About card again */
 .holiday-name button { font: inherit; color: inherit; background: none; border: 0; padding: 2px 0; cursor: pointer; pointer-events: auto;
@@ -530,6 +536,21 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     lantern: art(`<path d="M32 0V8" stroke="#7a3510" stroke-width="2"/><rect x="22" y="6" width="20" height="6" rx="2" fill="#e3a400"/><ellipse cx="32" cy="30" rx="20" ry="17" fill="#e8262c"/>` +
       `<ellipse cx="32" cy="30" rx="9" ry="11" fill="#ff7a4a"/><path d="M32 13Q20 30 32 47M32 13Q44 30 32 47" fill="none" stroke="#b5121a" stroke-width="2"/>` +
       `<rect x="22" y="45" width="20" height="6" rx="2" fill="#e3a400"/><path d="M32 51V63" stroke="#e3a400" stroke-width="3" stroke-linecap="round"/>`),
+    // Diwali: an open box of mithai (laddoos, kaju katli, barfi), a rangoli, and a sparkler.
+    mithaiBox: art(`<path d="M12 28 9 9H55L52 28Z" fill="#c2185b" stroke="#7a0d3a" stroke-width="1.5" stroke-linejoin="round"/><path d="M10.5 15H53.5" stroke="#ffd23f" stroke-width="2.4"/>` +
+      `<circle cx="18" cy="28" r="6.5" fill="#ff9a1a" stroke="#c96a00" stroke-width="1"/><circle cx="31" cy="27" r="6.5" fill="#ffb52e" stroke="#c96a00" stroke-width="1"/>` +
+      `<g fill="#fff0b0"><circle cx="16" cy="26" r=".9"/><circle cx="20" cy="25" r=".9"/><circle cx="18" cy="29" r=".9"/><circle cx="29" cy="25" r=".9"/><circle cx="33" cy="24" r=".9"/><circle cx="31" cy="28" r=".9"/></g>` +
+      `<path d="M42 19 49 26 42 33 35 26Z" fill="#f4efe6" stroke="#b8ad9c" stroke-width="1"/><path d="M42 21.5 46.5 26 42 30.5 37.5 26Z" fill="none" stroke="#d6dbe2" stroke-width="1"/>` +
+      `<rect x="47" y="22" width="9" height="9" rx="1.5" fill="#7fd18a" stroke="#3f8f4a" stroke-width="1"/>` +
+      `<path d="M5 30H59L55 56H9Z" fill="#ff4f8a" stroke="#a0205e" stroke-width="1.6" stroke-linejoin="round"/><path d="M6.2 37H57.8" stroke="#ffd23f" stroke-width="3"/>` +
+      `<path d="M8.4 49H55.6" stroke="#ffd23f" stroke-width="1.6" stroke-dasharray="2.5 2.5"/>${petals(32, 43.5, 3, 6, 1.7, "#ffd23f")}<circle cx="32" cy="43.5" r="1.6" fill="#fff"/>`),
+    rangoli: art(`${petals(32, 32, 29.6, 24, 1.4, "#ffffff")}${petals(32, 32, 20, 12, 7, "#ff3fa4")}<circle cx="32" cy="32" r="18" fill="#ffd23f"/>` +
+      `${petals(32, 32, 13, 8, 5.4, "#2ad1e0")}<circle cx="32" cy="32" r="11" fill="#ff7a1a"/>${petals(32, 32, 7, 8, 2.6, "#ffffff")}` +
+      `<circle cx="32" cy="32" r="4.6" fill="#a66cff"/><circle cx="32" cy="32" r="1.8" fill="#ffd23f"/>`),
+    sparkler: art(`<path d="M12 60 38 24" stroke="#9aa1ab" stroke-width="2.2" stroke-linecap="round"/><path d="M12 60 20 49" stroke="#6b4a2a" stroke-width="3.4" stroke-linecap="round"/>` +
+      `<g stroke-linecap="round">${Array.from({ length: 14 }, (_, i) => { const a = 2 * Math.PI * i / 14, r = i % 2 ? 10 : 16;
+        return `<path d="M${(40 + 3 * Math.cos(a)).toFixed(1)} ${(21 + 3 * Math.sin(a)).toFixed(1)}L${(40 + r * Math.cos(a)).toFixed(1)} ${(21 + r * Math.sin(a)).toFixed(1)}" stroke="${i % 2 ? "#ff9a1a" : "#ffc93c"}" stroke-width="1.8"/>`; }).join("")}</g>` +
+      `<circle cx="40" cy="21" r="4.5" fill="#fff6c0"/><g fill="#ffd23f"><circle cx="56" cy="11" r="1.3"/><circle cx="24" cy="10" r="1.1"/><circle cx="58" cy="32" r="1.1"/><circle cx="27" cy="33" r="1"/></g>`),
   };
   // A look's `fall`: what drifts down through the room.
   const FALLS = {
@@ -548,7 +569,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   // Holiday looks, for a theme's `holidays` to use (see LOOK below): page colors (light and dark), the holiday room's
   // colors (top, bottom, floor), the gift (its icon, title and the colors that burst out as it opens), the currency's
   // name and icon, and extra cheers for fast answers. Effects, shown in every room: `fireworks` makes every fast-answer
-  // celebration fireworks, `night` darkens the room, `fall` names a FALLS kind and `lights` a LIGHTS kind.
+  // celebration fireworks, `night` darkens the room, `fall` names a FALLS kind and `lights` a LIGHTS kind (or a list of them).
+  // A currency that's `lit` glows.
   const LOOKS = {
     halloween: {
       light: { bg: "#fff1e0", accent: "#7a3fa0", rule: "#e8701a", line: "#f3d2b0", pearl: "#ff8a1f" },
@@ -566,6 +588,15 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       currency: { name: "Marigold petals", icon: "🌼" },
       cheers: ["¡Muy bien!", "¡Qué rápido!", "¡Excelente!"],
       fall: "petals",
+    },
+    diwali: {
+      light: { bg: "#fff6e5", accent: "#c2185b", rule: "#ff9a1a", line: "#f5dcb8", pearl: "#ffb52e" },
+      dark: { bg: "#1e1428", accent: "#ffb52e", rule: "#ff6fb5", line: "#46304a", pearl: "#ffc93c" },
+      room: ["#3a2a6a", "#140c30", "#c8642a"],
+      gift: { icon: ART.mithaiBox, title: "A box of mithai!", colors: ["#ffc93c", "#ff9a1a", "#ff4f8a", "#fff6c0"] },
+      currency: { name: "Diyas", icon: "🪔", lit: true },
+      cheers: ["Shabash!", "Bahut badhiya!"],
+      fireworks: true, night: true, lights: ["diyas", "string"],
     },
   };
 
@@ -719,7 +750,10 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     css.textContent = `:root{${vars(LOOK.light)}}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){${vars(LOOK.dark)}}}:root[data-theme="dark"]{${vars(LOOK.dark)}}`;
     document.head.appendChild(css);
   }
-  const currencyIcon = el => { if (LOOK?.currency?.icon) { el.textContent = LOOK.currency.icon; el.classList.add("emoji"); } return el; };
+  const currencyIcon = el => {
+    if (LOOK?.currency?.icon) { el.textContent = LOOK.currency.icon; el.classList.add("emoji"); el.classList.toggle("lit", !!LOOK.currency.lit); }
+    return el;
+  };
   // A set should fit in its window at about one gift a day.
   for (const id in HOLIDAY_KEYS) {
     const w = nextWindow(id, calDay()), n = HOLIDAY_KEYS[id].length;
@@ -1218,19 +1252,23 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     return html;
   }
   // A look's lights (LIGHTS): a row on each shelf (standing between the spots, or hanging under the board), else along
-  // the floor. Lanterns with no shelf to hang from hang from the top of the room.
+  // the floor. Lanterns with no shelf to hang from hang from the top of the room, and so do string lights when
+  // something else is on the floor.
   function roomLights(boards = [], span = 92, per = 6) {
-    const l = LIGHTS[LOOK?.lights];
-    if (!l) return "";
-    const n = m => l.bulbs ? m * 2 + 1 : m + 1;
-    if (boards.length) return boards.map(b => lightRow(l, 50 - span / 2, span, l.hang ? b : b + 5, n(per))).join("");
-    if (l.e && l.hang) return lightRow(l, 10, 80, 0, 5, true);
-    return lightRow(l, 4, 92, l.hang ? 13 : 3, n(6));
+    const ls = [].concat(LOOK?.lights || []).map(k => LIGHTS[k]).filter(Boolean);
+    return ls.map(l => {
+      const n = m => l.bulbs ? m * 2 + 1 : m + 1;
+      if (boards.length) return boards.map(b => lightRow(l, 50 - span / 2, span, l.hang ? b : b + 5, n(per))).join("");
+      if (l.e && l.hang) return lightRow(l, 10, 80, 0, 5, true);
+      if (l.hang && ls.length > 1) return lightRow(l, 2, 96, 3, n(6), true);
+      return lightRow(l, 4, 92, l.hang ? 13 : 3, n(6));
+    }).join("");
   }
   // n lights evenly from left to left + width (percent), on the line y px up from the floor (or down from the top).
+  // Drawn lights at the top carry their own string; bulbs hang from a wire either way.
   function lightRow(l, left, width, y, n, top = false) {
-    const at = top ? `top:${y}px` : `bottom:${y}px`, hang = l.hang && !top ? " hang" : "";
-    let html = l.hang && !top ? `<span class="wire" style="left:${left}%;width:${width}%;${at}"></span>` : "";
+    const at = top ? `top:${y}px` : `bottom:${y}px`, wire = l.hang && (!top || l.bulbs), hang = wire ? " hang" : "";
+    let html = wire ? `<span class="wire" style="left:${left}%;width:${width}%;${at}"></span>` : "";
     for (let i = 0; i < n; i++) {
       const x = (left + (n > 1 ? i * width / (n - 1) : width / 2)).toFixed(1), delay = `animation-delay:-${(seeded(i, 34) * 1.8).toFixed(1)}s`;
       html += l.bulbs ? `<span class="light bulb${hang}" style="left:${x}%;${at};--c:${l.bulbs[i % l.bulbs.length]};${delay}"></span>`
