@@ -48,7 +48,12 @@
   const BANGLES = drawn([["#ffc93c", "#b88a00"], ["#e8262c", "#8e1018"], ["#2ea04a", "#1a6a2e"], ["#ffc93c", "#b88a00"], ["#1e6fd9", "#0f3f85"]].map(([c, edge], i) =>
     `<ellipse cx="32" cy="${18 + i * 7}" rx="20" ry="8" fill="none" stroke="${edge}" stroke-width="5.4"/><ellipse cx="32" cy="${18 + i * 7}" rx="20" ry="8" fill="none" stroke="${c}" stroke-width="3.8"/>` +
     (c === "#ffc93c" ? `<ellipse cx="32" cy="${18 + i * 7}" rx="20" ry="8" fill="none" stroke="#fff6c0" stroke-width="1.2" stroke-dasharray="1 3"/>` : "")).join(""));
-  const CARRIAGE =drawn(`<path d="M32 18Q30 10 35 7" fill="none" stroke="#3f8f3a" stroke-width="3" stroke-linecap="round"/><path d="M35 9q7-3 9 3-6 2-9-3Z" fill="#5cb85c"/><ellipse cx="32" cy="34" rx="23" ry="17" fill="#ff9a3c" stroke="#d96b10" stroke-width="2"/><path d="M32 17v34M20 20q-6 14 0 28M44 20q6 14 0 28" fill="none" stroke="#d96b10" stroke-width="1.5"/><rect x="25" y="25" width="14" height="13" rx="6" fill="#bfe8ff" stroke="#e3a400" stroke-width="2.5"/><g fill="none" stroke="#e3a400" stroke-width="3"><circle cx="17" cy="52" r="8"/><circle cx="47" cy="52" r="8"/></g><path d="M17 44v16M9 52h16M47 44v16M39 52h16" stroke="#e3a400" stroke-width="1.5"/>`);
+  // Thanksgiving: a crown of autumn leaves, and the royal cape in harvest colors.
+  const leaf = (x, y, a, c) => `<g transform="translate(${x} ${y}) rotate(${a})"><path d="M0 0C-6-3-6-11 0-16 6-11 6-3 0 0Z" fill="${c}"/><path d="M0 0V-13" stroke="#7a3510" stroke-width=".9"/></g>`;
+  const LEAF_CROWN = drawn(`<path d="M8 41Q32 26 56 41" fill="none" stroke="#7a4a22" stroke-width="3" stroke-linecap="round"/>` +
+    [[11, 40, -58], [17, 36, -40], [24, 33, -20], [32, 32, 0], [40, 33, 20], [47, 36, 40], [53, 40, 58]].map(([x, y, a], i) => leaf(x, y, a, ["#d9541e", "#e8901a", "#b5361b", "#c9a227"][i % 4])).join(""));
+  const HARVEST_CAPE = recolor(CAPE, { "#d12a4a": "#c2571a", "#8e1530": "#7a3510", "#ffc93c": "#e8b04a", "#e3a400": "#b87a1a", "#fff": "#f3e2b8", "#c9c2cc": "#c9a87a", "#3a2a35": "#7a3510", "#8fd3f0": "#d9541e" });
+  const CARRIAGE = drawn(`<path d="M32 18Q30 10 35 7" fill="none" stroke="#3f8f3a" stroke-width="3" stroke-linecap="round"/><path d="M35 9q7-3 9 3-6 2-9-3Z" fill="#5cb85c"/><ellipse cx="32" cy="34" rx="23" ry="17" fill="#ff9a3c" stroke="#d96b10" stroke-width="2"/><path d="M32 17v34M20 20q-6 14 0 28M44 20q6 14 0 28" fill="none" stroke="#d96b10" stroke-width="1.5"/><rect x="25" y="25" width="14" height="13" rx="6" fill="#bfe8ff" stroke="#e3a400" stroke-width="2.5"/><g fill="none" stroke="#e3a400" stroke-width="3"><circle cx="17" cy="52" r="8"/><circle cx="47" cy="52" r="8"/></g><path d="M17 44v16M9 52h16M47 44v16M39 52h16" stroke="#e3a400" stroke-width="1.5"/>`);
   const THRONE = drawn(`<path d="M18 7 24 13 32 4 40 13 46 7V36H18Z" fill="#c93d80" stroke="#e3a400" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="21" r="4" fill="#8fd3f0" stroke="#fff" stroke-width="1.5"/><path d="M16 45 14 60M48 45 50 60" stroke="#e3a400" stroke-width="4" stroke-linecap="round"/><rect x="11" y="34" width="42" height="11" rx="4" fill="#ff7eb6" stroke="#e3a400" stroke-width="2"/><rect x="9" y="26" width="7" height="21" rx="2.5" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5"/><rect x="48" y="26" width="7" height="21" rx="2.5" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5"/>`);
   const PEGASUS = drawn(`<path d="M15 34Q4 36 6 49" fill="none" stroke="#c9b3ff" stroke-width="5" stroke-linecap="round"/><path d="M20 40v16M26 42v15M38 42v15M44 40v16" stroke="#e8e2f5" stroke-width="4" stroke-linecap="round"/><path d="M18 57h4M24 58h4M36 58h4M42 57h4" stroke="#ffc93c" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="31" cy="37" rx="16" ry="9" fill="#fff" stroke="#b9a8de" stroke-width="1.5"/><path d="M40 33 47 14 56 13 60 19 50 22 47 37Z" fill="#fff" stroke="#b9a8de" stroke-width="1.5" stroke-linejoin="round"/><path d="M47 14Q42 21 41 31" fill="none" stroke="#c9b3ff" stroke-width="4" stroke-linecap="round"/><circle cx="53" cy="16" r="1.6" fill="#2a2a2a"/><path d="M31 33Q19 14 7 8 13 17 11 20 19 22 17 26 25 28 31 33Z" fill="#f4efff" stroke="#b9a8de" stroke-width="1.5" stroke-linejoin="round"/>`);
   // The dress-up doll's head. Clothes are layered around it.
@@ -148,6 +153,10 @@
         s_bangles: { e: BANGLES, name: "Bangles", r: 1 }, s_sparklerwand: { e: ART.sparkler, name: "Sparkler wand", r: 1 },
         s_lehenga: { e: LEHENGA, name: "Lehenga", r: 2 },
       } },
+      thanksgiving: { look: LOOKS.thanksgiving, items: {
+        s_pie: { e: "🥧", name: "Pie", r: 0 }, s_leafcrown: { e: LEAF_CROWN, name: "Crown of autumn leaves", r: 1 },
+        s_harvestcape: { e: HARVEST_CAPE, name: "Harvest cape", r: 2 },
+      } },
       gurpurab: { look: LOOKS.gurpurab, items: {
         s_langar: { e: ART.langarPlate, name: "Langar plate", r: 0 },
       } },
@@ -179,8 +188,8 @@
       { key: "dress", name: "Dress", items: ["gown", "kimono", "tutu", "ballgown", "starlight",
         "partydress", "daisydress", "pinktutu", "petaldress", "goldgown", "lilacgown", "mermaidgown", "twilightgown", "rainbowgown",
         "s_pumpkingown", "s_witchdress", "s_papeldress", "s_lehenga", "s_snowgown", "s_valentinegown", "s_blossomgown"] },
-      { key: "head", name: "Head", items: ["tiara", "crown", "hennin", "ribbon", "s_witchhat", "s_marigoldcrown"] },
-      { key: "back", name: "Back", items: ["wings", "cape", "s_batcape"] },
+      { key: "head", name: "Head", items: ["tiara", "crown", "hennin", "ribbon", "s_witchhat", "s_marigoldcrown", "s_leafcrown"] },
+      { key: "back", name: "Back", items: ["wings", "cape", "s_batcape", "s_harvestcape"] },
       { key: "hand", name: "Hand", items: ["wand", "rose", "purse", "butterfly", "cupcake", "sunflower", "jewel", "s_candybucket", "s_bangles", "s_sparklerwand"] },
       { key: "feet", name: "Feet", items: ["slipper"] },
     ] },

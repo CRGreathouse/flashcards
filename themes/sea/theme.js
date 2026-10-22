@@ -12,7 +12,7 @@
   //   body, fin and line colors, and an optional belly color
   //   pattern: "stripes", "spots", "hearts", "splats", "flowers", "zigzag", "stars" or "clovers", in the `marks` colors (cycled)
   //   eyes: "normal", "x" or "odd" (mismatched); tail: "fork" or "point"
-  //   add: any of "fangs", "horns", "cape", "stitches", "halo", "bolts", "facets", "patch", "eyering", and `mark` (a symbol on its side)
+  //   add: any of "fangs", "horns", "cape", "spines", "stitches", "halo", "bolts", "facets", "patch", "eyering", and `mark` (a symbol on its side)
   //   hat: "witch", "santa", "party", "pilgrim", "leprechaun" or "bunny". Hats are template add-ons only: emoji differ from
   //   device to device, so nothing can be lined up on them.
   function fish(o) {
@@ -55,7 +55,11 @@
     s += tail === "point"
       ? `<path d="M46 31.2 55.5 32V29L62.5 33 55.5 37V34L46 34.8Z" fill="${fin}" stroke="${line}" stroke-width="1.2" stroke-linejoin="round"/>`
       : `<path d="M46 33 61 21Q57 33 61 45Z" fill="${fin}" stroke="${line}" stroke-width="1.4" stroke-linejoin="round"/>`;
-    s += has("cape")
+    // A lionfish's spines fan out over its back, with a web of fin between them.
+    const spines = () => { const b = [18, 23, 28, 33, 38, 43].map(x => [x, cy - half(x) + 1.5]), t = b.map(([x, y], i) => [x + 6, y - 15 + Math.abs(i - 2.5) * 2]);
+      return `<path d="M${b.map(p => p.join(" ")).join("L")}L${t.reverse().map(p => p.join(" ")).join("L")}Z" fill="${fin}" fill-opacity=".55"/>` +
+        b.map(([x, y], i) => `<path d="M${x} ${y}L${t[5 - i].join(" ")}" stroke="${marks[i % marks.length]}" stroke-width="1.3" stroke-linecap="round"/>`).join(""); };
+    s += has("spines") ? spines() : has("cape")
       ? `<path d="M14 24 17 8 23 15.5 29.5 5.5 34.5 15.5 41.5 8.5 44 24Z" fill="#1d1424" stroke="#000" stroke-width="1" stroke-linejoin="round"/><path d="M19 23 21.4 13.6 26.4 18.4 29.6 11 33.4 18.4 38.8 14 39.6 23Z" fill="#c4122f"/>`
       : `<path d="M20 22.5Q29 9 41 23.5Z" fill="${fin}" stroke="${line}" stroke-width="1.4" stroke-linejoin="round"/>`;
     s += `<path d="M25 44.5Q30 51 36 44Z" fill="${fin}" stroke="${line}" stroke-width="1.2" stroke-linejoin="round"/>`;
@@ -65,7 +69,11 @@
     if (has("facets")) s += `<path d="M11 33 21 21.5 31 33 21 44.5M21 21.5H39L31 33 39 44.5H21M39 21.5 49 33 39 44.5" fill="none" stroke="#fff" stroke-width="1" stroke-opacity=".7" stroke-linejoin="round"/>`;
     if (mark) s += `<text x="35" y="38" font-size="13" font-weight="700" font-family="Georgia, serif" text-anchor="middle" fill="${marks[0]}">${mark}</text>`;
     s += `<path d="M25 25.5Q22 33 25 40.5" fill="none" stroke="${line}" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>`;
-    s += has("cape")
+    // and wide pectoral fans, striped like the spines
+    const fans = () => { const tips = [20, 35, 50, 65, 80].map(a => [27 + 16 * Math.cos(a * Math.PI / 180), 37 + 16 * Math.sin(a * Math.PI / 180)].map(v => v.toFixed(1)));
+      return `<path d="M27 37L${tips.map(p => p.join(" ")).join("L")}Z" fill="${fin}" fill-opacity=".7" stroke="${line}" stroke-width=".8" stroke-linejoin="round"/>` +
+        tips.map((p, i) => `<path d="M27 37L${p.join(" ")}" stroke="${marks[i % marks.length]}" stroke-width="1" stroke-linecap="round"/>`).join(""); };
+    s += has("spines") ? fans() : has("cape")
       ? `<path d="M28 37.5 31.5 49 34 45.5 37 48.5 38.5 44.5 42.5 46 39 37Z" fill="#1d1424" stroke="#000" stroke-width="1" stroke-linejoin="round"/><path d="M30 38.5 33 45 35 42.5" fill="none" stroke="#c4122f" stroke-width="1"/>`
       : `<path d="M29 37.5Q33 44 38 37Z" fill="${fin}" stroke="${line}" stroke-width="1" stroke-linejoin="round"/>`;
     if (has("stitches")) s += `<path d="M31 22.5 36 43.5" stroke="${ink}" stroke-width="1.1"/>` +
@@ -81,7 +89,11 @@
     if (hat) s += `<g transform="rotate(-12 20 22)">${hats[hat]}</g>`;
     return svg(s);
   }
-  // Candy corn and the Día de los Muertos, Diwali and Gurpurab art are shared with the princess theme (ART in src/index.html).
+  const GOURDS = svg(`<path d="M22 22C17 22 18 30 14 36 9 44 12 56 24 56 36 56 39 44 33 36 29 30 29 22 24 22Z" fill="#ffd23f" stroke="#b8920a" stroke-width="1.4"/>` +
+    `<path d="M14 36C9 44 12 56 24 56 18 52 17 44 21 38Z" fill="#5c9e2e" opacity=".8"/><path d="M24 22V16Q24 13 27 12" fill="none" stroke="#6b4a2a" stroke-width="2.2" stroke-linecap="round"/>` +
+    `<ellipse cx="44" cy="48" rx="15" ry="9.5" fill="#f07b00" stroke="#b8560a" stroke-width="1.4"/><path d="M44 38.5Q38 48 44 57.5M44 38.5Q50 48 44 57.5M36 40Q32 48 36 56M52 40Q56 48 52 56" fill="none" stroke="#b8560a" stroke-width="1"/>` +
+    `<path d="M44 39V34" stroke="#5a7a2a" stroke-width="2.6" stroke-linecap="round"/>`);
+  // Candy corn and the Día de los Muertos, Diwali, Thanksgiving and Gurpurab art are shared with the princess theme (ART in src/index.html).
   const THEME = {
     home: "Your aquarium",
     currency: "Pearls",
@@ -149,6 +161,12 @@
       diwali: { look: LOOKS.diwali, decor: `<div class="rangoli">${ART.rangoli}</div>`, items: {
         s_diya: { e: ART.diya, name: "Diya", r: 0, floor: 1 }, s_sparkler: { e: ART.sparkler, name: "Sparkler", r: 0, floor: 1 },
         s_glowfish: { e: `<span class="glow">${fish({ body: "#ffc93c", fin: "#ffa51f", line: "#b87800", belly: "#fff0a8", pattern: "stars", marks: ["#fff8d6"] })}</span>`, name: "Golden glow fish", r: 2 },
+      } },
+      thanksgiving: { look: LOOKS.thanksgiving, items: {
+        s_pie: { e: "🥧", name: "Pie", r: 0, floor: 1 }, s_corn: { e: "🌽", name: "Ears of corn", r: 0, floor: 1 },
+        s_gourds: { e: GOURDS, name: "Gourds", r: 0, floor: 1 },
+        s_pilgrimfish: { e: fish({ body: "#ffb347", fin: "#e8901a", line: "#9a5a10", belly: "#ffe0b0", hat: "pilgrim" }), name: "Pilgrim-hat fish", r: 1 },
+        s_turkeyfish: { e: fish({ body: "#f6e3c8", fin: "#d9541e", line: "#7a2a14", pattern: "stripes", marks: ["#a8321e", "#5a1e0e"], add: ["spines"] }), name: "Turkeyfish", r: 2 },
       } },
       gurpurab: { look: LOOKS.gurpurab, items: {
         s_langar: { e: ART.langarPlate, name: "Langar plate", r: 0, floor: 1 },
