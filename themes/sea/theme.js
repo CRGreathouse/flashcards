@@ -81,7 +81,7 @@
     if (hat) s += `<g transform="rotate(-12 20 22)">${hats[hat]}</g>`;
     return svg(s);
   }
-  // Candy corn and the Día de los Muertos and Diwali art are shared with the princess theme (ART in src/index.html).
+  // Candy corn and the Día de los Muertos, Diwali and Gurpurab art are shared with the princess theme (ART in src/index.html).
   const THEME = {
     home: "Your aquarium",
     currency: "Pearls",
@@ -149,6 +149,9 @@
       diwali: { look: LOOKS.diwali, decor: `<div class="rangoli">${ART.rangoli}</div>`, items: {
         s_diya: { e: ART.diya, name: "Diya", r: 0, floor: 1 }, s_sparkler: { e: ART.sparkler, name: "Sparkler", r: 0, floor: 1 },
         s_glowfish: { e: `<span class="glow">${fish({ body: "#ffc93c", fin: "#ffa51f", line: "#b87800", belly: "#fff0a8", pattern: "stars", marks: ["#fff8d6"] })}</span>`, name: "Golden glow fish", r: 2 },
+      } },
+      gurpurab: { look: LOOKS.gurpurab, items: {
+        s_langar: { e: ART.langarPlate, name: "Langar plate", r: 0, floor: 1 },
       } },
       winter: { items: {
         s_snowflake: { e: "❄️", name: "Snowflake", r: 0 },

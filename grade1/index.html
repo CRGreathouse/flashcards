@@ -561,6 +561,12 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       `<svg viewBox="0 0 20 24"><path fill-rule="evenodd" fill="${c}" d="M0 0H20V20L17.5 23 15 20 12.5 23 10 20 7.5 23 5 20 2.5 23 0 20ZM10 5 13 9.5 10 14 7 9.5ZM3.6 5.4h2.6v2.6H3.6ZM13.8 5.4h2.6v2.6h-2.6ZM3.6 13.4h2.6v2.6H3.6ZM13.8 13.4h2.6v2.6h-2.6Z"/></svg>`).join("")}</div>`,
     marigolds: art(`<path d="M32 60 20 30M32 60 32 24M32 60 44 32" stroke="#3f8f3a" stroke-width="2.6" stroke-linecap="round"/><path d="M26 46q-9-2-11-9 8 0 11 9ZM38 48q9-3 10-10-8 1-10 10Z" fill="#5cb85c"/>` +
       marigold(20, 28, 1) + marigold(44, 31, 1) + marigold(32, 18, 1.15)),
+    // Gurpurab: a langar plate (a steel thali with dal, kheer and rotis), for the shared meal at every gurdwara.
+    langarPlate: art(`<g transform="translate(0 -10)"><ellipse cx="32" cy="44" rx="29" ry="13" fill="#b9c1ca" stroke="#7d8791" stroke-width="1.5"/><ellipse cx="32" cy="43" rx="24" ry="10" fill="#dfe4e9"/>` +
+      `<path d="M11 37Q11 46 20 46 29 46 29 37Z" fill="#c9cfd6" stroke="#7d8791" stroke-width="1.2"/><ellipse cx="20" cy="37" rx="9" ry="3" fill="#e8b830" stroke="#7d8791" stroke-width="1.2"/>` +
+      `<path d="M35 35Q35 43 43 43 51 43 51 35Z" fill="#c9cfd6" stroke="#7d8791" stroke-width="1.2"/><ellipse cx="43" cy="35" rx="8" ry="2.7" fill="#fbf3dc" stroke="#7d8791" stroke-width="1.2"/>` +
+      `<ellipse cx="33" cy="50" rx="12" ry="4.8" fill="#d9a85a"/><ellipse cx="33" cy="48" rx="12" ry="4.8" fill="#ecc27c" stroke="#c4914a" stroke-width="1"/>` +
+      `<g fill="#b07a36"><circle cx="28" cy="47.5" r="1"/><circle cx="36" cy="49.5" r="1"/><circle cx="39" cy="46.8" r=".8"/><circle cx="32" cy="46" r=".7"/></g></g>`),
     // Lights for a look's `lights`, and items in their own right.
     diya: art(`<path d="M32 8C39 18 41 27 32 36 23 27 25 18 32 8Z" fill="#ffb52e"/><path d="M32 18C35.2 24 35.6 29 32 33 28.4 29 28.8 24 32 18Z" fill="#fff3a0"/>` +
       `<path d="M6 36H58Q54 56 32 56 10 56 6 36Z" fill="#c8642a" stroke="#7a3510" stroke-width="2" stroke-linejoin="round"/><path d="M11 42H53" stroke="#ffd23f" stroke-width="2.8" stroke-dasharray="3 4"/>`),
@@ -601,7 +607,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   // colors (top, bottom, floor), the gift (its icon, title and the colors that burst out as it opens), the currency's
   // name and icon, and extra cheers for fast answers. Effects, shown in every room: `fireworks` makes every fast-answer
   // celebration fireworks, `night` darkens the room, `fall` names a FALLS kind and `lights` a LIGHTS kind (or a list of them).
-  // A currency that's `lit` glows.
+  // A currency that's `lit` glows. A `quiet` look, for religious and commemorative days, keeps the usual currency, gift
+  // and cheers (leaving out the theme's jokey ones) and turns fireworks and confetti into gentle sparkles. Its holiday's
+  // items are symbols: each comes free on the day, is never shiny, and tapping it shows the About card (no feeding or names).
   const LOOKS = {
     halloween: {
       light: { bg: "#fff1e0", accent: "#7a3fa0", rule: "#e8701a", line: "#f3d2b0", pearl: "#ff8a1f" },
@@ -628,6 +636,12 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       currency: { name: "Diyas", icon: "🪔", lit: true },
       cheers: ["Shabash!", "Bahut badhiya!"],
       fireworks: true, night: true, lights: ["diyas", "string"],
+    },
+    gurpurab: {  // saffron and blue
+      light: { bg: "#fbf6ec", accent: "#23408e", rule: "#f08c1a", line: "#eadfca", pearl: "#f08c1a" },
+      dark: { bg: "#131a2c", accent: "#ffad4a", rule: "#6f8fe0", line: "#2c3550", pearl: "#ffad4a" },
+      room: ["#e9eefa", "#b9c8ec", "#f0a040"],
+      quiet: true, lights: ["diyas"],
     },
   };
 
@@ -659,7 +673,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const PETAL_DRESS = drawn(`<g stroke-width="1.2" stroke-linejoin="round"><path d="M30 30 C22 36 12 44 8 54 C18 54 26 46 30 30Z" fill="#ffd0e5" stroke="#d0508f"/><path d="M34 30 C42 36 52 44 56 54 C46 54 38 46 34 30Z" fill="#ffd0e5" stroke="#d0508f"/><path d="M30 30 C24 40 18 50 19 61 C27 56 31 46 31 30Z" fill="#ff9ccb" stroke="#d0508f"/><path d="M34 30 C40 40 46 50 45 61 C37 56 33 46 33 30Z" fill="#ff9ccb" stroke="#d0508f"/><path d="M32 30 C27 42 28 53 32 63 C36 53 37 42 32 30Z" fill="#ffd0e5" stroke="#d0508f"/></g><path d="M27 9 L27 17 M37 9 L37 17" stroke="#3f8f4a" stroke-width="1.8" stroke-linecap="round"/><path d="M25 16 Q32 21 39 16 L40 31 L24 31Z" fill="#7fcf7a" stroke="#3f8f4a" stroke-width="1.2" stroke-linejoin="round"/><path d="M28 21 Q32 25 36 21 M27 26 Q32 30 37 26" fill="none" stroke="#3f8f4a" stroke-width=".9" opacity=".6"/><circle cx="32" cy="31" r="2.4" fill="#ffe066" stroke="#e3a400" stroke-width=".8"/><g fill="#fff"><circle cx="16" cy="48" r="1"/><circle cx="48" cy="48" r="1"/><circle cx="24" cy="54" r="1.1"/><circle cx="40" cy="54" r="1.1"/><circle cx="32" cy="44" r="1.1"/></g>`);
   const MERMAID_GOWN = drawn(`<path d="M27 46 C20 52 12 56 5 62 Q19 59 32 63 Q45 59 59 62 C52 56 44 52 37 46Z" fill="#7fe0d4" stroke="#1d7f78" stroke-width="1.3" stroke-linejoin="round"/><path d="M32 50 L32 61 M29 50 L20 60 M35 50 L44 60 M27 49 L11 59 M37 49 L53 59" stroke="#1d7f78" stroke-width="1" stroke-linecap="round" opacity=".5"/><path d="M24 17 Q28 14 32 18 Q36 14 40 17 L40 30 C41 38 39 43 37 48 L27 48 C25 43 23 38 24 30Z" fill="#3cc0b4" stroke="#1d7f78" stroke-width="1.3" stroke-linejoin="round"/><path d="M26 25 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 M26 34 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 M27 39 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 1.5 0 M28 44 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0" fill="none" stroke="#a6f0e6" stroke-width="1"/><path d="M24 17 Q28 14 32 18 Q36 14 40 17 L40 21 Q36 18 32 22 Q28 18 24 21Z" fill="#b48ef0" stroke="#6a48d4" stroke-width="1" stroke-linejoin="round"/><g fill="#fff" stroke="#c9b3ff" stroke-width=".5"><circle cx="25" cy="30" r="1.4"/><circle cx="28.5" cy="30.6" r="1.4"/><circle cx="32" cy="31" r="1.6"/><circle cx="35.5" cy="30.6" r="1.4"/><circle cx="39" cy="30" r="1.4"/></g><g fill="#fff"><circle cx="18" cy="58" r="1"/><circle cx="46" cy="58" r="1"/><circle cx="32" cy="56" r="1.1"/></g>`);
   const RAINBOW_GOWN = drawn(`<path d="M24 30 L5 58 Q32 66 59 58 L40 30Z" fill="#b48ef0"/><path d="M24 30 L8.4 53 Q32 59 55.6 53 L40 30Z" fill="#6fb6ff"/><path d="M24 30 L12 48 Q32 53 52 48 L40 30Z" fill="#7fd88a"/><path d="M24 30 L16 42 Q32 47 48 42 L40 30Z" fill="#ffe066"/><path d="M24 30 L20 36 Q32 41 44 36 L40 30Z" fill="#ffab5c"/><path d="M24 30 L5 58 Q32 66 59 58 L40 30Z" fill="none" stroke="#7a5ae0" stroke-width="1.3" stroke-linejoin="round"/><g fill="#fff" stroke="#d8e6f5" stroke-width=".8"><circle cx="8" cy="58" r="3"/><circle cx="15" cy="60.5" r="3.4"/><circle cx="23" cy="62" r="3.4"/><circle cx="32" cy="62.5" r="3.6"/><circle cx="41" cy="62" r="3.4"/><circle cx="49" cy="60.5" r="3.4"/><circle cx="56" cy="58" r="3"/></g><ellipse cx="21.5" cy="22" rx="4.8" ry="3.5" fill="#fff" stroke="#7a5ae0" stroke-width="1.1"/><ellipse cx="42.5" cy="22" rx="4.8" ry="3.5" fill="#fff" stroke="#7a5ae0" stroke-width="1.1"/><path d="M24 17 Q28 14 32 18 Q36 14 40 17 L40 31 L24 31Z" fill="#ff6b6b" stroke="#c93d3d" stroke-width="1.2" stroke-linejoin="round"/><rect x="22.5" y="28" width="19" height="4" rx="2" fill="#fff" stroke="#7a5ae0" stroke-width="1"/><g fill="#fff" stroke="#ffd84d" stroke-width=".6" stroke-linejoin="round"><path d="M32 21 l1.2 2.5 2.7.4-2 1.9.5 2.7-2.4-1.3-2.4 1.3.5-2.7-2-1.9 2.7-.4Z"/><path d="M22 47 l1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z"/><path d="M42 47 l1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z"/></g>`);
-  // Holiday clothes. Shared holiday art (the candy bucket, sugar skull, marigolds, diya, rangoli, sparkler) is ART in src/index.html.
+  // Holiday clothes. Shared holiday art (the candy bucket, sugar skull, marigolds, diya, rangoli, sparkler, langar plate) is ART in src/index.html.
   const WITCH_DRESS = recolor(PARTY_DRESS, { "#e84a5f": "#4a2d6b", "#a8263a": "#24123a", "#ff8a9a": "#7a4ab5", "#fff": "#ff9a3c", "#ffd84d": "#7fe05a", "#e0c8cc": "#c45a00" });
   const WITCH_HAT = drawn(`<ellipse cx="32" cy="49" rx="28" ry="7" fill="#2e1d40" stroke="#1a0f26" stroke-width="1.2"/><path d="M16 48Q24 31 27 17Q30 5 41 3Q35 10 36 20L46 48Z" fill="#4a2d6b" stroke="#24123a" stroke-width="1.3" stroke-linejoin="round"/>` +
     `<path d="M18.2 42Q32 38.5 44 42L45.6 46.6Q32 42.5 16.6 46.6Z" fill="#ff9a3c"/><rect x="28" y="40.2" width="6.5" height="5.6" rx="1" fill="none" stroke="#ffd23f" stroke-width="1.4"/>` +
@@ -782,6 +796,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         s_bangles: { e: BANGLES, name: "Bangles", r: 1 }, s_sparklerwand: { e: ART.sparkler, name: "Sparkler wand", r: 1 },
         s_lehenga: { e: LEHENGA, name: "Lehenga", r: 2 },
       } },
+      gurpurab: { look: LOOKS.gurpurab, items: {
+        s_langar: { e: ART.langarPlate, name: "Langar plate", r: 0 },
+      } },
       winter: { items: {
         s_snowflake: { e: "❄️", name: "Snowflake", r: 0, fly: 1 },
         s_snowman: { e: "⛄", name: "Snowman", r: 1, floor: 1 },
@@ -839,6 +856,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   // Festivals on a lunar calendar, looked up by year as [month, day]. Past the table they don't happen.
   // The Indian festivals are Drik Panchang's dates for New Delhi (Diwali is Lakshmi Puja, Holi is Rangwali Holi,
   // the day of colors). Lunar New Year is the first day of the year; the holiday starts on the eve.
+  const LUNAR_FROM = 2026;
   const LUNAR = (() => {
     const t = {
       diwali:       "11-8 10-29 10-17 11-5 10-26 11-14 11-2 10-22 11-10 10-30",
@@ -849,7 +867,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       buddha:       "5-1 5-20 5-8 5-27 5-17 5-7 5-25 5-14 5-3 5-22",
     };  // 2026 through 2035
     const out = {};
-    for (const id in t) { out[id] = {}; t[id].split(" ").forEach((md, i) => out[id][2026 + i] = md.split("-").map(Number)); }
+    for (const id in t) { out[id] = {}; t[id].split(" ").forEach((md, i) => out[id][LUNAR_FROM + i] = md.split("-").map(Number)); }
     return out;
   })();
   const lunar = (id, shift = 0) => y => { const md = LUNAR[id]?.[y]; return md ? dayNum(y, ...md) + shift : null; };
@@ -900,7 +918,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   function windowOf(id, y) {
     const h = HOLIDAYS[id], first = h.first(y);
     if (first == null) {
-      if (!warned.has(id)) { warned.add(id); console.warn(`No date for ${h.name} in ${y}: the lunar date table needs another year.`); }
+      if (y >= LUNAR_FROM && !warned.has(id)) { warned.add(id); console.warn(`No date for ${h.name} in ${y}: the lunar date table needs another year.`); }
       return null;
     }
     return { id, year: y, open: first - 7 * (h.lead || 0), first, last: first + (h.days || 1) - 1 };
@@ -927,7 +945,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   for (const [id, h] of Object.entries(THEME.holidays || {})) {
     if (!HOLIDAYS[id]) { console.warn(`Unknown holiday in theme.js: ${id}`); continue; }
     HOLIDAY_KEYS[id] = Object.keys(h.items || {});
-    for (const k in h.items) CREATURES[k] = { ...h.items[k], room: HOLIDAY_ROOM.i, holiday: id };
+    for (const k in h.items) CREATURES[k] = { ...h.items[k], room: HOLIDAY_ROOM.i, holiday: id, ...h.look?.quiet && { quiet: 1 } };
   }
   const HAS_HOLIDAYS = Object.values(HOLIDAY_KEYS).some(ks => ks.length);
   // The windows open on day n, soonest first.
@@ -958,6 +976,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   if (LOOK) {
     if (LOOK.gift) THEME.gift = { ...THEME.gift, ...LOOK.gift };
     if (LOOK.currency) THEME.currency = LOOK.currency.name;
+    if (LOOK.quiet) THEME.fastWords = [];
     if (LOOK.cheers) THEME.fastWords = [...THEME.fastWords, ...LOOK.cheers, ...LOOK.cheers];  // twice, so they come up often
     if (LOOK.room) HOLIDAY_ROOM.colors = LOOK.room;
     const vars = o => Object.entries(o || {}).map(([k, v]) => `--${k}:${v};`).join("");
@@ -1252,7 +1271,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       addP({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, g: 0.06, drag: 0.965, size: rand(1.8, 3.2), color: choice(palette), life, max: life, shape: i % 7 === 0 ? "star" : "dot", vr: rand(-0.2, 0.2) });
     }
   }
+  // On a quiet day fireworks and confetti are gentle sparkles.
   function fireworks(count = 3) {
+    if (LOOK?.quiet) { sparkle(6 * count, 4); return; }
     for (let i = 0; i < count; i++) setTimeout(() => {
       const x = rand(innerWidth * 0.15, innerWidth * 0.85), h = rand(innerHeight * 0.45, innerHeight * 0.75), g = 0.16;
       addP({ x, y: innerHeight + 5, vx: rand(-0.6, 0.6), vy: -Math.sqrt(2 * g * h), g, drag: 1, size: 2.6, color: choice(COLORS), rocket: true, n: Math.round(rand(40, 60)), life: 400, max: 400 });
@@ -1272,6 +1293,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     }
   }
   function confetti(n = 140) {
+    if (LOOK?.quiet) { starShower(Math.round(n / 8)); return; }
     for (const side of [0, 1]) for (let i = 0; i < n / 2; i++) {
       const a = side ? rand(-2.4, -1.8) : rand(-1.35, -0.75), s = rand(10, 17), life = rand(170, 230);
       addP({ x: side ? innerWidth + 10 : -10, y: innerHeight * 0.85, vx: Math.cos(a) * s, vy: Math.sin(a) * s, g: 0.22, drag: 0.965, size: rand(6, 10), shape: "rect", vr: rand(-0.25, 0.25), life, max: life });
@@ -1360,7 +1382,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const money = n => `${n} ${curName(n)}`;
   const copies = k => state.tank.reduce((n, x) => n + (x === k), 0);
   const owns = k => state.tank.includes(k);
-  const isShiny = k => copies(k) >= SHINY_AT;
+  const isShiny = k => copies(k) >= SHINY_AT && !CREATURES[k]?.quiet;
   const roomDone = i => ROOMS[i].keys.every(owns);
   const roomOpen = i => i === HOLIDAY_ROOM.i ? HAS_HOLIDAYS : i === 0 || roomDone(i - 1);
   const openRooms = () => ROOMS.filter(rm => roomOpen(rm.i));
@@ -1376,7 +1398,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     const n = calDay(), missing = [];
     let share = SEASON_SHARE;
     for (const w of activeWindows(n)) {
-      const m = HOLIDAY_KEYS[w.id].filter(k => !owns(k) && CREATURES[k].r >= minTier);
+      const m = HOLIDAY_KEYS[w.id].filter(k => !owns(k) && !CREATURES[k].quiet && CREATURES[k].r >= minTier);
       missing.push(...m);
       if (m.length) share = Math.max(share, m.length / ((w.last - n + 1) * HOLIDAY_GIFTS_PER_DAY));
     }
@@ -1566,7 +1588,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   });
   $("tank").addEventListener("click", e => {
     const ab = e.target.closest("[data-about]");
-    if (ab) { audio(); queue.unshift(aboutOverlay(ab.dataset.about)); if (!overlay) { locked = true; openNext(); } return; }
+    if (ab) { showAbout(ab.dataset.about); return; }
     if (drawer === "decor") {
       const d = e.target.closest(".deco");
       if (d) { delete state.placed[d.dataset.deco]; sfx.blub(); }
@@ -1578,6 +1600,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       save(); renderTank(); return;
     }
     const b = e.target.closest(".bob[data-key]"); if (!b) return;
+    if (CREATURES[b.dataset.key].quiet) { showAbout(CREATURES[b.dataset.key].holiday); return; }
     b.classList.remove("hop"); void b.offsetWidth; b.classList.add("hop"); sfx.blub();
     setTimeout(() => b.classList.remove("hop"), 650);
     openDrawer("pet", b.dataset.key);
@@ -1752,14 +1775,15 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     petKey = pet || null; decoKey = null;
     renderDrawers();
   }
-  // A holiday with no lead time gives one free gift on its day.
+  // A holiday with no lead time gives one free gift on its day. A quiet holiday always does, and it brings the
+  // holiday's symbol if she doesn't have it yet.
   function holidayGift() {
     const n = calDay();
     for (const w of activeWindows(n)) {
-      const h = HOLIDAYS[w.id], tag = `${w.id}-${w.year}`;
-      if (h.lead || h.season || w.first > n || state.holidayGifts.includes(tag)) continue;
+      const h = HOLIDAYS[w.id], tag = `${w.id}-${w.year}`, quiet = THEME.holidays[w.id].look?.quiet;
+      if ((h.lead && !quiet) || h.season || w.first > n || state.holidayGifts.includes(tag)) continue;
       state.holidayGifts.push(tag);
-      enqueue(chestOverlay({ title: `Happy ${h.name}!` }));
+      enqueue(chestOverlay({ title: `Happy ${h.name}!`, key: quiet ? HOLIDAY_KEYS[w.id].find(k => !owns(k)) : undefined }));
     }
   }
   // The first time she plays in a holiday's window, its About card. Comes before the day's gift.
@@ -1778,7 +1802,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     const b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
     const k = b.dataset.key || petKey;
     audio();
-    if (b.dataset.act === "pet") { openDrawer("pet", k); return; }
+    if (b.dataset.act === "pet") { CREATURES[k].quiet ? showAbout(CREATURES[k].holiday) : openDrawer("pet", k); return; }
     if (b.dataset.act === "feed") {
       const p = state.pets[k] || (state.pets[k] = { fed: 0 }), cost = (p.fed || 0) + 1;
       if (state.pearls < cost) return;
@@ -1845,7 +1869,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     };
     return o;
   }
-  // opts.minTier makes the gift at least that rare; opts.title replaces the usual title.
+  // opts.minTier makes the gift at least that rare; opts.title replaces the usual title; opts.key picks what's inside.
   function chestOverlay(opts = {}) {
     const title = opts.title || THEME.gift.title;
     const o = { stage: 0, key: null,
@@ -1861,7 +1885,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         return o.stage === 2;
       },
       reveal() {
-        o.key = rollCreature(opts.minTier || 0);
+        o.key = opts.key || rollCreature(opts.minTier || 0);
         const c = CREATURES[o.key], fresh = !owns(o.key);
         state.dry = c.r >= 2 ? 0 : state.dry + 1;
         gainCreature(o.key);
@@ -1872,6 +1896,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         else if (n === SHINY_AT - 1) sub += ` One more and it turns shiny.`;
         else if (o.refund) sub = `It's already shiny, so here's ${money(o.refund)}.`;
         if (c.holiday && n < SHINY_AT) sub = `A visitor! It only comes ${whenOf(c.holiday)}.`;
+        if (c.quiet) sub = `A gift for ${HOLIDAYS[c.holiday].name}. Tap it any time to hear about the day.`;
         checkBadges(); save();
         setBig({ icon: shiny ? `<span class="shiny">${c.e}</span>` : c.e, iconClass: "reveal", title: `${shiny ? "Shiny " : ""}${c.name}!`,
           fact: RARITY[c.r].name, factColor: RARITY[c.r].color, sub });
@@ -1893,6 +1918,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     };
     return o;
   }
+  // Shows a holiday's About card now, ahead of anything queued.
+  function showAbout(id) { audio(); queue.unshift(aboutOverlay(id)); if (!overlay) { locked = true; openNext(); } }
   // A holiday explained in one sentence. With OPT.readAloud, a 🔊 button reads it aloud.
   const canSpeak = OPT.readAloud && "speechSynthesis" in window;
   function aboutOverlay(id) {
