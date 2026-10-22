@@ -479,6 +479,16 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       <button class="text-btn danger" id="reset-yes">Erase all progress</button>
       <button class="text-btn" id="reset-no">Keep it</button>
     </span>
+    <span id="io" hidden>
+      <button class="text-btn" id="export">Export progress</button>
+      <button class="text-btn" id="import">Import progress</button>
+      <input type="file" id="import-file" accept=".json,application/json" hidden>
+    </span>
+    <span id="import-confirm" hidden>
+      <button class="text-btn danger" id="import-yes">Replace all progress</button>
+      <button class="text-btn" id="import-no">Keep mine</button>
+    </span>
+    <span class="note" id="io-msg"></span>
   </div>
 </div>
 
@@ -2544,6 +2554,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     }
     integ.on = on;
     $("int-op").setAttribute("aria-pressed", String(on));
+    $("io").hidden = !on; $("import-confirm").hidden = true; $("io-msg").textContent = ""; pendingImport = null;
     document.querySelectorAll(".op-toggle[data-op]").forEach(b => b.setAttribute("aria-pressed", String(!on && !!state.ops[b.dataset.op])));
     if (!overlay) show();
   }
@@ -2559,6 +2570,39 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     session.streak = 0; queue.length = 0; overlay = null; $("big").hidden = true; drawer = null; save();
     $("confirm").hidden = true; $("reset").hidden = false;
     renderOps(); renderAll(); renderShelf(); renderTank(); renderPearls(); renderFlash(); renderModes(); show();
+  });
+
+  // Export and import (shown only in ∫ mode): the whole save as a JSON file, tagged with its save slot.
+  let pendingImport = null;
+  $("export").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify({ store: STORE, exported: new Date().toISOString(), state })], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = `${STORE}-${today()}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    $("io-msg").textContent = "Saved a copy of this progress.";
+  });
+  $("import").addEventListener("click", () => { $("import-file").value = ""; $("import-file").click(); });
+  $("import-file").addEventListener("change", async () => {
+    const file = $("import-file").files[0];
+    if (!file) return;
+    let data = null;
+    try { data = JSON.parse(await file.text()); } catch (e) {}
+    if (!data || !data.state || typeof data.state.cards !== "object") { $("io-msg").textContent = "That isn't a progress file."; return; }
+    if (data.store !== STORE) { $("io-msg").textContent = `That file is for a different version (${data.store}).`; return; }
+    pendingImport = data.state;
+    const n = Object.keys(data.state.cards).length, when = data.exported ? ` from ${data.exported.slice(0, 10)}` : "";
+    $("io-msg").textContent = `Progress${when}, ${n} cards.`;
+    $("io").hidden = true; $("import-confirm").hidden = false;
+  });
+  $("import-no").addEventListener("click", () => {
+    pendingImport = null; $("import-confirm").hidden = true; $("io").hidden = false; $("io-msg").textContent = "";
+  });
+  // The page reloads so the imported save goes through the same checks as one loaded at startup.
+  $("import-yes").addEventListener("click", () => {
+    if (!pendingImport) return;
+    try { localStorage.setItem(STORE, JSON.stringify(pendingImport)); } catch (e) { $("io-msg").textContent = "Couldn't save it on this device."; return; }
+    location.reload();
   });
 
   $("pearl-name").textContent = THEME.currency;

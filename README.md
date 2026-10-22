@@ -51,6 +51,8 @@ Once the collection holds 12 items (the `flashAt` option), the player earns **fl
 
 For testing, hold the 🔊 button for 2 seconds. An **∫** button appears and the card switches to simple polynomial definite integrals (answers 2–99, no time limit). A right answer earns 1 of the currency. Once you've answered more integrals right than wrong in the current page session, each right answer earns 50 instead, which is always enough to open the next gift and get halfway to the one after. That tally lives only in memory and resets on reload, so guessing doesn't pay. Integrals never touch card history or today's stats. Tap ∫ or any other operation button to go back to normal cards.
 
+While ∫ is on, **Export progress** and **Import progress** appear at the bottom of the page. Export downloads the whole save as a JSON file named after the save slot and date (`flash-facts-v1-2026-10-22.json`). Import reads one back after asking to replace all progress, then reloads the page. It refuses a file from another version's save slot, so a grade1 save can't land in grade3.
+
 Progress is saved in the browser's `localStorage`, so it stays on the device it was played on.
 
 ## Architecture
