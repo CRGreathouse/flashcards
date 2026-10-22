@@ -533,6 +533,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const KNOWN_RUN = 2, LEARN_RUN = 3;
   const PROFICIENT_RUN = 4;  // a family's `proficient` cards are topped up to this many fast answers in a row (and the lowest weight)
   const LEARNING_SHARE = 0.75;
+  const AGAIN_AFTER = [3, 10];  // a missed card comes back this many cards later, and again this many after the miss
   const GOLDEN_CHANCE = 1 / 8, GOLDEN_PEARLS = 3;
   const INT_HOLD_MS = 2000, INT_BONUS = 50;  // hold 🔊 this long to reveal integrals; a bonus answer earns at least this many
   const RAINBOW_CHANCE = 1 / 60;  // a known card can be a rainbow card; answering it fast opens a gift right away
@@ -1465,11 +1466,13 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     }
   }
 
-  const session = { streak: 0 };
+  // cards: how many cards have been shown this page session. again: missed cards due back, as { id, at } (a card count).
+  const session = { streak: 0, cards: 0, again: [] };
   // A play mode in progress: "run" (ten fast answers to the goal) or "clock" (as many right as possible in a minute).
   const mode = { kind: null, steps: 0, right: 0, end: 0, timer: null };
   let drawer = null, petKey = null, decoKey = null;  // the open drawer, the friend it shows, the decoration being placed
   let current = null, golden = false, rainbow = false, lastId = null, input = "", shownAt = 0, locked = false, advanceTimer = null;
+  let fixing = false;  // after a miss, the card stays up until the right answer is typed
 
   const $ = id => document.getElementById(id);
   const rand = (a, b) => a + Math.random() * (b - a);
@@ -2445,19 +2448,28 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     topUp();
     let pool = inPlay();
     if (pool.length > 1) pool = pool.filter(id => id !== lastId);
-    const fresh = pool.filter(id => state.cards[id]?.isNew);
-    if (fresh.length) return byId[fresh[0]];
+    session.cards++;
+    const due = session.again.filter(a => a.at <= session.cards && pool.includes(a.id)).sort((a, b) => a.at - b.at)[0];
+    const picked = due ? due.id : pool.find(id => state.cards[id]?.isNew);
+    if (picked) { dropAgain(picked); return byId[picked]; }
     const learning = pool.filter(id => !isKnown(id)), known = pool.filter(id => isKnown(id));
     let group = pool;
     if (learning.length && known.length) group = Math.random() < LEARNING_SHARE ? learning : known;
-    return byId[weightedPick(group)];
+    const chosen = weightedPick(group);
+    dropAgain(chosen);
+    return byId[chosen];
+  }
+  // A missed card that comes up on its own counts as its next time back.
+  function dropAgain(id) {
+    const i = session.again.findIndex(a => a.id === id);
+    if (i >= 0) session.again.splice(i, 1);
   }
 
   /* ---------- game flow ---------- */
   function show() {
     clearTimeout(advanceTimer);
     clearCheer();
-    current = integ.on ? makeIntegral() : pick(); lastId = current.id; input = ""; locked = false;
+    current = integ.on ? makeIntegral() : pick(); lastId = current.id; input = ""; locked = false; fixing = false;
     $("card").classList.toggle("integral", !!current.integral);
     $("eq").hidden = !!current.parts; $("q2").hidden = !current.parts; $("q2").textContent = current.parts ? current.parts[1] : "";
     renderFlash();
@@ -2510,10 +2522,24 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   // auto is true when flash mode checks the answer; with flash mode on, Enter only advances, it doesn't check.
   function submit(auto) {
     if (overlay) { tapOverlay(); return; }
-    if (locked) { advance(); return; }
+    if (locked) { if (!fixing) advance(); return; }
     if (!input || (state.flash && !auto && !current.integral)) return;
     if (current.integral) { submitIntegral(); return; }
     const r = rec(current.id);
+
+    // Typing the right answer after a miss doesn't count for or against the card.
+    if (fixing) {
+      if (+input !== current.ans) {
+        input = ""; renderAnswer();
+        $("fb").textContent = `${factText(current)}. Type ${current.ans}.`; $("fb").className = "feedback hint";
+        return;
+      }
+      locked = true; fixing = false;
+      $("fb").textContent = factText(current); $("fb").className = "feedback good";
+      sfx.fresh();
+      advanceTimer = setTimeout(advance, 700);
+      return;
+    }
 
     if (r.isNew) {
       if (+input !== current.ans) {
@@ -2590,11 +2616,15 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       r.wrong++; day.wrong++; session.streak = 0; renderCombo(false); r.run = 0;
       r.w = Math.min(W_MAX, Math.max(1, r.w) * WRONG_MULT);
       if (meetsHard(r)) r.hard = true;
+      session.again = session.again.filter(a => a.id !== current.id)
+        .concat(AGAIN_AFTER.map(n => ({ id: current.id, at: session.cards + n })));
       sfx.wrong(); buzz(60);
       fb.textContent = factText(current); fb.className = "feedback bad";
       $("ans").textContent = input;
       const card = $("card"); card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
       delay = 2200;
+      // Outside beat the clock, the card waits for the right answer instead of moving on.
+      if (mode.kind !== "clock") delay = null;
     }
     const right = +input === current.ans;
     quakeAfter(right, right && ms <= limit);
@@ -2604,6 +2634,14 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     }
     checkUnlocks(); checkBadges();
     save(); renderAll();
+    if (delay === null) {
+      fixing = true;
+      advanceTimer = setTimeout(() => {
+        input = ""; locked = false; renderAnswer();
+        $("fb").textContent = `${factText(current)}. Type ${current.ans}.`; $("fb").className = "feedback hint";
+      }, 900);
+      return;
+    }
     advanceTimer = setTimeout(advance, delay);
   }
 

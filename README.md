@@ -26,6 +26,8 @@ Open a built `grade1/index.html` or `grade3/index.html` directly in a browser, o
 
 Use the operation buttons in the header to choose which facts to practice, then type each answer on the keypad (or a keyboard). The practice map at the bottom shows which facts are fast, slow or still missed.
 
+After a wrong answer, the card shows the fact and stays up until the right answer is typed. That retyping doesn't count for or against the card. Then the missed card comes back 3 cards later and again 10 cards after the miss, sooner if it comes up on its own. Beat the clock skips the retyping so the minute keeps moving, but its misses still come back.
+
 Once the collection holds 12 items (the `flashAt` option), the player earns **flash mode**. A small lightning bolt appears in the header. While it's on, the ✓ key is hidden and each answer is checked as soon as it has as many digits as the right answer. That's faster, but a typo counts as a miss. Tap the bolt again to turn it off and bring back ✓.
 
 ### Collecting
