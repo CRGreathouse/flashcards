@@ -12,7 +12,7 @@
   //   body, fin and line colors, and an optional belly color
   //   pattern: "stripes", "spots", "hearts", "splats", "flowers", "zigzag", "stars" or "clovers", in the `marks` colors (cycled)
   //   eyes: "normal", "x" or "odd" (mismatched); tail: "fork" or "point"
-  //   add: any of "fangs", "horns", "cape", "spines", "stitches", "halo", "bolts", "facets", "patch", "eyering", and `mark` (a symbol on its side)
+  //   add: any of "fangs", "horns", "cape", "spines", "stitches", "halo", "bolts", "antenna", "facets", "patch", "eyering", and `mark` (a symbol on its side)
   //   hat: "witch", "santa", "party", "pilgrim", "leprechaun" or "bunny". Hats are template add-ons only: emoji differ from
   //   device to device, so nothing can be lined up on them.
   function fish(o) {
@@ -85,15 +85,48 @@
     s += `<path d="M11.5 35q2.5 1.6 4.3 0" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linecap="round"/>`;
     if (has("fangs")) s += `<path d="M11.8 35.4l1.3 4.2 1.3-3.7ZM14.6 35.8l1.2 4 1.1-3.9Z" fill="#fff" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/>`;
     if (has("horns")) s += `<path d="M15 23.5Q11 15 15.5 10.5Q15.5 17 19.5 22.2ZM23 21.8Q22 13 27.5 10Q25 16 26.6 21.6Z" fill="#7a0d16" stroke="#4a050b" stroke-width=".8" stroke-linejoin="round"/>`;
+    if (has("antenna")) s += `<path d="M22 22 19 11" stroke="#6b7480" stroke-width="1.4" stroke-linecap="round"/><circle class="blink" cx="19" cy="10" r="2.3" fill="#ff3b3b"/>`;
     if (has("halo")) s += `<ellipse cx="22" cy="13.5" rx="7.5" ry="2.4" fill="none" stroke="#ffc93c" stroke-width="2.2"/>`;
     if (hat) s += `<g transform="rotate(-12 20 22)">${hats[hat]}</g>`;
-    return svg(s);
+    return svg(s).replace('class="drawn"', 'class="drawn fish"');  // Holi's splotches find template fish by this class
   }
   const GOURDS = svg(`<path d="M22 22C17 22 18 30 14 36 9 44 12 56 24 56 36 56 39 44 33 36 29 30 29 22 24 22Z" fill="#ffd23f" stroke="#b8920a" stroke-width="1.4"/>` +
     `<path d="M14 36C9 44 12 56 24 56 18 52 17 44 21 38Z" fill="#5c9e2e" opacity=".8"/><path d="M24 22V16Q24 13 27 12" fill="none" stroke="#6b4a2a" stroke-width="2.2" stroke-linecap="round"/>` +
     `<ellipse cx="44" cy="48" rx="15" ry="9.5" fill="#f07b00" stroke="#b8560a" stroke-width="1.4"/><path d="M44 38.5Q38 48 44 57.5M44 38.5Q50 48 44 57.5M36 40Q32 48 36 56M52 40Q56 48 52 56" fill="none" stroke="#b8560a" stroke-width="1"/>` +
     `<path d="M44 39V34" stroke="#5a7a2a" stroke-width="2.6" stroke-linecap="round"/>`);
-  // Candy corn and the Día de los Muertos, Diwali, Thanksgiving and Gurpurab art are shared with the princess theme (ART in src/index.html).
+  // Christmas: an angelfish (the tall striped tropical fish), gold-tinted and wearing a halo.
+  const ANGELFISH = svg(`<path d="M25 19C31 9 41 4 52 2 47 10 45 18 43 25Z" fill="#ffe9a8" stroke="#b88a00" stroke-width="1.2" stroke-linejoin="round"/>` +
+    `<path d="M25 45C31 55 41 60 52 62 47 54 45 46 43 39Z" fill="#ffe9a8" stroke="#b88a00" stroke-width="1.2" stroke-linejoin="round"/>` +
+    `<path d="M44 32 57 24Q53 32 57 40Z" fill="#ffe9a8" stroke="#b88a00" stroke-width="1.2" stroke-linejoin="round"/>` +
+    `<path d="M11 32C15 22 25 16 34 18 40 20 45 26 46 32 45 38 40 44 34 46 25 48 15 42 11 32Z" fill="#ffd86a" stroke="#b88a00" stroke-width="1.5"/>` +
+    `<path d="M24 20.5V43.6M33 18.2V45.8M41 22.6V41.4" stroke="#7a5a10" stroke-width="2.6" opacity=".6"/>` +
+    `<path d="M33 3C35 8 36 13 35 18M33 61C35 56 36 51 35 46" stroke="#7a5a10" stroke-width="2" opacity=".45" fill="none"/>` +
+    `<circle cx="18" cy="29.5" r="3.4" fill="#fff"/><circle cx="17.3" cy="29.5" r="1.8" fill="#1d2433"/><path d="M11.5 33.5q2.2 1.4 3.8 0" fill="none" stroke="#1d2433" stroke-width="1.2" stroke-linecap="round"/>` +
+    `<path d="M21 36Q24 41 28 38" fill="#ffe9a8" stroke="#b88a00" stroke-width="1"/><ellipse cx="18" cy="12" rx="7.5" ry="2.4" fill="none" stroke="#ffc93c" stroke-width="2.2"/>`);
+  // Valentine's Day: candy hearts with little messages.
+  const heart = (x, y, a, c) => `<g transform="translate(${x} ${y}) rotate(${a}) scale(1.5)"><path d="M0 8C-9 2-10-5-5-8-2-10 0-7 0-5 0-7 2-10 5-8 10-5 9 2 0 8Z" fill="${c}" stroke="#00000022" stroke-width=".8"/>` +
+    `<path d="M-3.5-1.5h7M-2.5 1.5h5" stroke="#d6336c" stroke-width=".9" stroke-linecap="round" opacity=".7"/></g>`;
+  const CANDY_HEARTS = svg(heart(20, 42, -14, "#ffd1dc") + heart(44, 44, 12, "#c9f2d6") + heart(32, 24, 4, "#fff3a8"));
+  // Pi Day: a big π, standing on the sand.
+  const BIG_PI = svg(`<g fill="none" stroke-linecap="round"><path d="M9 17Q13 11 22 11H56M24 11Q23 40 12 56M42 11V48Q42 56 50 56 54 56 57 51" stroke="#3a2780" stroke-width="9"/>` +
+    `<path d="M9 17Q13 11 22 11H56M24 11Q23 40 12 56M42 11V48Q42 56 50 56 54 56 57 51" stroke="#9b7bff" stroke-width="5"/></g>`);
+  // St. Patrick's Day: a rainbow arching over the holiday room's sand.
+  const RAINBOW = `<div aria-hidden="true" style="position:absolute;right:5%;bottom:6px;z-index:1;width:84px;line-height:0;pointer-events:none"><svg viewBox="0 0 64 34" style="width:100%;height:auto">` +
+    ["#e8453c", "#f39c33", "#f5d33f", "#4cbb5a", "#3f8fe0", "#7b5ad6"].map((c, i) => `<path d="M${4 + i * 3} 34A${28 - i * 3} ${28 - i * 3} 0 0 1 ${60 - i * 3} 34" fill="none" stroke="${c}" stroke-width="3.2"/>`).join("") +
+    `<g fill="#fff"><circle cx="5" cy="31" r="4"/><circle cx="10" cy="32" r="3.4"/><circle cx="59" cy="31" r="4"/><circle cx="54" cy="32" r="3.4"/></g></svg></div>`;
+  // Buddha Purnima: a white lotus floating on the water.
+  const WHITE_LOTUS = ART.lotus.replace(/#ffd6ea/g, "#ffffff").replace(/#ff9ccb/g, "#f1ecff").replace(/#d0508f/g, "#a29ac8");
+  // Fourth of July: the flag on a pole.
+  const FLAG = svg(`<path d="M10 6V60" stroke="#8a6a3a" stroke-width="2.6" stroke-linecap="round"/><circle cx="10" cy="5" r="2.4" fill="#ffc93c"/>` +
+    [0, 1, 2, 3, 4, 5, 6].map(i => `<rect x="11" y="${8 + i * 4}" width="46" height="4" fill="${i % 2 ? "#ffffff" : "#d6262f"}"/>`).join("") +
+    `<rect x="11" y="8" width="21" height="16" fill="#2346a8"/><g fill="#fff">${[0, 1, 2].map(r => [0, 1, 2, 3].map(c => `<circle cx="${14 + c * 5 + (r % 2) * 2}" cy="${11 + r * 5}" r="1"/>`).join("")).join("")}</g>` +
+    `<rect x="11" y="8" width="46" height="28" fill="none" stroke="#9aa1ab" stroke-width=".6"/>`);
+  // A drawn sand castle for the shop, bigger than the emoji one.
+  const SAND_CASTLE = svg(`<path d="M4 58V34H7V30H11V34H14V30H18V34H21V20H24V16H28V20H31V16H35V20H38V16H42V20H43V34H46V30H50V34H53V30H57V34H60V58Z" fill="#e8c27a" stroke="#b8904a" stroke-width="1.4" stroke-linejoin="round"/>` +
+    `<path d="M28 58V49Q32 43 36 49V58Z" fill="#8a5a2a"/><path d="M10 46V42Q12 39 14 42V46ZM50 46V42Q52 39 54 42V46ZM30 32V28Q32 25 34 28V32Z" fill="#8a5a2a"/>` +
+    `<path d="M32 16V5" stroke="#8a6a3a" stroke-width="1.4"/><path d="M32 5 41 8 32 11Z" fill="#ff5d5d"/><path d="M4 50H60" stroke="#c9a05a" stroke-width="1" opacity=".7"/>` +
+    `<g fill="#c9a05a"><circle cx="8" cy="54" r=".8"/><circle cx="18" cy="52" r=".8"/><circle cx="25" cy="40" r=".8"/><circle cx="40" cy="38" r=".8"/><circle cx="47" cy="54" r=".8"/><circle cx="56" cy="44" r=".8"/></g>`);
+  // Candy corn and the Día de los Muertos, Diwali, Thanksgiving, Gurpurab and later holidays' art are shared with the princess theme (ART in src/index.html).
   const THEME = {
     home: "Your aquarium",
     currency: "Pearls",
@@ -102,7 +135,8 @@
     fastWords: ["Splash!", "Fin-tastic!", "Whale done!"],
     starter: "fish",
     // Each room is its own collection; filling one opens the next. The first room's creatures keep their original keys.
-    // r is the rarity tier (0 common to 3 legendary); floor items walk along the bottom. Keys must be unique across rooms.
+    // r is the rarity tier (0 common to 3 legendary); floor items walk along the bottom, `float` ones drift on the surface.
+    // Keys must be unique across rooms. Mark an item added to a room after open rooms started being saved `late`.
     // `colors` paints the room (water top, water bottom, floor); the first room uses the page palette.
     rooms: [
       { name: "Aquarium", decor: `<span class="weed" style="left:6%">🌿</span><span class="weed" style="left:78%;animation-delay:-2s">🌿</span>`,
@@ -116,6 +150,7 @@
           dolphin: { e: "🐬", name: "Dolphin", r: 2 }, whale: { e: "🐳", name: "Whale", r: 2 }, shark: { e: "🦈", name: "Shark", r: 2 },
           otter: { e: "🦦", name: "Sea otter", r: 2 }, bluewhale: { e: "🐋", name: "Blue whale", r: 2 },
           mermaid: { e: "🧜‍♀️", name: "Mermaid", r: 3 },
+          diamondfish: { e: `<span class="sparkly">${fish({ body: "#c9f2ff", fin: "#9fe0ff", line: "#4aa8d0", belly: "#effbff", add: ["facets"] })}</span>`, name: "Diamond fish", r: 3, late: 1 },
         } },
       { name: "Coral reef", colors: ["#7fe0d8", "#1f9fb0", "#f4c9a0"],
         decor: `<span class="weed" style="left:4%">🪸</span><span class="weed" style="left:84%;animation-delay:-1s">🪸</span>`,
@@ -134,6 +169,7 @@
           jar: { e: "🏺", name: "Old jar", r: 0, floor: 1 },
           trident: { e: "🔱", name: "Trident", r: 1 }, angler: { e: ANGLER, name: "Anglerfish", r: 1 },
           narwhal: { e: NARWHAL, name: "Narwhal", r: 2 },
+          robotfish: { e: fish({ body: "#a9b0ba", fin: "#7d8791", line: "#4a525c", belly: "#c9ced6", tail: "point", add: ["bolts", "antenna"] }), name: "Robot fish", r: 2, late: 1 },
           kraken: { e: KRAKEN, name: "Kraken king", r: 3 },
         } },
     ],
@@ -171,23 +207,71 @@
       gurpurab: { look: LOOKS.gurpurab, items: {
         s_langar: { e: ART.langarPlate, name: "Langar plate", r: 0, floor: 1 },
       } },
+      christmas: { look: LOOKS.christmas, items: {
+        s_tree: { e: "🎄", name: "Christmas tree", r: 0, floor: 1 }, s_presents: { e: ART.present, name: "Presents", r: 0, floor: 1 },
+        s_santafish: { e: fish({ body: "#7fd18a", fin: "#3fa05a", line: "#1e6a35", belly: "#d4f5d8", hat: "santa" }), name: "Santa-hat fish", r: 1 },
+        s_angelfish: { e: ANGELFISH, name: "Angelfish", r: 2 },
+      } },
       winter: { items: {
         s_snowflake: { e: "❄️", name: "Snowflake", r: 0 },
         s_snowman: { e: "⛄", name: "Snowman", r: 1, floor: 1 },
       } },
-      valentine: { items: {
+      newyear: { look: LOOKS.newyear, decor: w => ART.banner(w.year + 1), items: {
+        s_clock: { e: "🕛", name: "Midnight clock", r: 0, floor: 1 }, s_disco: { e: "🪩", name: "Disco ball", r: 1 },
+        s_partyfish: { e: fish({ body: "#ff8ad8", fin: "#c95aa8", line: "#8a2a70", belly: "#ffd6f2", pattern: "spots", marks: ["#ffd23f", "#4d7cfe", "#7fe05a"], hat: "party" }), name: "Party-hat fish", r: 1 },
+      } },
+      mlk: { look: LOOKS.mlk, decor: ART.banner("Dream", "#2e4a8a", "#ffffff"), items: {
+        s_dove: { e: ART.dove, name: "Dove", r: 0 },
+      } },
+      lunarnewyear: { look: LOOKS.lunarnewyear, items: {
+        s_lantern: { e: ART.lantern, name: "Red lantern", r: 0, floor: 1 },
+        s_koi: { e: fish({ body: "#ffb02e", fin: "#ff8a1f", line: "#b85a00", belly: "#fff3d6", pattern: "spots", marks: ["#ffffff", "#e8262c"] }), name: "Gold koi", r: 2 },
+        ...zodiac({ floor: 1 }),
+      } },
+      valentine: { look: LOOKS.valentine, items: {
         s_letter: { e: "💌", name: "Love letter", r: 0 },
         s_heart: { e: "💖", name: "Sparkly heart", r: 1 },
+        s_candyhearts: { e: CANDY_HEARTS, name: "Candy hearts", r: 0, floor: 1 },
+        s_heartfish: { e: fish({ body: "#ff9ac8", fin: "#ff5fa2", line: "#c2177a", belly: "#ffe0ee", pattern: "hearts", marks: ["#e8264f", "#ffffff"] }), name: "Heart fish", r: 1 },
+      } },
+      piday: { look: LOOKS.piday, items: {
+        s_bigpi: { e: BIG_PI, name: "Big π", r: 0, floor: 1 },
+        s_piratefish: { e: fish({ body: "#8fb3d9", fin: "#4f7aa8", line: "#2c4a75", belly: "#d6e6f5", marks: ["#ffffff"], mark: "π", add: ["patch"] }), name: "Pi-rate fish", r: 1 },
+      } },
+      stpatrick: { look: LOOKS.stpatrick, decor: RAINBOW, items: {
+        s_leprechaunfish: { e: fish({ body: "#ffb347", fin: "#e8901a", line: "#9a5a10", belly: "#ffe0b0", hat: "leprechaun" }), name: "Leprechaun-hat fish", r: 1 },
+        s_cloverfish: { e: fish({ body: "#5cc46a", fin: "#2e9a42", line: "#1e6a2e", belly: "#c4f0c8", pattern: "clovers", marks: ["#1e7a35", "#e8ffe8"] }), name: "Clover fish", r: 2 },
+      } },
+      easter: { look: LOOKS.easter, items: {
+        s_bunny: { e: "🐇", name: "Bunny", r: 0, floor: 1 }, s_tulips: { e: "🌷", name: "Spring flowers", r: 0, floor: 1 },
+        s_bunnyfish: { e: fish({ body: "#c9b3ff", fin: "#9b7bff", line: "#6a48d4", belly: "#efe6ff", hat: "bunny" }), name: "Bunny-ears fish", r: 1 },
+        s_eggfish: { e: fish({ body: "#9fd8ff", fin: "#ff9ac8", line: "#3a8fd0", pattern: "zigzag", marks: ["#ff5d8f", "#ffd23f", "#a66cff"] }), name: "Easter egg fish", r: 2 },
+      } },
+      holi: { look: LOOKS.holi, items: {
+        s_holifish: { e: fish({ body: "#ffffff", fin: "#ffd23f", line: "#9a8f8a", pattern: "splats", marks: ["#ff3fa4", "#2ad1e0", "#7fe05a", "#a66cff", "#ff7a1a", "#ffd23f"] }), name: "Rainbow-splattered fish", r: 2 },
       } },
       spring: { items: {
         s_chick: { e: "🐣", name: "Spring chick", r: 0, floor: 1 },
+      } },
+      mahavir: { look: LOOKS.mahavir, items: {
+        s_lotus: { e: ART.lotus, name: "Lotus", r: 0, floor: 1 },
+      } },
+      buddha: { look: LOOKS.buddha, items: {
+        s_floatlotus: { e: WHITE_LOTUS, name: "Floating lotus", r: 0, float: 1 },
+      } },
+      july4: { look: LOOKS.july4, items: {
+        s_flag: { e: FLAG, name: "Flag", r: 0, floor: 1 },
+        s_spangledfish: { e: fish({ body: "#2f56c8", fin: "#d6262f", line: "#15307a", belly: "#ffffff", pattern: "stars", marks: ["#ffffff"] }), name: "Star-spangled fish", r: 2 },
+      } },
+      gandhi: { look: LOOKS.gandhi, items: {
+        s_charkha: { e: ART.charkha, name: "Spinning wheel", r: 0, floor: 1 },
       } },
     },
     // Decorations from the shop, placed on the floor of any room.
     shop: {
       d_castle: { e: "🏰", name: "Sand castle" }, d_chest: { e: CHEST, name: "Treasure chest" }, d_rock: { e: "🪨", name: "Rock" },
       d_head: { e: "🗿", name: "Stone head" }, d_ring: { e: "🛟", name: "Life ring" }, d_sprout: { e: "🌱", name: "Sea sprout" },
-      d_boat: { e: "⛵", name: "Toy boat" },
+      d_boat: { e: "⛵", name: "Toy boat" }, d_bigcastle: { e: SAND_CASTLE, name: "Big sand castle", big: 1 },
     },
     run: { name: "Treasure dive", icon: "🤿", mover: "🤿", goal: CHEST, badge: "Deep diver",
       intro: "Each fast answer takes you deeper. Ten fast answers reach the treasure!", done: "You found the treasure!" },

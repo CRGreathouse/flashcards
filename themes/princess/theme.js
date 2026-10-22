@@ -25,7 +25,7 @@
   const PETAL_DRESS = drawn(`<g stroke-width="1.2" stroke-linejoin="round"><path d="M30 30 C22 36 12 44 8 54 C18 54 26 46 30 30Z" fill="#ffd0e5" stroke="#d0508f"/><path d="M34 30 C42 36 52 44 56 54 C46 54 38 46 34 30Z" fill="#ffd0e5" stroke="#d0508f"/><path d="M30 30 C24 40 18 50 19 61 C27 56 31 46 31 30Z" fill="#ff9ccb" stroke="#d0508f"/><path d="M34 30 C40 40 46 50 45 61 C37 56 33 46 33 30Z" fill="#ff9ccb" stroke="#d0508f"/><path d="M32 30 C27 42 28 53 32 63 C36 53 37 42 32 30Z" fill="#ffd0e5" stroke="#d0508f"/></g><path d="M27 9 L27 17 M37 9 L37 17" stroke="#3f8f4a" stroke-width="1.8" stroke-linecap="round"/><path d="M25 16 Q32 21 39 16 L40 31 L24 31Z" fill="#7fcf7a" stroke="#3f8f4a" stroke-width="1.2" stroke-linejoin="round"/><path d="M28 21 Q32 25 36 21 M27 26 Q32 30 37 26" fill="none" stroke="#3f8f4a" stroke-width=".9" opacity=".6"/><circle cx="32" cy="31" r="2.4" fill="#ffe066" stroke="#e3a400" stroke-width=".8"/><g fill="#fff"><circle cx="16" cy="48" r="1"/><circle cx="48" cy="48" r="1"/><circle cx="24" cy="54" r="1.1"/><circle cx="40" cy="54" r="1.1"/><circle cx="32" cy="44" r="1.1"/></g>`);
   const MERMAID_GOWN = drawn(`<path d="M27 46 C20 52 12 56 5 62 Q19 59 32 63 Q45 59 59 62 C52 56 44 52 37 46Z" fill="#7fe0d4" stroke="#1d7f78" stroke-width="1.3" stroke-linejoin="round"/><path d="M32 50 L32 61 M29 50 L20 60 M35 50 L44 60 M27 49 L11 59 M37 49 L53 59" stroke="#1d7f78" stroke-width="1" stroke-linecap="round" opacity=".5"/><path d="M24 17 Q28 14 32 18 Q36 14 40 17 L40 30 C41 38 39 43 37 48 L27 48 C25 43 23 38 24 30Z" fill="#3cc0b4" stroke="#1d7f78" stroke-width="1.3" stroke-linejoin="round"/><path d="M26 25 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 M26 34 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 M27 39 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 1.5 0 M28 44 q1.5 2 3 0 q1.5 2 3 0 q1.5 2 3 0" fill="none" stroke="#a6f0e6" stroke-width="1"/><path d="M24 17 Q28 14 32 18 Q36 14 40 17 L40 21 Q36 18 32 22 Q28 18 24 21Z" fill="#b48ef0" stroke="#6a48d4" stroke-width="1" stroke-linejoin="round"/><g fill="#fff" stroke="#c9b3ff" stroke-width=".5"><circle cx="25" cy="30" r="1.4"/><circle cx="28.5" cy="30.6" r="1.4"/><circle cx="32" cy="31" r="1.6"/><circle cx="35.5" cy="30.6" r="1.4"/><circle cx="39" cy="30" r="1.4"/></g><g fill="#fff"><circle cx="18" cy="58" r="1"/><circle cx="46" cy="58" r="1"/><circle cx="32" cy="56" r="1.1"/></g>`);
   const RAINBOW_GOWN = drawn(`<path d="M24 30 L5 58 Q32 66 59 58 L40 30Z" fill="#b48ef0"/><path d="M24 30 L8.4 53 Q32 59 55.6 53 L40 30Z" fill="#6fb6ff"/><path d="M24 30 L12 48 Q32 53 52 48 L40 30Z" fill="#7fd88a"/><path d="M24 30 L16 42 Q32 47 48 42 L40 30Z" fill="#ffe066"/><path d="M24 30 L20 36 Q32 41 44 36 L40 30Z" fill="#ffab5c"/><path d="M24 30 L5 58 Q32 66 59 58 L40 30Z" fill="none" stroke="#7a5ae0" stroke-width="1.3" stroke-linejoin="round"/><g fill="#fff" stroke="#d8e6f5" stroke-width=".8"><circle cx="8" cy="58" r="3"/><circle cx="15" cy="60.5" r="3.4"/><circle cx="23" cy="62" r="3.4"/><circle cx="32" cy="62.5" r="3.6"/><circle cx="41" cy="62" r="3.4"/><circle cx="49" cy="60.5" r="3.4"/><circle cx="56" cy="58" r="3"/></g><ellipse cx="21.5" cy="22" rx="4.8" ry="3.5" fill="#fff" stroke="#7a5ae0" stroke-width="1.1"/><ellipse cx="42.5" cy="22" rx="4.8" ry="3.5" fill="#fff" stroke="#7a5ae0" stroke-width="1.1"/><path d="M24 17 Q28 14 32 18 Q36 14 40 17 L40 31 L24 31Z" fill="#ff6b6b" stroke="#c93d3d" stroke-width="1.2" stroke-linejoin="round"/><rect x="22.5" y="28" width="19" height="4" rx="2" fill="#fff" stroke="#7a5ae0" stroke-width="1"/><g fill="#fff" stroke="#ffd84d" stroke-width=".6" stroke-linejoin="round"><path d="M32 21 l1.2 2.5 2.7.4-2 1.9.5 2.7-2.4-1.3-2.4 1.3.5-2.7-2-1.9 2.7-.4Z"/><path d="M22 47 l1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z"/><path d="M42 47 l1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z"/></g>`);
-  // Holiday clothes. Shared holiday art (the candy bucket, sugar skull, marigolds, diya, rangoli, sparkler, langar plate) is ART in src/index.html.
+  // Holiday clothes. Shared holiday art (the candy bucket, sugar skull, marigolds, diya, rangoli, sparkler, langar plate, dove, lotus and more) is ART in src/index.html.
   const WITCH_DRESS = recolor(PARTY_DRESS, { "#e84a5f": "#4a2d6b", "#a8263a": "#24123a", "#ff8a9a": "#7a4ab5", "#fff": "#ff9a3c", "#ffd84d": "#7fe05a", "#e0c8cc": "#c45a00" });
   const WITCH_HAT = drawn(`<ellipse cx="32" cy="49" rx="28" ry="7" fill="#2e1d40" stroke="#1a0f26" stroke-width="1.2"/><path d="M16 48Q24 31 27 17Q30 5 41 3Q35 10 36 20L46 48Z" fill="#4a2d6b" stroke="#24123a" stroke-width="1.3" stroke-linejoin="round"/>` +
     `<path d="M18.2 42Q32 38.5 44 42L45.6 46.6Q32 42.5 16.6 46.6Z" fill="#ff9a3c"/><rect x="28" y="40.2" width="6.5" height="5.6" rx="1" fill="none" stroke="#ffd23f" stroke-width="1.4"/>` +
@@ -53,6 +53,47 @@
   const LEAF_CROWN = drawn(`<path d="M8 41Q32 26 56 41" fill="none" stroke="#7a4a22" stroke-width="3" stroke-linecap="round"/>` +
     [[11, 40, -58], [17, 36, -40], [24, 33, -20], [32, 32, 0], [40, 33, 20], [47, 36, 40], [53, 40, 58]].map(([x, y, a], i) => leaf(x, y, a, ["#d9541e", "#e8901a", "#b5361b", "#c9a227"][i % 4])).join(""));
   const HARVEST_CAPE = recolor(CAPE, { "#d12a4a": "#c2571a", "#8e1530": "#7a3510", "#ffc93c": "#e8b04a", "#e3a400": "#b87a1a", "#fff": "#f3e2b8", "#c9c2cc": "#c9a87a", "#3a2a35": "#7a3510", "#8fd3f0": "#d9541e" });
+  // Christmas: a red velvet gown trimmed in white, angel wings and a halo.
+  const VELVET_GOWN = recolor(BALL_GOWN, { "#ff7eb6": "#c4122f", "#c93d80": "#7a0a1c", "#ffd0e5": "#e8353e", "#ffb3d4": "#ffffff", "#e8458f": "#b3101f", "#b02a6c": "#7a0a1c", "#ffc93c": "#ffffff", "#e3a400": "#d8d8e0", "#8fd3f0": "#2ea04a" });
+  const ANGEL_WINGS = recolor(WINGS, { "#b8ecff": "#fdf3d8", "#4fb3dc": "#b89a50", "#ffc6e5": "#fff0c4", "#e070ad": "#c9a85a", "#b98bff": "#ffd86a", "#7a5ae0": "#c9a227" });
+  const HALO = drawn(`<ellipse cx="32" cy="36" rx="23" ry="8" fill="none" stroke="#e3a400" stroke-width="6.5"/><ellipse cx="32" cy="36" rx="23" ry="8" fill="none" stroke="#ffe27a" stroke-width="3.5"/>` +
+    `<g fill="#fff6c0"><circle cx="14" cy="26" r="1.6"/><circle cx="50" cy="25" r="1.4"/><circle cx="32" cy="22" r="1.8"/><circle cx="57" cy="40" r="1.1"/></g>`);
+  // New Year's: a sparkly party tiara (the tiara in silver) and a midnight-blue sequin gown.
+  const PARTY_TIARA = recolor(TIARA, { "#ffc93c": "#e6ecf5", "#e3a400": "#9aa6b8", "#ff5d8f": "#a66cff", "#8fd3f0": "#ff5d8f" });
+  const SEQUIN_GOWN = recolor(STARLIGHT_GOWN, { "#9ad8ff": "#1d2a6a", "#3a8fd0": "#0c1440", "#6fc3ff": "#26357e", "#e6f6ff": "#c9d3ff", "#cdeeff": "#2e3d8a" });
+  // Lunar New Year: a red silk dress with gold embroidery.
+  const SILK_DRESS = recolor(PARTY_DRESS, { "#e84a5f": "#d6262f", "#a8263a": "#8e1018", "#ff8a9a": "#e8353e", "#fff": "#ffc93c", "#e0c8cc": "#b88a00", "#ffd84d": "#ffe066" });
+  // Valentine's Day: a heart wand.
+  const HEART_WAND = drawn(`<path d="M16 60 38 26" stroke="#e3a400" stroke-width="3.6" stroke-linecap="round"/><path d="M16 60 38 26" stroke="#ffe066" stroke-width="1.4" stroke-linecap="round"/>` +
+    `<path d="M41 32C26 22 26 10 33 8 37 7 40 10 41 13 42 10 45 7 49 8 56 10 56 22 41 32Z" fill="#ff4f6d" stroke="#b3123a" stroke-width="1.6" stroke-linejoin="round"/>` +
+    `<ellipse cx="36" cy="14" rx="2.4" ry="3.4" transform="rotate(-30 36 14)" fill="#fff" opacity=".6"/><path d="M33 31Q28 36 30 41M36 31Q40 37 37 42" fill="none" stroke="#ff9ac8" stroke-width="1.6" stroke-linecap="round"/>` +
+    `<g fill="#ffd23f"><circle cx="56" cy="30" r="1.5"/><circle cx="24" cy="12" r="1.3"/><circle cx="58" cy="6" r="1.1"/></g>`);
+  // St. Patrick's Day: a shamrock-green gown and a necklace of gold coins.
+  const SHAMROCK_GOWN = recolor(BALL_GOWN, { "#ff7eb6": "#2ea04a", "#c93d80": "#1a6a2e", "#ffd0e5": "#c4f0c8", "#ffb3d4": "#7fd18a", "#e8458f": "#1e8a3a", "#b02a6c": "#145a26" });
+  const onCurve = t => [(1 - t) ** 2 * 10 + 2 * (1 - t) * t * 32 + t * t * 54, (1 - t) ** 2 * 10 + 2 * (1 - t) * t * 50 + t * t * 10];
+  const COIN_NECKLACE = drawn(`<path d="M10 10Q32 50 54 10" fill="none" stroke="#e3a400" stroke-width="2" stroke-dasharray="2 1.5"/>` +
+    [.18, .33, .67, .82].map(t => { const [x, y] = onCurve(t); return `<circle cx="${x.toFixed(1)}" cy="${(y + 3).toFixed(1)}" r="4.4" fill="#ffc93c" stroke="#b88a00" stroke-width="1.2"/>`; }).join("") +
+    `<circle cx="32" cy="36" r="7.5" fill="#ffc93c" stroke="#b88a00" stroke-width="1.4"/><g fill="#2ea04a"><circle cx="32" cy="33.2" r="2"/><circle cx="29.6" cy="36.6" r="2"/><circle cx="34.4" cy="36.6" r="2"/></g>`);
+  // Easter: a bunny-ears headband, a dress dotted with eggs, and a basket of eggs.
+  const BUNNY_EARS = drawn(`<g stroke="#e0d6e6" stroke-width="1.5"><ellipse cx="23" cy="24" rx="6.5" ry="17" transform="rotate(-12 23 24)" fill="#fff"/><ellipse cx="41" cy="24" rx="6.5" ry="17" transform="rotate(12 41 24)" fill="#fff"/></g>` +
+    `<ellipse cx="23" cy="25" rx="3" ry="12" transform="rotate(-12 23 25)" fill="#ffb3d4"/><ellipse cx="41" cy="25" rx="3" ry="12" transform="rotate(12 41 25)" fill="#ffb3d4"/>` +
+    `<path d="M8 50Q32 34 56 50" fill="none" stroke="#ff9ac8" stroke-width="4.5" stroke-linecap="round"/>`);
+  const EGG_DRESS = recolor(PARTY_DRESS, { "#e84a5f": "#c9e8ff", "#a8263a": "#5aa0d0", "#ff8a9a": "#e6f4ff", "#fff": "#ffe066", "#e0c8cc": "#d0b040", "#ffd84d": "#ff9ac8" })
+    .replace(/<circle cx="([\d.]+)" cy="([\d.]+)" r="1.6"\/>/g, (m, x, y) => `<ellipse cx="${x}" cy="${y}" rx="1.8" ry="2.4" fill="${["#ff9ac8", "#a66cff", "#7fd18a", "#ff9a3c"][(+x + +y) % 4]}"/>`);
+  const EASTER_BASKET = drawn(`<path d="M14 32Q32 2 50 32" fill="none" stroke="#a8702a" stroke-width="3.2" stroke-linecap="round"/>` +
+    `<ellipse cx="22" cy="30" rx="6" ry="7.5" fill="#9fd8ff" stroke="#3a8fd0" stroke-width="1"/><ellipse cx="42" cy="30" rx="6" ry="7.5" fill="#ffe066" stroke="#c9a227" stroke-width="1"/>` +
+    `<ellipse cx="32" cy="27" rx="6" ry="7.5" fill="#ff9ac8" stroke="#d6337f" stroke-width="1"/><path d="M28 25l2-2 2 2 2-2 2 2M18 30l2-2 2 2 2-2 2 2" fill="none" stroke="#fff" stroke-width="1.2"/>` +
+    `<path d="M10 34 13 30 16 34 19 30 22 34 25 30 28 34 31 30 34 34 37 30 40 34 43 30 46 34 49 30 52 34 54 32" fill="#7fd18a" stroke="#3f8f4a" stroke-width="1"/>` +
+    `<path d="M9 34H55L49 58H15Z" fill="#d39446" stroke="#8a5a1e" stroke-width="1.5" stroke-linejoin="round"/><path d="M11 41H53M13 49H51M20 34 22 58M32 34V58M44 34 42 58" stroke="#a8702a" stroke-width="1.2"/>`);
+  // Holi: a white dress, splashed with color the way people wear white for Holi.
+  const HOLI_DRESS = recolor(PARTY_DRESS, { "#fff": "#ff3fa4", "#e84a5f": "#fffffe", "#a8263a": "#b8b0c0", "#ff8a9a": "#f4f2f8", "#e0c8cc": "#c9c2cc", "#ffd84d": "#2ad1e0" }).replace("</svg>",
+    [[20, 46, "#ff3fa4"], [30, 51, "#2ad1e0"], [40, 43, "#ffd23f"], [46, 50, "#7fe05a"], [26, 39, "#a66cff"], [36, 37, "#ff7a1a"], [29, 22, "#2ad1e0"]].map(([x, y, c]) =>
+      `<g fill="${c}"><circle cx="${x}" cy="${y}" r="2.6"/><circle cx="${x + 2.8}" cy="${y - 1.6}" r="1"/><circle cx="${x - 2.4}" cy="${y + 2}" r=".8"/></g>`).join("") + "</svg>");
+  // Buddha Purnima: a lotus lantern with a light inside.
+  const LOTUS_LANTERN = `<span class="glow">${ART.lotus.replace(`<ellipse cx="32" cy="43" rx="5" ry="3" fill="#ffd23f"/>`,
+    `<path d="M32 28C36 34 36 40 32 44 28 40 28 34 32 28Z" fill="#ffb52e"/><path d="M32 34C33.6 37 33.6 40.5 32 42 30.4 40.5 30.4 37 32 34Z" fill="#fff3a0"/>`)}</span>`;
+  // Fourth of July: a star-spangled gown (the starlight gown in red, white and blue).
+  const SPANGLED_GOWN = recolor(STARLIGHT_GOWN, { "#9ad8ff": "#2346a8", "#3a8fd0": "#152c6e", "#6fc3ff": "#d6262f", "#e6f6ff": "#fffffe", "#cdeeff": "#2e56c8" });
   const CARRIAGE = drawn(`<path d="M32 18Q30 10 35 7" fill="none" stroke="#3f8f3a" stroke-width="3" stroke-linecap="round"/><path d="M35 9q7-3 9 3-6 2-9-3Z" fill="#5cb85c"/><ellipse cx="32" cy="34" rx="23" ry="17" fill="#ff9a3c" stroke="#d96b10" stroke-width="2"/><path d="M32 17v34M20 20q-6 14 0 28M44 20q6 14 0 28" fill="none" stroke="#d96b10" stroke-width="1.5"/><rect x="25" y="25" width="14" height="13" rx="6" fill="#bfe8ff" stroke="#e3a400" stroke-width="2.5"/><g fill="none" stroke="#e3a400" stroke-width="3"><circle cx="17" cy="52" r="8"/><circle cx="47" cy="52" r="8"/></g><path d="M17 44v16M9 52h16M47 44v16M39 52h16" stroke="#e3a400" stroke-width="1.5"/>`);
   const THRONE = drawn(`<path d="M18 7 24 13 32 4 40 13 46 7V36H18Z" fill="#c93d80" stroke="#e3a400" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="21" r="4" fill="#8fd3f0" stroke="#fff" stroke-width="1.5"/><path d="M16 45 14 60M48 45 50 60" stroke="#e3a400" stroke-width="4" stroke-linecap="round"/><rect x="11" y="34" width="42" height="11" rx="4" fill="#ff7eb6" stroke="#e3a400" stroke-width="2"/><rect x="9" y="26" width="7" height="21" rx="2.5" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5"/><rect x="48" y="26" width="7" height="21" rx="2.5" fill="#ffc93c" stroke="#e3a400" stroke-width="1.5"/>`);
   const PEGASUS = drawn(`<path d="M15 34Q4 36 6 49" fill="none" stroke="#c9b3ff" stroke-width="5" stroke-linecap="round"/><path d="M20 40v16M26 42v15M38 42v15M44 40v16" stroke="#e8e2f5" stroke-width="4" stroke-linecap="round"/><path d="M18 57h4M24 58h4M36 58h4M42 57h4" stroke="#ffc93c" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="31" cy="37" rx="16" ry="9" fill="#fff" stroke="#b9a8de" stroke-width="1.5"/><path d="M40 33 47 14 56 13 60 19 50 22 47 37Z" fill="#fff" stroke="#b9a8de" stroke-width="1.5" stroke-linejoin="round"/><path d="M47 14Q42 21 41 31" fill="none" stroke="#c9b3ff" stroke-width="4" stroke-linecap="round"/><circle cx="53" cy="16" r="1.6" fill="#2a2a2a"/><path d="M31 33Q19 14 7 8 13 17 11 20 19 22 17 26 25 28 31 33Z" fill="#f4efff" stroke="#b9a8de" stroke-width="1.5" stroke-linejoin="round"/>`);
@@ -150,7 +191,7 @@
       } },
       diwali: { look: LOOKS.diwali, items: {
         s_diya: { e: ART.diya, name: "Diya", r: 0 }, s_rangoli: { e: ART.rangoli, name: "Rangoli tile", r: 0 },
-        s_bangles: { e: BANGLES, name: "Bangles", r: 1 }, s_sparklerwand: { e: ART.sparkler, name: "Sparkler wand", r: 1 },
+        s_bangles: { e: BANGLES, name: "Bangles", r: 1 }, s_sparklerwand: { e: ART.sparkler, name: "Sparkler wand", r: 1, also: ["july4"] },
         s_lehenga: { e: LEHENGA, name: "Lehenga", r: 2 },
       } },
       thanksgiving: { look: LOOKS.thanksgiving, items: {
@@ -160,19 +201,57 @@
       gurpurab: { look: LOOKS.gurpurab, items: {
         s_langar: { e: ART.langarPlate, name: "Langar plate", r: 0 },
       } },
+      christmas: { look: LOOKS.christmas, items: {
+        s_tree: { e: "🎄", name: "Little Christmas tree", r: 0 }, s_halo: { e: HALO, name: "Halo", r: 1 },
+        s_angelwings: { e: ANGEL_WINGS, name: "Angel wings", r: 1 }, s_velvetgown: { e: VELVET_GOWN, name: "Red velvet gown", r: 2 },
+      } },
       winter: { items: {
         s_snowflake: { e: "❄️", name: "Snowflake", r: 0, fly: 1 },
         s_snowman: { e: "⛄", name: "Snowman", r: 1, floor: 1 },
         s_snowgown: { e: SNOW_GOWN, name: "Snow gown", r: 2 },
       } },
-      valentine: { items: {
+      newyear: { look: LOOKS.newyear, decor: w => ART.banner(w.year + 1), items: {
+        s_partytiara: { e: PARTY_TIARA, name: "Party tiara", r: 1 }, s_sequingown: { e: SEQUIN_GOWN, name: "Midnight sequin gown", r: 2 },
+      } },
+      mlk: { look: LOOKS.mlk, decor: ART.banner("Dream", "#2e4a8a", "#ffffff"), items: {
+        s_dove: { e: ART.dove, name: "Dove", r: 0, fly: 1 },
+      } },
+      lunarnewyear: { look: LOOKS.lunarnewyear, items: {
+        s_silkdress: { e: SILK_DRESS, name: "Red silk dress", r: 2 },
+        ...zodiac({ walk: 1 }),
+      } },
+      valentine: { look: LOOKS.valentine, items: {
         s_letter: { e: "💌", name: "Love letter", r: 0 },
         s_heart: { e: "💖", name: "Sparkly heart", r: 1, fly: 1 },
+        s_heartwand: { e: HEART_WAND, name: "Heart wand", r: 1 },
         s_valentinegown: { e: VALENTINE_GOWN, name: "Valentine gown", r: 2 },
+      } },
+      stpatrick: { look: LOOKS.stpatrick, items: {
+        s_potofgold: { e: ART.potOfGold, name: "Pot of gold", r: 0 }, s_coinnecklace: { e: COIN_NECKLACE, name: "Gold-coin necklace", r: 1 },
+        s_shamrockgown: { e: SHAMROCK_GOWN, name: "Shamrock gown", r: 2 },
+      } },
+      easter: { look: LOOKS.easter, items: {
+        s_bunnyears: { e: BUNNY_EARS, name: "Bunny ears", r: 1 }, s_basket: { e: EASTER_BASKET, name: "Easter basket", r: 1 },
+        s_eggdress: { e: EGG_DRESS, name: "Easter egg dress", r: 2 },
+      } },
+      holi: { look: LOOKS.holi, items: {
+        s_holidress: { e: HOLI_DRESS, name: "Holi dress", r: 2 },
       } },
       spring: { items: {
         s_chick: { e: "🐣", name: "Spring chick", r: 0, walk: 1 },
         s_blossomgown: { e: BLOSSOM_GOWN, name: "Blossom gown", r: 2 },
+      } },
+      mahavir: { look: LOOKS.mahavir, items: {
+        s_lotus: { e: ART.lotus, name: "Lotus", r: 0 },
+      } },
+      buddha: { look: LOOKS.buddha, items: {
+        s_lotuslantern: { e: LOTUS_LANTERN, name: "Lotus lantern", r: 0 },
+      } },
+      july4: { look: LOOKS.july4, items: {
+        s_spangledgown: { e: SPANGLED_GOWN, name: "Star-spangled gown", r: 2 },
+      } },
+      gandhi: { look: LOOKS.gandhi, items: {
+        s_charkha: { e: ART.charkha, name: "Spinning wheel", r: 0 },
       } },
     },
     // Decorations from the shop, placed on the floor of any room.
@@ -187,10 +266,12 @@
     dressUp: { doll: DOLL, slots: [
       { key: "dress", name: "Dress", items: ["gown", "kimono", "tutu", "ballgown", "starlight",
         "partydress", "daisydress", "pinktutu", "petaldress", "goldgown", "lilacgown", "mermaidgown", "twilightgown", "rainbowgown",
-        "s_pumpkingown", "s_witchdress", "s_papeldress", "s_lehenga", "s_snowgown", "s_valentinegown", "s_blossomgown"] },
-      { key: "head", name: "Head", items: ["tiara", "crown", "hennin", "ribbon", "s_witchhat", "s_marigoldcrown", "s_leafcrown"] },
-      { key: "back", name: "Back", items: ["wings", "cape", "s_batcape", "s_harvestcape"] },
-      { key: "hand", name: "Hand", items: ["wand", "rose", "purse", "butterfly", "cupcake", "sunflower", "jewel", "s_candybucket", "s_bangles", "s_sparklerwand"] },
+        "s_pumpkingown", "s_witchdress", "s_papeldress", "s_lehenga", "s_velvetgown", "s_snowgown", "s_sequingown", "s_silkdress", "s_valentinegown",
+        "s_shamrockgown", "s_eggdress", "s_holidress", "s_blossomgown", "s_spangledgown"] },
+      { key: "head", name: "Head", items: ["tiara", "crown", "hennin", "ribbon", "s_witchhat", "s_marigoldcrown", "s_leafcrown", "s_halo", "s_partytiara", "s_bunnyears"] },
+      { key: "back", name: "Back", items: ["wings", "cape", "s_batcape", "s_harvestcape", "s_angelwings"] },
+      { key: "hand", name: "Hand", items: ["wand", "rose", "purse", "butterfly", "cupcake", "sunflower", "jewel", "s_candybucket", "s_bangles", "s_sparklerwand",
+        "s_heartwand", "s_coinnecklace", "s_basket"] },
       { key: "feet", name: "Feet", items: ["slipper"] },
     ] },
     pictures: ["castle", "heart", "rainbow", "star", "sun", "fish", "heart"],

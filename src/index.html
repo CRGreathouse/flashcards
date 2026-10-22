@@ -90,6 +90,10 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 /* belly-up: floats at the surface, drifting without turning */
 .swim.belly { top: 2px !important; animation-name: drift; animation-timing-function: ease-in-out; }
 .upside { display: inline-block; transform: scaleY(-1); }
+/* floating on the surface (a lotus), drifting the same way */
+.swim.float { top: 0 !important; animation-name: drift; animation-timing-function: ease-in-out; }
+/* some fish swim behind the decorations */
+.swim.behind { z-index: 0; }
 @keyframes drift { 0%, 100% { left: 6%; } 50% { left: calc(90% - 2rem); } }
 @keyframes swim {
   0% { left: 2%; transform: scaleX(-1); } 48% { left: calc(96% - 2rem); transform: scaleX(-1); }
@@ -110,12 +114,26 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 .pearl-icon.emoji, .pearl-fly.emoji { width: auto; height: auto; background: none; box-shadow: none; clip-path: none; border-radius: 0; line-height: 1; }
 .pearl-icon.emoji { font-size: 13px; }
 .pearl-fly.emoji { font-size: 18px; }
+.pearl-icon.emoji .drawn, .pearl-fly.emoji .drawn { width: 1.1em; height: 1.1em; vertical-align: -.15em; }
 .emoji.lit { filter: drop-shadow(0 0 2px #ffd36a) drop-shadow(0 0 4px rgba(255, 170, 40, .8)); }
 .pearl-icon.lit { animation: flicker 1.8s ease-in-out infinite alternate; }
 /* a holiday item that glows, and a rangoli on the sand */
 .glow { display: inline-block; filter: drop-shadow(0 0 2px #ffe27a) drop-shadow(0 0 5px rgba(255, 190, 60, .8)); }
 .rangoli { position: absolute; bottom: -10px; left: 50%; z-index: 1; width: 64px; line-height: 0; transform: translateX(-50%) scaleY(.4); pointer-events: none; }
 .rangoli svg { width: 100%; height: auto; }
+/* a holiday's banner (New Year's number, "Dream"), strung across the top right of the holiday room */
+.banner { position: absolute; top: 3px; right: 10px; z-index: 7; padding: 1px 9px 2px; border-radius: 3px; pointer-events: none;
+  font: 800 .78rem var(--display); letter-spacing: .04em; color: var(--c, #fff); background: var(--bg-c, #1d2a5a); box-shadow: 0 1px 3px rgba(0,0,0,.35); }
+.banner::before, .banner::after { content: ""; position: absolute; top: 50%; width: 9px; border-top: 1px solid rgba(255,255,255,.6); }
+.banner::before { right: 100%; } .banner::after { left: 100%; }
+/* a quiet night's full moon, between the hanging lanterns */
+.moon { position: absolute; top: 24px; right: calc(20% - 11px); z-index: 5; width: 22px; height: 22px; border-radius: 50%; pointer-events: none;
+  background: #fff6d8; box-shadow: 0 0 8px 3px rgba(255, 240, 200, .6), 0 0 22px 8px rgba(255, 240, 200, .25); }
+/* a robot fish's blinking antenna, and a diamond fish that twinkles */
+.blink { animation: blink 1.2s steps(1) infinite; }
+@keyframes blink { 50% { fill: #5a1418; } }
+.sparkly { display: inline-block; animation: twinkle 2.2s ease-in-out infinite; }
+@keyframes twinkle { 0%, 100% { filter: drop-shadow(0 0 1px #fff); } 50% { filter: brightness(1.25) drop-shadow(0 0 3px #fff) drop-shadow(0 0 6px #9fe8ff); } }
 .holiday-name { position: absolute; top: 4px; left: 8px; z-index: 7; font-size: .7rem; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); pointer-events: none; }
 /* tapping a holiday's name shows its About card again */
 .holiday-name button { font: inherit; color: inherit; background: none; border: 0; padding: 2px 0; cursor: pointer; pointer-events: auto;
@@ -312,7 +330,7 @@ h2 { font-family: var(--display); font-weight: 600; font-size: 1.15rem; margin: 
   transition: transform .9s cubic-bezier(.5,-0.3,.4,1); }
 
 @media (prefers-reduced-motion: reduce) {
-  .card.shake, .card.glow, .cheer.pop, .big-card, .big-icon, .chip.new, .flash-btn.new, .combo.bump, .wrap.quake, .fallen > span.drop, .swim, .bob, .pace, .hover, .weed, .bubble, .light, .card.golden::before { animation: none !important; }
+  .card.shake, .card.glow, .cheer.pop, .big-card, .big-icon, .chip.new, .flash-btn.new, .combo.bump, .wrap.quake, .fallen > span.drop, .swim, .bob, .pace, .hover, .weed, .bubble, .light, .blink, .sparkly, .card.golden::before { animation: none !important; }
   .cheer.pop { opacity: 1; }
   .flyer, .pearl-fly, .bubble, .fall { display: none; }
 }
@@ -327,6 +345,7 @@ h2 { font-family: var(--display); font-weight: 600; font-size: 1.15rem; margin: 
 .big-icon svg.drawn, .big-icon svg.outfit { width: 104px; height: 104px; }
 .tank.decorating { cursor: crosshair; outline: 3px dashed var(--accent); outline-offset: 2px; }
 .deco { position: absolute; bottom: 3px; z-index: 1; font-size: 1.8rem; line-height: 1; transform: translateX(-50%); }
+.deco.deco-big { font-size: 2.8rem; }
 .decorating .deco { cursor: pointer; }
 .shiny { filter: hue-rotate(160deg) saturate(1.4) drop-shadow(0 0 3px #ffd95e) drop-shadow(0 0 5px #fff3b0); }
 button.dex-item:disabled { opacity: .55; cursor: default; }
@@ -546,6 +565,72 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       `<path d="M47 41Q44 46 49 49 51 43 47 41Z" fill="#9ac46a"/><circle cx="56" cy="47" r="5.5" fill="#d6262f"/><path d="M56 41.5q.5-2 2-2.5" stroke="#5a3a1a" stroke-width="1.2" fill="none"/>` +
       `<ellipse cx="46" cy="52" rx="8" ry="6.5" fill="#f07b00" stroke="#b8560a" stroke-width="1.2"/><path d="M46 45.5Q43 52 46 58.5M46 45.5Q49 52 46 58.5" fill="none" stroke="#b8560a" stroke-width="1"/>` +
       `<path d="M46 45.5V43" stroke="#5a7a2a" stroke-width="2" stroke-linecap="round"/></g>`),
+    // Christmas: a wrapped present.
+    present: art(`<rect x="10" y="28" width="44" height="28" rx="2" fill="#d6262f" stroke="#8e1018" stroke-width="1.5"/><rect x="7" y="20" width="50" height="10" rx="2" fill="#e8353e" stroke="#8e1018" stroke-width="1.5"/>` +
+      `<path d="M28 20h8v36h-8Z" fill="#2ea04a" stroke="#1a6a2e" stroke-width="1"/><path d="M32 20C24 8 12 9 15 16 18 20 27 20 32 20ZM32 20C40 8 52 9 49 16 46 20 37 20 32 20Z" fill="#ffc93c" stroke="#b88a00" stroke-width="1.4" stroke-linejoin="round"/>` +
+      `<circle cx="32" cy="19" r="3.2" fill="#ffc93c" stroke="#b88a00" stroke-width="1.2"/><g fill="#fff" opacity=".8"><circle cx="17" cy="40" r="1.3"/><circle cx="46" cy="44" r="1.3"/><circle cx="20" cy="50" r="1"/><circle cx="45" cy="34" r="1"/></g>`),
+    // Martin Luther King Jr. Day: a dove with an olive branch.
+    dove: art(`<path d="M44 34 60 27 58 35 62 42 46 40Z" fill="#e8eef5" stroke="#9aa8b8" stroke-width="1.2" stroke-linejoin="round"/>` +
+      `<path d="M14 30C14 24 20 22 24 26 30 32 40 30 46 34 48 40 40 46 30 46 20 46 14 38 14 30Z" fill="#fff" stroke="#9aa8b8" stroke-width="1.3"/>` +
+      `<path d="M24 30C26 18 36 8 53 6 47 14 45 22 38 32Z" fill="#fff" stroke="#9aa8b8" stroke-width="1.3" stroke-linejoin="round"/><path d="M30 27C34 20 40 15 47 12M34 29C38 23 43 19 48 17" fill="none" stroke="#c9d3de" stroke-width="1"/>` +
+      `<path d="M14.5 27.5 8 30 14.5 32Z" fill="#f0a030"/><circle cx="18.5" cy="28" r="1.6" fill="#1d2433"/><path d="M9.5 31Q6 38 10 45" fill="none" stroke="#5a7a2a" stroke-width="1.4"/>` +
+      `<g fill="#7fa83a"><ellipse cx="6" cy="36" rx="1.6" ry="3.4" transform="rotate(-40 6 36)"/><ellipse cx="11" cy="39" rx="1.6" ry="3.4" transform="rotate(40 11 39)"/><ellipse cx="6.5" cy="43" rx="1.6" ry="3.4" transform="rotate(-50 6.5 43)"/></g>`),
+    // Lunar New Year: a red envelope, with a gold coin on it.
+    redEnvelope: art(`<rect x="14" y="6" width="36" height="52" rx="3" fill="#d6262f" stroke="#8e1018" stroke-width="1.5"/><path d="M14.5 9Q32 27 49.5 9" fill="#e8353e" stroke="#8e1018" stroke-width="1.3"/>` +
+      `<circle cx="32" cy="25" r="6.5" fill="#ffc93c" stroke="#b88a00" stroke-width="1.2"/><rect x="29.8" y="22.8" width="4.4" height="4.4" fill="#d6262f"/>` +
+      `<path d="M20 42h24M20 48h24" stroke="#ffc93c" stroke-width="1.6" stroke-dasharray="3 2"/>`),
+    // Valentine's Day: a heart-shaped box of candy with a bow.
+    candyBox: art(`<path d="M32 58C10 44 3 29 9 18 15 7 28 9 32 18 36 9 49 7 55 18 61 29 54 44 32 58Z" fill="#b3123a" stroke="#7a0a24" stroke-width="1.5" stroke-linejoin="round"/>` +
+      `<path transform="translate(7 5) scale(.78)" d="M32 58C10 44 3 29 9 18 15 7 28 9 32 18 36 9 49 7 55 18 61 29 54 44 32 58Z" fill="#ff4f6d"/>` +
+      `<path d="M32 22C24 12 16 16 20 21 23 24 29 23 32 22ZM32 22C40 12 48 16 44 21 41 24 35 23 32 22Z" fill="#ffd6de" stroke="#d6264f" stroke-width="1.2"/>` +
+      `<path d="M30 23 26 32M34 23 38 32" stroke="#ffd6de" stroke-width="2.4" stroke-linecap="round"/><circle cx="32" cy="22.5" r="2.6" fill="#ffd6de" stroke="#d6264f" stroke-width="1"/>`),
+    // St. Patrick's Day: a pot of gold.
+    potOfGold: art(`<path d="M11 29Q13 13 32 11 51 13 53 29Z" fill="#ffc93c" stroke="#b88a00" stroke-width="1.2"/>` +
+      `<g fill="#ffe066" stroke="#b88a00" stroke-width="1"><circle cx="20" cy="23" r="4"/><circle cx="31" cy="16" r="4"/><circle cx="41" cy="20" r="4"/><circle cx="27" cy="25" r="4"/><circle cx="37" cy="26" r="4"/><circle cx="47" cy="26" r="3.5"/></g>` +
+      `<path d="M8 30H56Q61 50 46 56H18Q3 50 8 30Z" fill="#2b2b2b" stroke="#111" stroke-width="1.5"/><rect x="5" y="26" width="54" height="6" rx="3" fill="#3d3d3d" stroke="#111" stroke-width="1.2"/>` +
+      `<path d="M18 56 15 61M46 56 49 61" stroke="#111" stroke-width="3" stroke-linecap="round"/><path d="M14 37Q14 47 20 51" fill="none" stroke="#5a5a5a" stroke-width="2" stroke-linecap="round"/>`),
+    // Easter: jelly beans (the currency), and a painted egg that cracks open as the gift.
+    jellyBeans: art([[20, 40, -20, "#ff5d8f"], [42, 44, 25, "#7fd18a"], [30, 24, 10, "#ffd23f"], [46, 22, -30, "#a66cff"]].map(([x, y, a, c]) =>
+      `<g transform="translate(${x} ${y}) rotate(${a})"><path d="M-12-1C-12-9-3-9 0-5 3-9 12-9 12-1 12 8-12 8-12-1Z" fill="${c}" stroke="#00000033" stroke-width="1"/><ellipse cx="-5" cy="-3" rx="3" ry="1.4" fill="#fff" opacity=".6"/></g>`).join("")),
+    paintedEgg: art(`<path d="M32 4C46 4 54 26 54 40 54 53 44 60 32 60 20 60 10 53 10 40 10 26 18 4 32 4Z" fill="#9fd8ff" stroke="#3a8fd0" stroke-width="1.5"/>` +
+      `<polyline points="17 23 21 19 25 23 29 19 33 23 37 19 41 23 45 19 47 21" fill="none" stroke="#ff5d8f" stroke-width="2.4" stroke-linejoin="round"/>` +
+      `<path d="M12.5 33H51.5" stroke="#ffd23f" stroke-width="5"/><g fill="#a66cff"><circle cx="18" cy="44" r="2.2"/><circle cx="26" cy="46" r="2.2"/><circle cx="34" cy="46.5" r="2.2"/><circle cx="42" cy="45.5" r="2.2"/><circle cx="49" cy="43" r="2"/></g>` +
+      `<path d="M14 53Q32 60 50 53" fill="none" stroke="#7fd18a" stroke-width="2.4"/><ellipse cx="23" cy="13" rx="3" ry="5" transform="rotate(25 23 13)" fill="#fff" opacity=".55"/>`),
+    crackedEgg: art(`<g stroke="#ffd23f" stroke-width="2" stroke-linecap="round"><path d="M32 30V22M20 32 15 26M44 32 49 26M11 37H5M53 37H59"/></g>` +
+      `<path d="M10 40 15 34 20 40 26 33 32 40 38 33 44 40 49 34 54 40C54 53 44 60 32 60 20 60 10 53 10 40Z" fill="#9fd8ff" stroke="#3a8fd0" stroke-width="1.5" stroke-linejoin="round"/>` +
+      `<g fill="#a66cff"><circle cx="18" cy="47" r="2.2"/><circle cx="26" cy="49" r="2.2"/><circle cx="34" cy="49.5" r="2.2"/><circle cx="42" cy="48.5" r="2.2"/><circle cx="49" cy="46" r="2"/></g>` +
+      `<g transform="rotate(-22 32 14) translate(0 -6)"><path d="M16 22C20 8 26 4 32 4 38 4 44 8 48 22L43 26 38 20 32 27 26 20 21 26Z" fill="#9fd8ff" stroke="#3a8fd0" stroke-width="1.5" stroke-linejoin="round"/>` +
+      `<polyline points="19 17 23 13 27 17 31 13 35 17 39 13 43 17 45 15" fill="none" stroke="#ff5d8f" stroke-width="2.4" stroke-linejoin="round"/></g>`),
+    // Holi: colored powder (the currency), and a water balloon that bursts into color as the gift.
+    gulal: art([[16, "#ff3fa4"], [48, "#2ad1e0"], [32, "#ffd23f"]].map(([x, c], i) => `<path d="M${x - 15} ${54 - i}Q${x - 6} ${30 - i * 4} ${x} ${28 - i * 4} ${x + 6} ${30 - i * 4} ${x + 15} ${54 - i}Z" fill="${c}"/>`).join("") +
+      `<g fill="#7fe05a"><circle cx="10" cy="30" r="2.2"/><circle cx="54" cy="26" r="2"/></g><g fill="#a66cff"><circle cx="22" cy="16" r="2"/><circle cx="44" cy="12" r="1.8"/></g>`),
+    waterBalloon: art(`<path d="M32 4C46 4 54 16 52 30 50 44 40 53 32 53 24 53 14 44 12 30 10 16 18 4 32 4Z" fill="#ff5fa2" stroke="#c2177a" stroke-width="1.5"/>` +
+      `<path d="M15 34Q23 29 32 34 41 39 50 33" fill="none" stroke="#ffb3d8" stroke-width="2" stroke-linecap="round"/><ellipse cx="23" cy="16" rx="4" ry="7" transform="rotate(30 23 16)" fill="#fff" opacity=".5"/>` +
+      `<path d="M28.5 53 32 58 35.5 53Z" fill="#c2177a"/><path d="M32 58Q28 61 32 63" fill="none" stroke="#c2177a" stroke-width="1.5" stroke-linecap="round"/>`),
+    colorBurst: art(`${petals(32, 32, 18, 7, 8, "#ff3fa4")}${petals(32, 32, 20, 7, 4.5, "#2ad1e0").replace(/cx="([\d.-]+)"/g, (m, x) => `cx="${(+x + 3).toFixed(1)}"`)}` +
+      `<circle cx="32" cy="32" r="15" fill="#ffd23f"/>${petals(32, 32, 9, 6, 4, "#7fe05a")}<circle cx="32" cy="32" r="6" fill="#a66cff"/>` +
+      `<g fill="#ff7a1a"><circle cx="6" cy="10" r="2.4"/><circle cx="58" cy="54" r="2.6"/><circle cx="56" cy="8" r="1.8"/><circle cx="8" cy="56" r="2"/></g>`),
+    // Mahavir Jayanti: a lotus on its leaf.
+    lotus: art(`<ellipse cx="32" cy="50" rx="27" ry="7" fill="#5c9e5a" stroke="#3a6e3a" stroke-width="1.2"/><path d="M32 50 37 43" stroke="#3a6e3a" stroke-width="1.2"/>` +
+      [[-48, "#ffd6ea"], [-16, "#ffd6ea"], [16, "#ffd6ea"], [48, "#ffd6ea"], [-64, "#ff9ccb"], [-32, "#ff9ccb"], [0, "#ff9ccb"], [32, "#ff9ccb"], [64, "#ff9ccb"]].map(([a, c]) =>
+        `<path transform="translate(32 47) rotate(${a})" d="M0 0C-7-8-7-23 0-31 7-23 7-8 0 0Z" fill="${c}" stroke="#d0508f" stroke-width="1.1" stroke-linejoin="round"/>`).join("") +
+      `<ellipse cx="32" cy="43" rx="5" ry="3" fill="#ffd23f"/>`),
+    // Fourth of July: a firecracker with a sparking fuse.
+    firecracker: art(`<rect x="20" y="20" width="24" height="38" rx="3" fill="#d6262f" stroke="#8e1018" stroke-width="1.5"/><path d="M20.8 30H43.2M20.8 44H43.2" stroke="#fff" stroke-width="4"/>` +
+      `<rect x="20" y="16" width="24" height="7" rx="2" fill="#2346a8" stroke="#152c6e" stroke-width="1.2"/><path d="M32 16Q32 10 38 8" fill="none" stroke="#6b4a2a" stroke-width="2" stroke-linecap="round"/>` +
+      `<path transform="translate(40 7) scale(.5)" d="M0-12 3.5-4 12-3.7 5.5 2 7.6 10.5 0 6 -7.6 10.5-5.5 2-12-3.7-3.5-4Z" fill="#ffc93c"/><g fill="#ffd23f"><circle cx="48" cy="4" r="1.2"/><circle cx="47" cy="13" r="1"/><circle cx="34" cy="4" r="1"/></g>`),
+    // Gandhi Jayanti: a charkha, the spinning wheel Gandhi used to spin his own cloth.
+    charkha: art(`<path d="M6 56H58" stroke="#8a5a1e" stroke-width="4" stroke-linecap="round"/><path d="M24 32V55M17 55 24 47 31 55" fill="none" stroke="#8a5a1e" stroke-width="3" stroke-linejoin="round"/>` +
+      `<g stroke="#a8702a" stroke-width="1.6">${[0, 30, 60, 90, 120, 150].map(a => { const c = Math.cos(a * Math.PI / 180) * 19, s = Math.sin(a * Math.PI / 180) * 19;
+        return `<path d="M${(24 - c).toFixed(1)} ${(30 - s).toFixed(1)}L${(24 + c).toFixed(1)} ${(30 + s).toFixed(1)}"/>`; }).join("")}</g>` +
+      `<circle cx="24" cy="30" r="19" fill="none" stroke="#8a5a1e" stroke-width="3"/><circle cx="24" cy="30" r="3.5" fill="#6b4a2a"/>` +
+      `<path d="M50 55V42M44 42H60" stroke="#8a5a1e" stroke-width="3" stroke-linecap="round"/><path d="M24 11 54 40" stroke="#f3ead2" stroke-width="1.2"/><ellipse cx="54" cy="40" rx="4" ry="3" fill="#f3ead2" stroke="#c9bc96" stroke-width="1"/>`),
+    // Pi Day: a whole pie with π cut into the crust.
+    piPie: art(`<path d="M5 34Q5 52 32 54 59 52 59 34Z" fill="#c9cfd6" stroke="#7d8791" stroke-width="1.4"/><ellipse cx="32" cy="33" rx="27" ry="13" fill="#e8b45a" stroke="#a8702a" stroke-width="1.4"/>` +
+      `<ellipse cx="32" cy="33" rx="22" ry="9.5" fill="#f2c877"/><path d="M7 33q3 4 6 1 3 4 6 1 3 4 6 1 3 4 7 1 3 4 6 1 3 4 6 1 3 4 7 0" fill="none" stroke="#a8702a" stroke-width="1.2"/>` +
+      `<path d="M22 28H42M27 28Q27 36 23 39M37 28V37Q37 39 40 38" fill="none" stroke="#8a3a2a" stroke-width="2.6" stroke-linecap="round"/>`),
+    // A holiday's banner, hung in the holiday room (New Year's number, "Dream").
+    banner: (text, bg = "#1d2a5a", color = "#ffd23f") => `<div class="banner" style="--bg-c:${bg};--c:${color}">${text}</div>`,
     // Lights for a look's `lights`, and items in their own right.
     diya: art(`<path d="M32 8C39 18 41 27 32 36 23 27 25 18 32 8Z" fill="#ffb52e"/><path d="M32 18C35.2 24 35.6 29 32 33 28.4 29 28.8 24 32 18Z" fill="#fff3a0"/>` +
       `<path d="M6 36H58Q54 56 32 56 10 56 6 36Z" fill="#c8642a" stroke="#7a3510" stroke-width="2" stroke-linejoin="round"/><path d="M11 42H53" stroke="#ffd23f" stroke-width="2.8" stroke-dasharray="3 4"/>`),
@@ -568,6 +653,12 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         return `<path d="M${(40 + 3 * Math.cos(a)).toFixed(1)} ${(21 + 3 * Math.sin(a)).toFixed(1)}L${(40 + r * Math.cos(a)).toFixed(1)} ${(21 + r * Math.sin(a)).toFixed(1)}" stroke="${i % 2 ? "#ff9a1a" : "#ffc93c"}" stroke-width="1.8"/>`; }).join("")}</g>` +
       `<circle cx="40" cy="21" r="4.5" fill="#fff6c0"/><g fill="#ffd23f"><circle cx="56" cy="11" r="1.3"/><circle cx="24" cy="10" r="1.1"/><circle cx="58" cy="32" r="1.1"/><circle cx="27" cy="33" r="1"/></g>`),
   };
+  // Lunar New Year's zodiac: a new animal each year, starting from the rat in 2020. `zodiac(extra)` makes the twelve
+  // items for a theme's lunarnewyear set, each one only in its own year.
+  const ZODIAC = [["rat", "🐀", "Rat"], ["ox", "🐂", "Ox"], ["tiger", "🐅", "Tiger"], ["rabbit", "🐇", "Rabbit"], ["dragon", "🐉", "Dragon"], ["snake", "🐍", "Snake"],
+    ["horse", "🐎", "Horse"], ["goat", "🐐", "Goat"], ["monkey", "🐒", "Monkey"], ["rooster", "🐓", "Rooster"], ["dog", "🐕", "Dog"], ["pig", "🐖", "Pig"]];
+  const zodiac = extra => Object.fromEntries(ZODIAC.map(([k, e, name], i) =>
+    [`s_zodiac_${k}`, { e, name: `Year of the ${name}`, r: 1, year: y => ((y - 2020) % 12 + 12) % 12 === i, ...extra }]));
   // A look's `fall`: what drifts down through the room.
   const FALLS = {
     snow: { shape: "dot", n: 16, size: [3, 6], colors: ["#ffffff", "#eef6ff"] },
@@ -586,7 +677,11 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   // colors (top, bottom, floor), the gift (its icon, title and the colors that burst out as it opens), the currency's
   // name and icon, and extra cheers for fast answers. Effects, shown in every room: `fireworks` makes every fast-answer
   // celebration fireworks, `night` darkens the room, `fall` names a FALLS kind and `lights` a LIGHTS kind (or a list of them).
-  // A currency that's `lit` glows; `one` names one of it, when that isn't the name less its "s". A `quiet` look, for religious and commemorative days, keeps the usual currency, gift
+  // `bells` jingles sleigh bells with every fast answer, `splash` puffs colored powder from the card's edges, `splotch`
+  // splatters color on the drawn template fish in the holiday room, and `moon` hangs a full moon in the room.
+  // A currency that's `lit` glows; `one` names one of it, when that isn't the name less its "s"; its icon can be drawn.
+  // A gift can have an `opened` picture, shown as it opens (an egg cracking, a balloon bursting).
+  // A `quiet` look, for religious and commemorative days, keeps the usual currency, gift
   // and cheers (leaving out the theme's jokey ones) and turns fireworks and confetti into gentle sparkles. Its holiday's
   // items are symbols: each comes free on the day, is never shiny, and tapping it shows the About card (no feeding or names).
   const LOOKS = {
@@ -629,6 +724,102 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       dark: { bg: "#131a2c", accent: "#ffad4a", rule: "#6f8fe0", line: "#2c3550", pearl: "#ffad4a" },
       room: ["#e9eefa", "#b9c8ec", "#f0a040"],
       quiet: true, lights: ["diyas"],
+    },
+    christmas: {  // red, green and gold
+      light: { bg: "#fbf5ee", accent: "#1f7a3a", rule: "#d6262f", line: "#efd9cf", pearl: "#d6262f" },
+      dark: { bg: "#13201a", accent: "#ffc93c", rule: "#e8353e", line: "#2c3a30", pearl: "#ffc93c" },
+      room: ["#d4e8f5", "#3a6a8a", "#f4f8fb"],
+      gift: { icon: ART.present, title: "A present!", colors: ["#d6262f", "#2ea04a", "#ffc93c", "#ffffff"] },
+      cheers: ["Ho ho ho!", "Merry and bright!"],
+      fall: "snow", bells: true,
+    },
+    newyear: {
+      light: { bg: "#f4f2fb", accent: "#3a2a8a", rule: "#c9a227", line: "#ddd8ee", pearl: "#c9a227" },
+      dark: { bg: "#10122a", accent: "#ffd23f", rule: "#c9a227", line: "#2a2c50", pearl: "#ffd23f" },
+      room: ["#2a2f6b", "#0b0c24", "#3a3550"],
+      gift: { icon: "🎉", title: "Pop!", colors: ["#ffd23f", "#ff5d8f", "#4d7cfe", "#29c27f", "#ffffff"] },
+      currency: { name: "Confetti", one: "Confetti", icon: "🎊" },
+      cheers: ["Happy New Year!", "Cheers!"],
+      fireworks: true, night: true,
+    },
+    mlk: {  // calm blues
+      light: { bg: "#f3f5fa", accent: "#2e4a8a", rule: "#7a6ab8", line: "#dde2ee", pearl: "#7a6ab8" },
+      dark: { bg: "#131826", accent: "#9fb4ee", rule: "#9a8ad8", line: "#2a3248", pearl: "#9a8ad8" },
+      room: ["#e3eaf7", "#a9bde0", "#c9c2b0"],
+      quiet: true,
+    },
+    lunarnewyear: {
+      light: { bg: "#fff4ec", accent: "#b3121a", rule: "#e3a400", line: "#f3d6c8", pearl: "#e3a400" },
+      dark: { bg: "#200f10", accent: "#ffc93c", rule: "#e8353e", line: "#46282a", pearl: "#ffc93c" },
+      room: ["#7a1a1a", "#2a0808", "#b8862a"],
+      gift: { icon: ART.redEnvelope, title: "A red envelope!", colors: ["#d6262f", "#ffc93c", "#ffe066", "#ffffff"] },
+      currency: { name: "Red envelopes", icon: "🧧" },
+      cheers: ["Tài bàng le!"],
+      fireworks: true, lights: ["lanterns"],
+    },
+    valentine: {
+      light: { bg: "#fff2f5", accent: "#c2185b", rule: "#ff4f6d", line: "#f8d4de", pearl: "#ff4f6d" },
+      dark: { bg: "#22121a", accent: "#ff7aa8", rule: "#ff4f6d", line: "#46283a", pearl: "#ff7aa8" },
+      room: ["#ffe0ea", "#f59ab8", "#ffd6de"],
+      gift: { icon: ART.candyBox, title: "A box of candy!", colors: ["#ff4f6d", "#ff9ac8", "#ffd6de", "#ffffff"] },
+      currency: { name: "Hearts", icon: "❤️" },
+    },
+    piday: {
+      light: { bg: "#f6f3ff", accent: "#5a3ab8", rule: "#e8b45a", line: "#e2dcf2", pearl: "#e8b45a" },
+      dark: { bg: "#16132a", accent: "#c9b3ff", rule: "#e8b45a", line: "#2e2a48", pearl: "#f2c877" },
+      room: ["#ece6ff", "#b3a3e6", "#e8b45a"],
+      gift: { icon: ART.piPie, title: "A whole pie!", colors: ["#e8b45a", "#f2c877", "#8a3a2a", "#ffffff"] },
+      currency: { name: "Pie slices", icon: "🥧" },
+      cheers: ["3.14-tastic!"],
+    },
+    stpatrick: {
+      light: { bg: "#f2faf0", accent: "#1e7a35", rule: "#c9a227", line: "#d6ecd2", pearl: "#c9a227" },
+      dark: { bg: "#0f1e14", accent: "#7fd18a", rule: "#ffc93c", line: "#24402c", pearl: "#ffc93c" },
+      room: ["#c8efc0", "#3fa05a", "#5a8a3a"],
+      gift: { icon: ART.potOfGold, title: "A pot of gold!", colors: ["#ffc93c", "#ffe066", "#2ea04a", "#7fd18a"] },
+      currency: { name: "Gold coins", icon: "🪙" },
+    },
+    easter: {  // pastels
+      light: { bg: "#f8f5ff", accent: "#7a5ae0", rule: "#ff9ac8", line: "#e6def5", pearl: "#ff9ac8" },
+      dark: { bg: "#1a1626", accent: "#c9b3ff", rule: "#ff9ac8", line: "#342c48", pearl: "#ff9ac8" },
+      room: ["#e6f6ff", "#b8e3c2", "#9fd88a"],
+      gift: { icon: ART.paintedEgg, opened: ART.crackedEgg, title: "A painted egg!", colors: ["#9fd8ff", "#ff9ac8", "#ffd23f", "#a66cff", "#7fd18a"] },
+      currency: { name: "Jelly beans", icon: ART.jellyBeans },
+    },
+    holi: {
+      light: { bg: "#fffaf0", accent: "#c2177a", rule: "#2ad1e0", line: "#f5e2d8", pearl: "#ff3fa4" },
+      dark: { bg: "#1d1424", accent: "#ffd23f", rule: "#2ad1e0", line: "#3e2c45", pearl: "#ff7ac0" },
+      room: ["#fff4d6", "#ffc2e0", "#f2d0a0"],
+      gift: { icon: ART.waterBalloon, opened: ART.colorBurst, title: "A water balloon!", colors: ["#ff3fa4", "#ffd23f", "#2ad1e0", "#7fe05a", "#a66cff", "#ff7a1a"] },
+      currency: { name: "Gulal", one: "Gulal", icon: ART.gulal },
+      cheers: ["Holi hai!"],
+      fall: "powder", splash: true, splotch: true,
+    },
+    mahavir: {  // white and saffron
+      light: { bg: "#fbf8f0", accent: "#8a5a1e", rule: "#e8a33a", line: "#ece2cc", pearl: "#e8a33a" },
+      dark: { bg: "#1c1810", accent: "#f2c877", rule: "#e8a33a", line: "#3a3222", pearl: "#f2c877" },
+      room: ["#fff8e8", "#f2dcb0", "#c9b38a"],
+      quiet: true,
+    },
+    buddha: {  // night, under a full moon
+      light: { bg: "#f2f3fa", accent: "#4a3a8a", rule: "#e8b830", line: "#dcdcee", pearl: "#e8b830" },
+      dark: { bg: "#10122a", accent: "#ffd77a", rule: "#e8b830", line: "#2a2c50", pearl: "#ffd77a" },
+      room: ["#2a3a6a", "#0c1430", "#4a5a7a"],
+      quiet: true, night: true, moon: true, lights: ["lanterns"],
+    },
+    july4: {  // red, white and blue
+      light: { bg: "#f5f7fd", accent: "#1f3f9a", rule: "#d6262f", line: "#dde3f2", pearl: "#d6262f" },
+      dark: { bg: "#10162a", accent: "#ff6a6a", rule: "#5a8aff", line: "#28304a", pearl: "#ff6a6a" },
+      room: ["#3a5ac8", "#101e5a", "#d6d6e0"],
+      gift: { icon: ART.firecracker, title: "A firecracker!", colors: ["#d6262f", "#ffffff", "#2346a8", "#ffc93c"] },
+      currency: { name: "Stars", icon: "⭐" },
+      fireworks: true,
+    },
+    gandhi: {  // homespun cloth, saffron and green
+      light: { bg: "#faf8f2", accent: "#2a6a3a", rule: "#e8902a", line: "#ebe4d2", pearl: "#e8902a" },
+      dark: { bg: "#161a14", accent: "#9fd8a0", rule: "#e8902a", line: "#2e3428", pearl: "#f0a850" },
+      room: ["#f6f2e6", "#dcd4bc", "#c9b38a"],
+      quiet: true,
     },
   };
 
@@ -713,6 +904,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     spring: { name: "Spring", first: fixed(4, 1), days: 30, season: true },   // April
   };
   const whenOf = id => { const h = HOLIDAYS[id]; return h.when || (h.season ? `in ${h.name.toLowerCase()}` : /Day$/.test(h.name) ? `on ${h.name}` : `at ${h.name}`); };
+  // When an item comes: its holiday's window, and any others it comes back for.
+  const itemWhen = c => [c.holiday, ...c.also || []].filter(id => HOLIDAYS[id]).map(whenOf).join(" and ");
   const warned = new Set();
   // A holiday's window in year y: the day it opens, its first day and its last day.
   function windowOf(id, y) {
@@ -741,34 +934,31 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   ROOMS.forEach(rm => rm.keys.forEach(k => CREATURES[k] = { ...rm.creatures[k], room: rm.i }));
   const SHOP_ITEMS = THEME.shop || {};
   const HOLIDAY_ROOM = { name: "Holidays", ...THEME.holidayRoom, i: ROOMS.length, holiday: true };
+  // An item's `also` lists other holidays it comes back for (the sparkler wand at the Fourth of July), and `year(y)`
+  // limits it to the years it's true for (the year's zodiac animal at Lunar New Year).
   const HOLIDAY_KEYS = {};  // the theme's holidays, in its order, each with its items' keys
   for (const [id, h] of Object.entries(THEME.holidays || {})) {
     if (!HOLIDAYS[id]) { console.warn(`Unknown holiday in theme.js: ${id}`); continue; }
     HOLIDAY_KEYS[id] = Object.keys(h.items || {});
     for (const k in h.items) CREATURES[k] = { ...h.items[k], room: HOLIDAY_ROOM.i, holiday: id, ...h.look?.quiet && { quiet: 1 } };
   }
+  for (const k in CREATURES) for (const id of CREATURES[k].also || []) HOLIDAY_KEYS[id]?.push(k);
   const HAS_HOLIDAYS = Object.values(HOLIDAY_KEYS).some(ks => ks.length);
+  const windowKeys = w => HOLIDAY_KEYS[w.id].filter(k => !CREATURES[k].year || CREATURES[k].year(w.year));
   // The windows open on day n, soonest first.
   const activeWindows = (n = calDay()) => Object.keys(HOLIDAY_KEYS).map(id => nextWindow(id, n)).filter(w => w && w.open <= n).sort((a, b) => a.first - b.first);
   const isActive = id => activeWindows().some(w => w.id === id);
-  // The window that closed most recently before day n.
-  function lastWindow(n = calDay()) {
-    let best = null;
-    for (const id in HOLIDAY_KEYS) for (const dy of [-1, 0]) {
-      const w = windowOf(id, yearOf(n) + dy);
-      if (w && w.last < n && (!best || w.last > best.last)) best = w;
-    }
-    return best;
-  }
+  // The next window to open after day n.
+  const upcoming = (n = calDay()) => Object.keys(HOLIDAY_KEYS).map(id => nextWindow(id, n)).filter(w => w && w.open > n).sort((a, b) => a.open - b.open)[0] || null;
   // The holiday whose look is on: one whose day is today, or else the soonest one. A season only if nothing else is.
   function lookHoliday(n = calDay()) {
     const rank = w => HOLIDAYS[w.id].season ? 2 : w.first <= n ? 0 : 1;
     return activeWindows(n).filter(w => THEME.holidays[w.id].look).sort((a, b) => rank(a) - rank(b) || a.first - b.first)[0] || null;
   }
-  // The holiday room on show: every active holiday's set, or the last one outside a window.
+  // The holiday room on show: every active holiday's set. Between windows, the next holiday's set, with how long until it opens.
   function holidayRoom() {
-    const ws = activeWindows(), shown = ws.length ? ws : [lastWindow()].filter(Boolean);
-    return { ...HOLIDAY_ROOM, ids: shown.map(w => w.id), keys: shown.flatMap(w => HOLIDAY_KEYS[w.id]) };
+    const ws = activeWindows(), next = ws.length ? null : upcoming(), shown = ws.length ? ws : [next].filter(Boolean);
+    return { ...HOLIDAY_ROOM, ids: ws.map(w => w.id), next, keys: shown.flatMap(windowKeys) };
   }
   const roomAt = i => i === HOLIDAY_ROOM.i ? holidayRoom() : ROOMS[i];
   // The look of the holiday that has one (lookHoliday). The currency is only renamed: the balance, prices and pace stay.
@@ -785,13 +975,14 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     document.head.appendChild(css);
   }
   const currencyIcon = el => {
-    if (LOOK?.currency?.icon) { el.textContent = LOOK.currency.icon; el.classList.add("emoji"); el.classList.toggle("lit", !!LOOK.currency.lit); }
+    if (LOOK?.currency?.icon) { el.innerHTML = LOOK.currency.icon; el.classList.add("emoji"); el.classList.toggle("lit", !!LOOK.currency.lit); }
     return el;
   };
-  // A set should fit in its window at about one gift a day.
+  // A set should fit in its window at about one gift a day, plus the free gift on the day of a holiday with no lead time.
   for (const id in HOLIDAY_KEYS) {
-    const w = nextWindow(id, calDay()), n = HOLIDAY_KEYS[id].length;
-    if (w && n > (w.last - w.open + 1) * HOLIDAY_GIFTS_PER_DAY) console.warn(`${HOLIDAYS[id].name} has ${n} items, more than its window can fill.`);
+    const w = nextWindow(id, calDay()), h = HOLIDAYS[id], free = (!h.lead || THEME.holidays[id].look?.quiet) && !h.season ? 1 : 0;
+    const n = w ? windowKeys(w).length : 0;
+    if (w && n > (w.last - w.open + 1) * HOLIDAY_GIFTS_PER_DAY + free) console.warn(`${h.name} has ${n} items, more than its window can fill.`);
   }
   const RARITY = [
     { name: "Common", w: 60, color: "var(--r0)" }, { name: "Rare", w: 28, color: "var(--r1)" },
@@ -879,8 +1070,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   if (!state.flashEarned) state.flash = false;
   // Fields for unlocks, rooms, the shop, pets, badges and play modes. `room` is the room on show.
   const blank = () => ({ unlocked: [], earned: {}, pets: {}, decor: [], placed: {}, outfit: { dress: THEME.starter }, badges: [],
-    holidayGifts: [], aboutSeen: [], dry: 0, bestRow: 0, best: {}, runs: 0, runDay: null, shop: null, room: 0, bought: 0, rainbows: 0, proficient: [],
+    holidayGifts: [], aboutSeen: [], roomsOpen: [], dry: 0, bestRow: 0, best: {}, runs: 0, runDay: null, shop: null, room: 0, bought: 0, rainbows: 0, proficient: [],
     quake: { chance: QUAKE_START, fallen: [], n: 0 } });
+  const ROOMS_UNSAVED = state.roomsOpen === undefined;  // a save from before open rooms were saved (see openFullRooms)
   for (const [k, v] of Object.entries(blank())) if (state[k] === undefined) state[k] = v;
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} };
   const rec = id => state.cards[id] || (state.cards[id] = { w: 1, fast: 0, slow: 0, wrong: 0, run: 0 });
@@ -1005,6 +1197,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       for (let i = 0; i < 8; i++) tone(rand(900, 2400), 0.07, { type: "triangle", vol: 0.05, at: 0.35 + i * 0.1 + rand(0, 0.06) });
     },
     restore: () => [4, 7].forEach((n, i) => tone(note(n + 5), 0.12, { vol: 0.07, at: 0.35 + i * 0.07 })),
+    // Sleigh bells: a quick shake of small high bells.
+    jingle: () => { for (let i = 0; i < 7; i++) { const f = rand(2600, 3400), at = i * 0.045 + rand(0, 0.02);
+      tone(f, 0.09, { type: "triangle", vol: 0.035, at }); tone(f * 1.5, 0.06, { vol: 0.02, at: at + 0.01 }); } },
   };
 
   /* ---------- particles ---------- */
@@ -1088,6 +1283,17 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     }
   }
 
+  // Holi: colored powder puffs out from the card's edges, away from the question.
+  function splash(n = 40, colors = FALLS.powder.colors) {
+    const r = $("card").getBoundingClientRect();
+    for (let i = 0; i < n; i++) {
+      const side = i % 4, t = Math.random(), [dx, dy] = [[-1, 0], [1, 0], [0, -1], [0, 1]][side];
+      const x = side === 0 ? r.left : side === 1 ? r.right : r.left + t * r.width, y = side === 2 ? r.top : side === 3 ? r.bottom : r.top + t * r.height;
+      const s = rand(1.5, 4), life = rand(40, 70);
+      addP({ x, y, vx: dx * s + rand(-0.8, 0.8), vy: dy * s + rand(-0.8, 0.8), g: 0.02, drag: 0.92, size: rand(4, 9), color: choice(colors), life, max: life });
+    }
+  }
+
   function hearts(x, y) {
     for (let i = 0; i < 16; i++) {
       const life = rand(45, 70);
@@ -1120,6 +1326,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     session.streak++; state.bestRow = Math.max(state.bestRow, session.streak);
     renderCombo(true);
     sfx.fast(session.streak);
+    if (LOOK?.bells) sfx.jingle();
+    if (LOOK?.splash && !reduced) splash();
     const s = session.streak;
     if (s % 5 === 0) {
       cheer(`${s} in a row!`, { color: "#e3a400" });
@@ -1165,8 +1373,17 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const owns = k => state.tank.includes(k);
   const isShiny = k => copies(k) >= SHINY_AT && !CREATURES[k]?.quiet;
   const roomDone = i => ROOMS[i].keys.every(owns);
-  const roomOpen = i => i === HOLIDAY_ROOM.i ? HAS_HOLIDAYS : i === 0 || roomDone(i - 1);
+  // A room opens when the one before it is full, and then stays open (saved in state.roomsOpen), so something
+  // new in an earlier room doesn't lock the later ones again.
+  const roomOpen = i => i === HOLIDAY_ROOM.i ? HAS_HOLIDAYS : i === 0 || state.roomsOpen.includes(i);
   const openRooms = () => ROOMS.filter(rm => roomOpen(rm.i));
+  // The first time this runs on an older save, rooms open the way they did before: a `late` item (added to a room
+  // since open rooms were saved) doesn't count, so an old save keeps every room it had.
+  function openFullRooms(migrate = false) {
+    const fresh = [], full = i => ROOMS[i].keys.every(k => owns(k) || migrate && CREATURES[k].late);
+    for (const rm of ROOMS) if (rm.i && !roomOpen(rm.i) && roomOpen(rm.i - 1) && full(rm.i - 1)) { state.roomsOpen.push(rm.i); fresh.push(rm); }
+    return fresh;
+  }
   const petName = k => state.pets[k]?.name || CREATURES[k].name;
   function rollTier(min) {
     let r = Math.random() * RARITY.slice(min).reduce((s, x) => s + x.w, 0);
@@ -1179,7 +1396,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     const n = calDay(), missing = [];
     let share = SEASON_SHARE;
     for (const w of activeWindows(n)) {
-      const m = HOLIDAY_KEYS[w.id].filter(k => !owns(k) && !CREATURES[k].quiet && CREATURES[k].r >= minTier);
+      const m = windowKeys(w).filter(k => !owns(k) && !CREATURES[k].quiet && CREATURES[k].r >= minTier);
       missing.push(...m);
       if (m.length) share = Math.max(share, m.length / ((w.last - n + 1) * HOLIDAY_GIFTS_PER_DAY));
     }
@@ -1199,9 +1416,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   }
   // Adds a friend to the collection and queues what follows from it: a room opening, perks.
   function gainCreature(k) {
-    const before = openRooms().length;
     state.tank.push(k);
-    if (openRooms().length > before) enqueue(roomOverlay(ROOMS[openRooms().length - 1]));
+    for (const rm of openFullRooms()) enqueue(roomOverlay(rm));
     earnPerks();
   }
   function renderTank() {
@@ -1217,20 +1433,27 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     if (rm.holiday && THEME.display !== "shelves" && n > 10) tank.style.height = "140px";  // room for a big set to swim
     tank.setAttribute("aria-label", rm.i ? rm.name : THEME.home);
     let html = rm.decor || "";
-    if (rm.holiday) for (const w of activeWindows()) html += THEME.holidays[w.id].decor || "";
-    if (rm.holiday) html += `<span class="holiday-name">${rm.ids.map(id => HOLIDAYS[id].about ? `<button data-about="${id}">${HOLIDAYS[id].name}</button>` : HOLIDAYS[id].name).join(" · ") || "No holidays yet"}</span>`;
+    if (rm.holiday) for (const w of activeWindows()) { const d = THEME.holidays[w.id].decor; html += (typeof d === "function" ? d(w) : d) || ""; }
+    if (rm.holiday) {
+      const name = id => HOLIDAYS[id].about ? `<button data-about="${id}">${HOLIDAYS[id].name}</button>` : HOLIDAYS[id].name;
+      const days = rm.next && rm.next.open - calDay();
+      html += `<span class="holiday-name">${rm.ids.length ? rm.ids.map(name).join(" · ") : rm.next ? `${name(rm.next.id)} starts ${days === 1 ? "tomorrow" : `in ${days} days`}` : "No holidays yet"}</span>`;
+    }
     for (let i = 0; i < 6; i++) html += `<span class="bubble" style="left:${10 + seeded(i, 9) * 80}%;animation-duration:${4 + seeded(i, 3) * 4}s;animation-delay:-${seeded(i, 5) * 6}s"></span>`;
     for (const [k, p] of Object.entries(state.placed))
-      if (p.room === rm.i && SHOP_ITEMS[k]) html += `<span class="deco" data-deco="${k}" style="left:${p.x}%" title="${SHOP_ITEMS[k].name}">${SHOP_ITEMS[k].e}</span>`;
+      if (p.room === rm.i && SHOP_ITEMS[k]) html += `<span class="deco${SHOP_ITEMS[k].big ? " deco-big" : ""}" data-deco="${k}" style="left:${p.x}%" title="${SHOP_ITEMS[k].name}">${SHOP_ITEMS[k].e}</span>`;
     if (THEME.display === "shelves") html += shelfRoom(rm, keys, ghosts);
     else for (const key of [...keys, ...ghosts]) {
       // Seeded by the friend's place in the table, so each one keeps its spot and speed.
       const c = CREATURES[key], i = all.indexOf(key), grow = 1 + Math.min(state.pets[key]?.fed || 0, 10) * 0.05;
       const dur = 10 + seeded(i, 1) * 12, delay = -seeded(i, 2) * dur, top = 6 + seeded(i, 4) * 50;
       const bob = bobHtml(key, `animation-delay:-${seeded(i, 7) * 2}s`);
-      html += `<span class="swim${c.floor ? " floor" : c.belly ? " belly" : ""}" style="top:${top}%;left:${5 + seeded(i, 6) * 80}%;font-size:${(fs * grow).toFixed(2)}rem;animation-duration:${c.floor ? dur * 1.6 : c.belly ? dur * 2.5 : dur}s;animation-delay:${delay}s">${c.belly ? `<span class="upside">${bob}</span>` : bob}</span>`;
+      // A third of the swimmers pass behind the decorations.
+      const kind = c.floor ? " floor" : c.belly ? " belly" : c.float ? " float" : seeded(i, 8) < 0.33 ? " behind" : "";
+      html += `<span class="swim${kind}" style="top:${top}%;left:${5 + seeded(i, 6) * 80}%;font-size:${(fs * grow).toFixed(2)}rem;animation-duration:${c.floor ? dur * 1.6 : c.belly || c.float ? dur * 2.5 : dur}s;animation-delay:${delay}s">${c.belly ? `<span class="upside">${bob}</span>` : bob}</span>`;
     }
     if (THEME.display !== "shelves") html += roomLights();
+    if (LOOK?.moon) html += `<span class="moon"></span>`;
     html += fallenRoom(owned.filter(k => down.has(k))) + fallHtml();
     tank.classList.toggle("night", !!LOOK?.night);
     tank.innerHTML = html;
@@ -1313,9 +1536,14 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     }
     return html;
   }
+  // A look's `splotch` (Holi) splatters color on the drawn template fish (class "fish") in the holiday room.
+  const SPLOTCH = [[28, 39, "#ff3fa4"], [37, 28, "#2ad1e0"], [43, 36, "#ffd23f"], [33, 34, "#7fe05a"]].map(([x, y, c]) =>
+    `<g fill="${c}" opacity=".9"><circle cx="${x}" cy="${y}" r="2.6"/><circle cx="${x + 2.8}" cy="${y - 1.6}" r="1"/><circle cx="${x - 2.4}" cy="${y + 2}" r=".8"/></g>`).join("");
+  const itemArt = key => { const c = CREATURES[key];
+    return LOOK?.splotch && c.holiday ? c.e.replace(/(<svg class="drawn fish"[\s\S]*?)(<\/svg>)/, `$1${SPLOTCH}$2`) : c.e; };
   // One friend in the tank, or the silhouette of one that's still missing (not tappable).
   const bobHtml = (key, style = "") => owns(key)
-    ? `<span class="bob${isShiny(key) ? " shiny" : ""}" data-key="${key}" style="${style}" title="${esc(petName(key))}">${CREATURES[key].e}</span>`
+    ? `<span class="bob${isShiny(key) ? " shiny" : ""}" data-key="${key}" style="${style}" title="${esc(petName(key))}">${itemArt(key)}</span>`
     : `<span class="bob ghost" style="${style}" aria-hidden="true">${CREATURES[key].e}</span>`;
   /* ---------- earthquakes (variants with `earthquakes` on) ----------
      A wrong answer can set one off, knocking every prize onto the floor. Each fast answer puts one back.
@@ -1484,7 +1712,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   ];
   const dexItem = k => {
     const c = CREATURES[k], n = copies(k), col = RARITY[c.r].color;
-    if (!n) return `<div class="dex-item unknown" style="border-color:${col}"><span class="e">?</span>${c.holiday && !isActive(c.holiday) ? `Comes back ${whenOf(c.holiday)}` : RARITY[c.r].name}</div>`;
+    if (!n) return `<div class="dex-item unknown" style="border-color:${col}"><span class="e">?</span>${c.holiday && ![c.holiday, ...c.also || []].some(isActive) ? `Comes back ${itemWhen(c)}` : RARITY[c.r].name}</div>`;
     return `<button class="dex-item${isShiny(k) ? " shiny-item" : ""}" data-act="pet" data-key="${k}" style="border-color:${col}">${n > 1 ? `<span class="n">×${n}</span>` : ""}` +
       `<span class="e${isShiny(k) ? " shiny" : ""}">${c.e}</span>${esc(petName(k))}</button>`;
   };
@@ -1495,8 +1723,11 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         if (!roomOpen(rm.i)) { html += `<p class="note">🔒 <b>${rm.name}</b>: find everything in the ${ROOMS[rm.i - 1].name.toLowerCase()} to open it.</p>`; break; }
         html += `<h4>${rm.name} · ${rm.keys.filter(owns).length} of ${rm.keys.length}</h4><div class="dex-grid">${rm.keys.map(dexItem).join("")}</div>`;
       }
-      for (const [id, ks] of Object.entries(HOLIDAY_KEYS))
+      for (const [id, all] of Object.entries(HOLIDAY_KEYS)) {
+        // A year's item (a zodiac animal) shows once owned, or while it's the one coming up.
+        const w = nextWindow(id, calDay()), ks = all.filter(k => !CREATURES[k].year || owns(k) || (w && CREATURES[k].year(w.year)));
         if (ks.length) html += `<h4>${HOLIDAYS[id].name} · ${ks.filter(owns).length} of ${ks.length}</h4><div class="dex-grid">${ks.map(dexItem).join("")}</div>`;
+      }
       return html + `<p class="note">Get ${SHINY_AT} of the same friend and it turns shiny. Tap a friend to feed it or give it a name.</p>`;
     },
     pet() {
@@ -1564,7 +1795,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       const h = HOLIDAYS[w.id], tag = `${w.id}-${w.year}`, quiet = THEME.holidays[w.id].look?.quiet;
       if ((h.lead && !quiet) || h.season || w.first > n || state.holidayGifts.includes(tag)) continue;
       state.holidayGifts.push(tag);
-      enqueue(chestOverlay({ title: `Happy ${h.name}!`, key: quiet ? HOLIDAY_KEYS[w.id].find(k => !owns(k)) : undefined }));
+      enqueue(chestOverlay({ title: `Happy ${h.name}!`, key: quiet ? windowKeys(w).find(k => !owns(k)) : undefined }));
     }
   }
   // The first time she plays in a holiday's window, its About card. Comes before the day's gift.
@@ -1660,6 +1891,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
           o.stage = 1; setBig({ icon: THEME.gift.icon, iconClass: "wobble", title, sub: "Here it comes…" });
           sfx.rattle(); buzz([20, 80, 20, 80, 20]);
           if (!reduced && THEME.gift.colors) setTimeout(() => sparkle(36, 8, THEME.gift.colors), 700);
+          if (THEME.gift.opened) setTimeout(() => { if (overlay === o) $("big-icon").innerHTML = THEME.gift.opened; }, 650);  // the egg cracks, the balloon bursts
           setTimeout(o.reveal, 820);
           return false;
         }
@@ -1676,7 +1908,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         if (n === SHINY_AT) sub = `That's ${SHINY_AT}! Your ${c.name.toLowerCase()} turned shiny!`;
         else if (n === SHINY_AT - 1) sub += ` One more and it turns shiny.`;
         else if (o.refund) sub = `It's already shiny, so here's ${money(o.refund)}.`;
-        if (c.holiday && n < SHINY_AT) sub = `A visitor! It only comes ${whenOf(c.holiday)}.`;
+        if (c.holiday && n < SHINY_AT) sub = `A visitor! It only comes ${itemWhen(c)}.`;
         if (c.quiet) sub = `A gift for ${HOLIDAYS[c.holiday].name}. Tap it any time to hear about the day.`;
         checkBadges(); save();
         setBig({ icon: shiny ? `<span class="shiny">${c.e}</span>` : c.e, iconClass: "reveal", title: `${shiny ? "Shiny " : ""}${c.name}!`,
@@ -2295,7 +2527,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   currencyIcon(document.querySelector(".pearl-icon"));
   // A save from an older version may already qualify for unlocks and perks: those get their moment now.
   // Badges it already qualifies for are awarded quietly.
-  checkUnlocks(); earnPerks(); checkBadges(true); holidayAbout(); holidayGift();
+  openFullRooms(ROOMS_UNSAVED); checkUnlocks(); earnPerks(); checkBadges(true); holidayAbout(); holidayGift();
   renderMute(); renderOps(); renderAll(); renderShelf(); renderTank(); renderPearls(); renderFlash(); renderModes();
   save();
   if (queue.length) openNext(); else show();
