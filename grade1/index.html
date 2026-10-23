@@ -542,8 +542,12 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const HARD_MIN_WRONG = 2, HARD_RATE = 0.4;
   const KNOWN_RUN = 2, LEARN_RUN = 3;
   const PROFICIENT_RUN = 4;  // a family's `proficient` cards are topped up to this many fast answers in a row (and the lowest weight)
-  const LEARNING_SHARE = 0.75;
+  const LEARNING_SHARE = 0.5;  // the share of picks that go to cards still being learned (the rest go to known cards)
   const AGAIN_AFTER = [3, 10];  // a missed card comes back this many cards later, and again this many after the miss
+  const NEW_AGAIN = [2, 5, 12];  // a new card, once copied, comes back to be answered this many cards later
+  // A known card is due for review this many days after it was last answered. Each fast answer while it's due moves it
+  // a step further along; a slow or wrong answer sends it back to the first step.
+  const DUE_DAYS = [1, 3, 7, 21, 60];
   const GOLDEN_CHANCE = 1 / 8, GOLDEN_PEARLS = 3;
   const INT_HOLD_MS = 2000, INT_BONUS = 50;  // hold 🔊 this long to reveal integrals; a bonus answer earns at least this many
   const RAINBOW_CHANCE = 1 / 60;  // a known card can be a rainbow card; answering it fast opens a gift right away
@@ -1420,6 +1424,8 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
   const pearlGoal = () => Math.min(20, 8 + 2 * state.opened);
   const streakDays = () => (state.days.last === today() || state.days.last === yesterday()) ? state.days.count : 0;
 
+  const dateNum = s => dayNum(...s.split("-").map(Number));  // a "YYYY-MM-DD" date as a day number
+  const isDue = r => r.last !== undefined && dateNum(today()) - dateNum(r.last) >= DUE_DAYS[r.step || 0];
   const isKnown = id => { const r = state.cards[id]; return !!r && !r.isNew && (r.run || 0) >= (r.hard ? LEARN_RUN : KNOWN_RUN); };
   // `got` remembers that a card has been known at least once. Unlocks, badges and hidden pictures go by it,
   // so one slow answer later doesn't take them away.
@@ -1444,6 +1450,10 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       if (!state.active.includes(c.id)) state.active.push(c.id);
     }
     for (const op of OPS) if (FACTS[op].proficient && !state.proficient.includes(op)) state.proficient.push(op);
+    // Known cards with no review date (seeded, or from before review dates were saved) start their wait today,
+    // a step along for each fast answer past known.
+    for (const id in state.cards) if (isKnown(id) && state.cards[id].last === undefined)
+      Object.assign(state.cards[id], { last: today(), step: Math.min(Math.max(0, state.cards[id].run - KNOWN_RUN), DUE_DAYS.length - 1) });
   }
   const refCards = ref => ref.includes(".") ? (STAGES[ref]?.cards || []) : (ORDER[ref] || []);
   const refDone = ref => refCards(ref).every(got);
@@ -1476,8 +1486,9 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     }
   }
 
-  // cards: how many cards have been shown this page session. again: missed cards due back, as { id, at } (a card count).
-  const session = { streak: 0, cards: 0, again: [] };
+  // cards: how many cards have been shown this page session. again: missed and new cards due back, as { id, at } (a card count).
+  // forced: the last card was one that had to come up (see pick).
+  const session = { streak: 0, cards: 0, again: [], forced: false };
   // A play mode in progress: "run" (ten fast answers to the goal) or "clock" (as many right as possible in a minute).
   const mode = { kind: null, steps: 0, right: 0, end: 0, timer: null };
   let drawer = null, petKey = null, decoKey = null;  // the open drawer, the friend it shows, the decoration being placed
@@ -2459,12 +2470,19 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
     let pool = inPlay();
     if (pool.length > 1) pool = pool.filter(id => id !== lastId);
     session.cards++;
-    const due = session.again.filter(a => a.at <= session.cards && pool.includes(a.id)).sort((a, b) => a.at - b.at)[0];
-    const picked = due ? due.id : pool.find(id => state.cards[id]?.isNew);
-    if (picked) { dropAgain(picked); return byId[picked]; }
     const learning = pool.filter(id => !isKnown(id)), known = pool.filter(id => isKnown(id));
+    // A card that has to come up (a new card, or one due back) is followed by a known card if there is one,
+    // so known cards still get reviewed while new ones are coming in. The waiting card comes up just after.
+    const rest = session.forced && known.length;
+    const due = !rest && session.again.filter(a => a.at <= session.cards && pool.includes(a.id)).sort((a, b) => a.at - b.at)[0];
+    const picked = rest ? null : due ? due.id : pool.find(id => state.cards[id]?.isNew);
+    session.forced = !!picked;
+    if (picked) { dropAgain(picked); return byId[picked]; }
     let group = pool;
-    if (learning.length && known.length) group = Math.random() < LEARNING_SHARE ? learning : known;
+    if (rest) group = known;
+    else if (learning.length && known.length) group = Math.random() < LEARNING_SHARE ? learning : known;
+    // Known cards due for review go first.
+    if (group === known || !learning.length) { const due = known.filter(id => isDue(state.cards[id])); if (due.length) group = due; }
     const chosen = weightedPick(group);
     dropAgain(chosen);
     return byId[chosen];
@@ -2558,6 +2576,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         return;
       }
       locked = true; r.isNew = false;
+      session.again = session.again.concat(NEW_AGAIN.map(n => ({ id: current.id, at: session.cards + n })));
       cheer(choice(NEW_WORDS), { soft: true, color: "#4d7cfe" }); sfx.fresh();
       if (!reduced) sparkle(18, 5);
       save(); renderAll();
@@ -2578,7 +2597,12 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
       }
       if (ms <= limit) {
         r.fast++; day.fast++; r.run = (r.run || 0) + 1; r.w = Math.max(W_MIN, r.w * FAST_MULT);
-        if (isKnown(current.id)) r.got = true;
+        if (isKnown(current.id)) {
+          r.got = true;
+          if (r.step === undefined) r.step = 0;
+          else if (isDue(r)) r.step = Math.min(r.step + 1, DUE_DAYS.length - 1);
+          r.last = today();
+        }
         if (wasHard && r.run >= LEARN_RUN) {
           r.hard = false; r.got = true;
           if (!state.learned.includes(current.id)) state.learned.push(current.id);
@@ -2609,7 +2633,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         if (queue.length && delay > 250) delay = 1100;
       } else {
         session.streak = 0; renderCombo(false);
-        if (!idle) { r.slow++; day.slow++; r.run = 0; r.w = Math.min(W_MAX, r.w * SLOW_MULT); }
+        if (!idle) { r.slow++; day.slow++; r.run = 0; r.w = Math.min(W_MAX, r.w * SLOW_MULT); r.step = 0; r.last = today(); }
         if (idle) {
           fb.textContent = "Right"; fb.className = "feedback";
         } else if (wasHard && ms <= limit + GRACE_MS) {
@@ -2623,7 +2647,7 @@ button.dex-item[aria-pressed="true"] { border-color: var(--accent) !important; b
         }
       }
     } else {
-      r.wrong++; day.wrong++; session.streak = 0; renderCombo(false); r.run = 0;
+      r.wrong++; day.wrong++; session.streak = 0; renderCombo(false); r.run = 0; r.step = 0; r.last = today();
       r.w = Math.min(W_MAX, Math.max(1, r.w) * WRONG_MULT);
       if (meetsHard(r)) r.hard = true;
       session.again = session.again.filter(a => a.id !== current.id)

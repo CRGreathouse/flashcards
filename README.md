@@ -28,6 +28,8 @@ Use the operation buttons in the header to choose which facts to practice, then 
 
 After a wrong answer, the card shows the fact and stays up until the right answer is typed. That retyping doesn't count for or against the card. Then the missed card comes back 3 cards later and again 10 cards after the miss, sooner if it comes up on its own. Beat the clock skips the retyping so the minute keeps moving, but its misses still come back.
 
+A new card shows its answer to copy the first time, then comes back to be answered 2, 5 and 12 cards later. About half the cards are ones still being learned (up to 4 at a time, the `learningSize` option) and half are ones already known. A card that has to come up (a new card, or one due back) is always followed by a known card, so review doesn't stop while new cards are coming in. Known cards are reviewed on a schedule of days: a card is due 1 day after it was last answered, and each fast answer while it's due pushes the next review further out (3, 7, 21, then 60 days). A slow or wrong answer starts it over at 1 day. Cards that are due come up first among the known ones.
+
 Once the collection holds 12 items (the `flashAt` option), the player earns **flash mode**. A small lightning bolt appears in the header. While it's on, the ✓ key is hidden and each answer is checked as soon as it has as many digits as the right answer. That's faster, but a typo counts as a miss. Tap the bolt again to turn it off and bring back ✓.
 
 ### Collecting
